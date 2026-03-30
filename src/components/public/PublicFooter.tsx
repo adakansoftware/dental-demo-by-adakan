@@ -92,7 +92,7 @@ export default function PublicFooter({ settings }: Props) {
           © {new Date().getFullYear()} {clinicName}. {t("footer", "rights", lang)}
           <span className="mx-2">·</span>
           <a href="https://www.instagram.com/adakansoftware" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-            Adakan Software tarafından yapılmıştır
+            Design by Adakan Software 
           </a>
         </div>
       </div>
