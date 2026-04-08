@@ -4,8 +4,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: getBaseUrl(),
-  title: "Diş Kliniği",
-  description: "Profesyonel diş kliniği hizmetleri",
+  title: "Adakan",
+  description: "Adakan",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
