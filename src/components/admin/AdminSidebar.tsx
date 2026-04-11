@@ -24,6 +24,7 @@ const navItems = [
 
 export default function AdminSidebar({ adminName }: Props) {
   const pathname = usePathname();
+  const safePathname = pathname ?? "";
 
   return (
     <aside className="flex min-h-screen w-72 shrink-0 flex-col border-r border-[rgba(217,210,200,0.84)] bg-[rgba(248,246,241,0.92)]">
@@ -46,7 +47,7 @@ export default function AdminSidebar({ adminName }: Props) {
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-4">
         {navItems.map((item) => {
-          const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
+          const active = item.exact ? safePathname === item.href : safePathname.startsWith(item.href);
 
           return (
             <Link key={item.href} href={item.href} className={`admin-sidebar-link ${active ? "active" : ""}`}>
