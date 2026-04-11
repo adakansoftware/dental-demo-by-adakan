@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 import { verifyTurnstileToken } from "@/lib/bot-protection";
 import { enforceRateLimit, validateFormAge, validateHoneypot } from "@/lib/security";
+import { logEvent } from "@/lib/observability";
 import { revalidatePath } from "next/cache";
 import type { ActionResult } from "@/types";
 
@@ -48,7 +49,19 @@ export async function submitContactAction(_prev: ActionResult, formData: FormDat
     return { success: false, error: parsed.error.errors[0]?.message ?? "Hata" };
   }
 
-  await prisma.contactRequest.create({ data: parsed.data });
+  const createdRequest = await prisma.contactRequest.create({ data: parsed.data });
+
+  logEvent({
+    event: "contact_request_created",
+    route: "action:submitContact",
+    meta: {
+      contactRequestId: createdRequest.id,
+      subjectLength: parsed.data.subject.length,
+      hasEmail: Boolean(parsed.data.email),
+      messageLength: parsed.data.message.length,
+    },
+  });
+
   revalidatePath("/admin/contact-requests");
   return { success: true };
 }
@@ -58,6 +71,13 @@ export async function markContactReadAction(_prev: ActionResult, formData: FormD
   const id = formData.get("id") as string;
   if (!id) return { success: false, error: "ID gerekli" };
   await prisma.contactRequest.update({ where: { id }, data: { isRead: true } });
+
+  logEvent({
+    event: "contact_request_marked_read",
+    route: "action:markContactRead",
+    meta: { contactRequestId: id },
+  });
+
   revalidatePath("/admin/contact-requests");
   return { success: true };
 }
@@ -67,6 +87,13 @@ export async function deleteContactRequestAction(_prev: ActionResult, formData: 
   const id = formData.get("id") as string;
   if (!id) return { success: false, error: "ID gerekli" };
   await prisma.contactRequest.delete({ where: { id } });
+
+  logEvent({
+    event: "contact_request_deleted",
+    route: "action:deleteContactRequest",
+    meta: { contactRequestId: id },
+  });
+
   revalidatePath("/admin/contact-requests");
   return { success: true };
 }
