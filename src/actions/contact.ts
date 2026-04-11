@@ -11,20 +11,20 @@ import type { ActionResult } from "@/types";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Ad soyad gerekli").max(120),
-  phone: z.string().trim().min(10, "Geçerli telefon girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
-  email: z.string().trim().email("Geçerli e-posta girin").or(z.literal("")),
+  phone: z.string().trim().min(10, "Gecerli telefon girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
+  email: z.string().trim().email("Gecerli e-posta girin").or(z.literal("")),
   subject: z.string().trim().min(3, "Konu gerekli").max(160),
   message: z.string().trim().min(10, "Mesaj gerekli").max(2000),
 });
 
 export async function submitContactAction(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
   if (!validateHoneypot(formData) || !validateFormAge(formData)) {
-    return { success: false, error: "İstek doğrulanamadı. Lütfen tekrar deneyin." };
+    return { success: false, error: "Istek dogrulanamadi. Lutfen tekrar deneyin." };
   }
 
   const turnstileValid = await verifyTurnstileToken(formData.get("cf-turnstile-response"));
   if (!turnstileValid) {
-    return { success: false, error: "Bot doğrulaması başarısız oldu. Lütfen tekrar deneyin." };
+    return { success: false, error: "Bot dogrulamasi basarisiz oldu. Lutfen tekrar deneyin." };
   }
 
   const allowed = await enforceRateLimit({
@@ -34,7 +34,7 @@ export async function submitContactAction(_prev: ActionResult, formData: FormDat
   });
 
   if (!allowed) {
-    return { success: false, error: "Çok fazla mesaj gönderildi. Lütfen biraz sonra tekrar deneyin." };
+    return { success: false, error: "Cok fazla mesaj gonderildi. Lutfen biraz sonra tekrar deneyin." };
   }
 
   const parsed = contactSchema.safeParse({
@@ -70,6 +70,7 @@ export async function markContactReadAction(_prev: ActionResult, formData: FormD
   await requireAdmin();
   const id = formData.get("id") as string;
   if (!id) return { success: false, error: "ID gerekli" };
+
   await prisma.contactRequest.update({ where: { id }, data: { isRead: true } });
 
   logEvent({
@@ -86,6 +87,7 @@ export async function deleteContactRequestAction(_prev: ActionResult, formData: 
   await requireAdmin();
   const id = formData.get("id") as string;
   if (!id) return { success: false, error: "ID gerekli" };
+
   await prisma.contactRequest.delete({ where: { id } });
 
   logEvent({

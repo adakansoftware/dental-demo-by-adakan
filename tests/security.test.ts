@@ -54,13 +54,14 @@ test("getRequestIdFromHeaders returns sanitized header when present", () => {
 
 test("buildApiHeaders always includes hardened defaults", () => {
   const headers = buildApiHeaders("req-demo-12345", { Vary: "Origin" });
+  const headerMap = headers as Record<string, string>;
 
   assert.equal(headers["Cache-Control"], "no-store");
   assert.equal(headers["X-Content-Type-Options"], "nosniff");
   assert.equal(headers["X-Robots-Tag"], "noindex, nofollow");
   assert.equal(headers["X-Request-Id"], "req-demo-12345");
   assert.equal(headers["Referrer-Policy"], "strict-origin-when-cross-origin");
-  assert.equal(headers.Vary, "Origin");
+  assert.equal(headerMap["Vary"], "Origin");
 });
 
 test("isAllowedBrowserOrigin accepts same-origin requests", () => {

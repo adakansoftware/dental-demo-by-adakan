@@ -2,11 +2,13 @@ import { spawn } from "node:child_process";
 import process from "node:process";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
+import { PrismaClient } from "@prisma/client";
 
 const defaultPort = 3200 + Math.floor(Math.random() * 400);
 const port = Number(process.env.SMOKE_PORT || defaultPort);
 const cwd = process.cwd();
 const nextBin = path.join(cwd, "node_modules", ".bin", process.platform === "win32" ? "next.cmd" : "next");
+const prisma = new PrismaClient();
 
 function assert(condition, message) {
   if (!condition) {
@@ -139,7 +141,18 @@ async function main() {
     const malformedDateSlots = await request("/api/slots?specialistId=test&date=07-04-2026");
     assert(malformedDateSlots.status === 400, `/api/slots malformed date expected 400, got ${malformedDateSlots.status}`);
 
-    const validSlots = await request("/api/slots?specialistId=test&date=2026-04-07");
+    const specialist = await prisma.specialist.findFirst({
+      where: { isActive: true },
+      select: { id: true },
+      orderBy: { order: "asc" },
+    });
+    assert(Boolean(specialist?.id), "Smoke test could not find an active specialist");
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const slotDate = tomorrow.toISOString().slice(0, 10);
+
+    const validSlots = await request(`/api/slots?specialistId=${encodeURIComponent(specialist.id)}&date=${slotDate}`);
     assert(validSlots.status === 200, `/api/slots valid request expected 200, got ${validSlots.status}`);
 
     const cronWrongSecret = await request("/api/cron/reminders", {
@@ -149,7 +162,7 @@ async function main() {
 
     let rateLimited = 0;
     for (let i = 0; i < 65; i += 1) {
-      const response = await request("/api/slots?specialistId=test&date=2026-04-07");
+      const response = await request(`/api/slots?specialistId=${encodeURIComponent(specialist.id)}&date=${slotDate}`);
       if (response.status === 429) {
         rateLimited += 1;
       }
@@ -161,6 +174,7 @@ async function main() {
     if (!serverExited) {
       await stopServer(server);
     }
+    await prisma.$disconnect();
   }
 
   if (stderr.trim()) {

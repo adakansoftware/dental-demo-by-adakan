@@ -41,19 +41,19 @@ interface PublicAppointmentLookupItem {
 
 const createAppointmentSchema = z
   .object({
-    serviceId: z.string().min(1, "Hizmet seçimi gerekli"),
-    specialistId: z.string().min(1, "Uzman seçimi gerekli"),
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Geçerli tarih girin"),
-    startTime: z.string().regex(/^\d{2}:\d{2}$/, "Geçerli saat girin"),
-    endTime: z.string().regex(/^\d{2}:\d{2}$/, "Geçerli bitiş saati girin"),
-    patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmalı").max(120),
-    patientPhone: z.string().trim().min(10, "Geçerli telefon numarası girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
+    serviceId: z.string().min(1, "Hizmet secimi gerekli"),
+    specialistId: z.string().min(1, "Uzman secimi gerekli"),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Gecerli tarih girin"),
+    startTime: z.string().regex(/^\d{2}:\d{2}$/, "Gecerli saat girin"),
+    endTime: z.string().regex(/^\d{2}:\d{2}$/, "Gecerli bitis saati girin"),
+    patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmali").max(120),
+    patientPhone: z.string().trim().min(10, "Gecerli telefon numarasi girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
     patientEmail: z.string().trim().email().or(z.literal("")),
     patientNote: z.string().trim().max(500).optional(),
     patientLanguage: z.enum(["TR", "EN"]).default("TR"),
   })
   .refine((data) => data.startTime < data.endTime, {
-    message: "Bitiş saati başlangıç saatinden sonra olmalı",
+    message: "Bitis saati baslangic saatinden sonra olmali",
     path: ["endTime"],
   });
 
@@ -62,12 +62,12 @@ export async function createAppointmentAction(
   formData: FormData
 ): Promise<ActionResult> {
   if (!validateHoneypot(formData) || !validateFormAge(formData)) {
-    return { success: false, error: "İstek doğrulanamadı. Lütfen formu tekrar gönderin." };
+    return { success: false, error: "Istek dogrulanamadi. Lutfen formu tekrar gonderin." };
   }
 
   const turnstileValid = await verifyTurnstileToken(formData.get("cf-turnstile-response"));
   if (!turnstileValid) {
-    return { success: false, error: "Bot doğrulaması başarısız oldu. Lütfen tekrar deneyin." };
+    return { success: false, error: "Bot dogrulamasi basarisiz oldu. Lutfen tekrar deneyin." };
   }
 
   const allowed = await enforceRateLimit({
@@ -77,7 +77,7 @@ export async function createAppointmentAction(
   });
 
   if (!allowed) {
-    return { success: false, error: "Çok fazla deneme yapıldı. Lütfen biraz sonra tekrar deneyin." };
+    return { success: false, error: "Cok fazla deneme yapildi. Lutfen biraz sonra tekrar deneyin." };
   }
 
   const parsed = createAppointmentSchema.safeParse({
@@ -102,7 +102,7 @@ export async function createAppointmentAction(
   if (compareDateStrings(date, getTodayDateInTurkey()) < 0) {
     return {
       success: false,
-      error: patientLanguage === "EN" ? "Please choose a future date." : "Lütfen ileri bir tarih seçin.",
+      error: patientLanguage === "EN" ? "Please choose a future date." : "Lutfen ileri bir tarih secin.",
     };
   }
 
@@ -176,13 +176,28 @@ export async function createAppointmentAction(
         error:
           patientLanguage === "EN"
             ? "This time slot is no longer available. Please choose another time."
-            : "Bu zaman dilimi artık uygun değil. Lütfen başka bir saat seçin.",
+            : "Bu zaman dilimi artik uygun degil. Lutfen baska bir saat secin.",
       };
     }
 
+    logEvent({
+      level: "error",
+      event: "appointment_create_failed",
+      route: "action:createAppointment",
+      message: error instanceof Error ? error.message : "Unknown appointment creation error",
+      meta: {
+        serviceId,
+        specialistId,
+        date,
+        startTime,
+        endTime,
+        language: patientLanguage,
+      },
+    });
+
     return {
       success: false,
-      error: patientLanguage === "EN" ? "An unexpected error occurred." : "Beklenmeyen bir hata oluştu.",
+      error: patientLanguage === "EN" ? "An unexpected error occurred." : "Beklenmeyen bir hata olustu.",
     };
   }
 }
@@ -215,7 +230,7 @@ export async function updateAppointmentStatusAction(
   });
 
   if (!appointment) {
-    return { success: false, error: "Randevu bulunamadı" };
+    return { success: false, error: "Randevu bulunamadi" };
   }
 
   await prisma.appointment.update({
@@ -284,9 +299,9 @@ export async function getAvailableSlotsAction(
 }
 
 const cancelAppointmentSchema = z.object({
-  patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmalı").max(120),
-  patientPhone: z.string().trim().min(10, "Geçerli telefon numarası girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Geçerli tarih girin"),
+  patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmali").max(120),
+  patientPhone: z.string().trim().min(10, "Gecerli telefon numarasi girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Gecerli tarih girin"),
   patientLanguage: z.enum(["TR", "EN"]).default("TR"),
 });
 
@@ -295,12 +310,12 @@ export async function cancelAppointmentByPhoneAction(
   formData: FormData
 ): Promise<ActionResult<{ cancelledId: string }>> {
   if (!validateHoneypot(formData) || !validateFormAge(formData)) {
-    return { success: false, error: "İstek doğrulanamadı. Lütfen formu tekrar gönderin." };
+    return { success: false, error: "Istek dogrulanamadi. Lutfen formu tekrar gonderin." };
   }
 
   const turnstileValid = await verifyTurnstileToken(formData.get("cf-turnstile-response"));
   if (!turnstileValid) {
-    return { success: false, error: "Bot doğrulaması başarısız oldu. Lütfen tekrar deneyin." };
+    return { success: false, error: "Bot dogrulamasi basarisiz oldu. Lutfen tekrar deneyin." };
   }
 
   const allowed = await enforceRateLimit({
@@ -310,7 +325,7 @@ export async function cancelAppointmentByPhoneAction(
   });
 
   if (!allowed) {
-    return { success: false, error: "Çok fazla iptal denemesi yapıldı. Lütfen biraz sonra tekrar deneyin." };
+    return { success: false, error: "Cok fazla iptal denemesi yapildi. Lutfen biraz sonra tekrar deneyin." };
   }
 
   const parsed = cancelAppointmentSchema.safeParse({
@@ -329,7 +344,7 @@ export async function cancelAppointmentByPhoneAction(
   if (compareDateStrings(date, getTodayDateInTurkey()) < 0) {
     return {
       success: false,
-      error: patientLanguage === "EN" ? "Please enter today or a future date." : "Lütfen bugün veya ileri bir tarih girin.",
+      error: patientLanguage === "EN" ? "Please enter today or a future date." : "Lutfen bugun veya ileri bir tarih girin.",
     };
   }
 
@@ -365,7 +380,7 @@ export async function cancelAppointmentByPhoneAction(
         error:
           patientLanguage === "EN"
             ? "No active appointment was found for this phone number on the selected date."
-            : "Seçilen tarihte bu telefon numarasına ait aktif bir randevu bulunamadı.",
+            : "Secilen tarihte bu telefon numarasina ait aktif bir randevu bulunamadi.",
       };
     }
 
@@ -430,20 +445,31 @@ export async function cancelAppointmentByPhoneAction(
         error:
           patientLanguage === "EN"
             ? "Multiple appointments were found for that phone number on the selected date. Please contact the clinic."
-            : "Seçilen tarihte bu numaraya ait birden fazla randevu bulundu. Lütfen klinikle iletişime geçin.",
+            : "Secilen tarihte bu numaraya ait birden fazla randevu bulundu. Lutfen klinikle iletisime gecin.",
       };
     }
 
+    logEvent({
+      level: "error",
+      event: "appointment_cancel_failed",
+      route: "action:cancelAppointmentByPhone",
+      message: error instanceof Error ? error.message : "Unknown cancellation error",
+      meta: {
+        date,
+        language: patientLanguage,
+      },
+    });
+
     return {
       success: false,
-      error: patientLanguage === "EN" ? "An unexpected error occurred." : "Beklenmeyen bir hata oluştu.",
+      error: patientLanguage === "EN" ? "An unexpected error occurred." : "Beklenmeyen bir hata olustu.",
     };
   }
 }
 
 const lookupAppointmentsSchema = z.object({
-  patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmalı").max(120),
-  patientPhone: z.string().trim().min(10, "Geçerli telefon numarası girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
+  patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmali").max(120),
+  patientPhone: z.string().trim().min(10, "Gecerli telefon numarasi girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
   patientLanguage: z.enum(["TR", "EN"]).default("TR"),
 });
 
@@ -452,12 +478,12 @@ export async function lookupAppointmentsByPhoneAction(
   formData: FormData
 ): Promise<ActionResult<PublicAppointmentLookupItem[]>> {
   if (!validateHoneypot(formData) || !validateFormAge(formData)) {
-    return { success: false, error: "İstek doğrulanamadı. Lütfen formu tekrar gönderin." };
+    return { success: false, error: "Istek dogrulanamadi. Lutfen formu tekrar gonderin." };
   }
 
   const turnstileValid = await verifyTurnstileToken(formData.get("cf-turnstile-response"));
   if (!turnstileValid) {
-    return { success: false, error: "Bot doğrulaması başarısız oldu. Lütfen tekrar deneyin." };
+    return { success: false, error: "Bot dogrulamasi basarisiz oldu. Lutfen tekrar deneyin." };
   }
 
   const allowed = await enforceRateLimit({
@@ -467,7 +493,7 @@ export async function lookupAppointmentsByPhoneAction(
   });
 
   if (!allowed) {
-    return { success: false, error: "Çok fazla sorgu yapıldı. Lütfen biraz sonra tekrar deneyin." };
+    return { success: false, error: "Cok fazla sorgu yapildi. Lutfen biraz sonra tekrar deneyin." };
   }
 
   const parsed = lookupAppointmentsSchema.safeParse({
@@ -533,7 +559,7 @@ export async function lookupAppointmentsByPhoneAction(
         error:
           patientLanguage === "EN"
             ? "No upcoming appointments were found for this phone number."
-            : "Bu telefon numarasına ait yaklaşan bir randevu bulunamadı.",
+            : "Bu telefon numarasina ait yaklasan bir randevu bulunamadi.",
       };
     }
 
@@ -554,10 +580,20 @@ export async function lookupAppointmentsByPhoneAction(
           ? `${matches.length} appointment(s) found.`
           : `${matches.length} adet randevu bulundu.`,
     };
-  } catch {
+  } catch (error) {
+    logEvent({
+      level: "error",
+      event: "appointments_lookup_failed",
+      route: "action:lookupAppointmentsByPhone",
+      message: error instanceof Error ? error.message : "Unknown lookup error",
+      meta: {
+        language: patientLanguage,
+      },
+    });
+
     return {
       success: false,
-      error: patientLanguage === "EN" ? "An unexpected error occurred." : "Beklenmeyen bir hata oluştu.",
+      error: patientLanguage === "EN" ? "An unexpected error occurred." : "Beklenmeyen bir hata olustu.",
     };
   }
 }
