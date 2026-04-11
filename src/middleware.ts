@@ -28,7 +28,7 @@ function buildCsp(request: NextRequest) {
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
     "style-src 'self' 'unsafe-inline' https:",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    isLocalRequest ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'" : "script-src 'self' 'unsafe-inline'",
     `connect-src ${connectSources}`,
     "frame-src 'self' https://www.google.com https://www.google.com.tr",
     "frame-ancestors 'none'",
@@ -109,6 +109,14 @@ export function middleware(request: NextRequest) {
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("X-Frame-Options", "DENY");
   response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  response.headers.set("Cross-Origin-Opener-Policy", "same-origin");
+  response.headers.set("Cross-Origin-Resource-Policy", "same-origin");
+  response.headers.set("X-DNS-Prefetch-Control", "off");
+  response.headers.set("X-Permitted-Cross-Domain-Policies", "none");
+
+  if (request.nextUrl.protocol === "https:") {
+    response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  }
 
   if (!isStaticAsset) {
     response.headers.set("Content-Security-Policy", buildCsp(request));
@@ -118,5 +126,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image).*)"],
+  matcher: ["/((?!_next/static|_next/image|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)"],
 };

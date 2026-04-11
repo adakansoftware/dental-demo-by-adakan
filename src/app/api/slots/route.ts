@@ -43,9 +43,18 @@ export async function GET(request: Request) {
     return NextResponse.json(slots, {
       headers: {
         "Cache-Control": "no-store",
+        Vary: "Origin",
       },
     });
   } catch {
-    return NextResponse.json({ error: "Unable to fetch slots" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Unable to fetch slots" },
+      {
+        status: 400,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
+    );
   }
 }

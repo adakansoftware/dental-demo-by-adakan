@@ -11,10 +11,27 @@ import {
 test("getClientIpFromHeadersSync prefers forwarded headers", () => {
   const headers = new Headers({
     "x-forwarded-for": "203.0.113.10, 10.0.0.2",
-    "x-real-ip": "198.51.100.1",
   });
 
   assert.equal(getClientIpFromHeadersSync(headers), "203.0.113.10");
+});
+
+test("getClientIpFromHeadersSync prefers provider headers and strips ports", () => {
+  const headers = new Headers({
+    "cf-connecting-ip": "198.51.100.9",
+    "x-forwarded-for": "203.0.113.10:443, 10.0.0.2",
+    "x-real-ip": "198.51.100.1",
+  });
+
+  assert.equal(getClientIpFromHeadersSync(headers), "198.51.100.9");
+});
+
+test("getClientIpFromHeadersSync falls back to forwarded header syntax", () => {
+  const headers = new Headers({
+    forwarded: 'for="[2001:db8::1]:1234";proto=https',
+  });
+
+  assert.equal(getClientIpFromHeadersSync(headers), "2001:db8::1");
 });
 
 test("buildRequestFingerprintFromHeaders includes IP and user agent", () => {

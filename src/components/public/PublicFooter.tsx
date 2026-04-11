@@ -47,7 +47,7 @@ export default function PublicFooter({ settings }: Props) {
                 />
               ) : (
                 <div className="grid h-11 w-11 place-items-center rounded-2xl border border-[rgba(217,210,200,0.9)] bg-[rgba(239,233,225,0.82)] text-sm font-semibold text-[color:var(--accent-main)]">
-                  DC
+                  AD
                 </div>
               )}
               <div className="text-lg font-semibold tracking-[-0.03em] text-[color:var(--text-primary)]">{clinicName}</div>
@@ -114,7 +114,7 @@ export default function PublicFooter({ settings }: Props) {
 
         <div className="mt-10 flex flex-col gap-2 border-t border-[rgba(217,210,200,0.84)] pt-6 text-xs text-[color:var(--text-secondary)] md:flex-row md:items-center md:justify-between">
           <div>
-            (c) {new Date().getFullYear()} {clinicName}. {t("footer", "rights", lang)}
+            &copy; {new Date().getFullYear()} {clinicName}. {t("footer", "rights", lang)}
           </div>
           <div>
             Design by{" "}

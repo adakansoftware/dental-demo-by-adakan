@@ -24,14 +24,21 @@ export async function GET() {
       }
     );
   } catch (error) {
+    const isProduction = process.env.NODE_ENV === "production";
+
     return NextResponse.json(
       {
         ok: false,
         database: "down",
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: isProduction ? "Health check failed" : error instanceof Error ? error.message : "Unknown error",
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
     );
   }
 }

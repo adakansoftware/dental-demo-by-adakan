@@ -28,14 +28,61 @@ export function buildIpRateLimitKeyFromHeaders(headerStore: Headers): string {
   return getClientIpFromHeadersSync(headerStore);
 }
 
+function normalizeIp(value: string | null | undefined): string | null {
+  if (!value) return null;
+
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  let withoutPort = trimmed;
+
+  if (trimmed.startsWith("[")) {
+    withoutPort = trimmed.replace(/^\[([^\]]+)\](?::\d+)?$/, "$1");
+  } else if (/^(?:\d{1,3}\.){3}\d{1,3}:\d+$/.test(trimmed)) {
+    withoutPort = trimmed.replace(/:\d+$/, "");
+  }
+
+  const candidate = withoutPort.toLowerCase();
+  const isIpv4 = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(candidate);
+  const isIpv6 = /^[0-9a-f:]+$/i.test(candidate) && candidate.includes(":");
+
+  if (!isIpv4 && !isIpv6) {
+    return null;
+  }
+
+  return candidate;
+}
+
 export function getClientIpFromHeadersSync(headerStore: Headers): string {
-  const cfConnectingIp = headerStore.get("cf-connecting-ip");
-  if (cfConnectingIp) {
-    return cfConnectingIp.trim();
+  const directHeaders = [
+    headerStore.get("cf-connecting-ip"),
+    headerStore.get("x-vercel-forwarded-for"),
+    headerStore.get("x-real-ip"),
+  ];
+
+  for (const value of directHeaders) {
+    const normalized = normalizeIp(value);
+    if (normalized) {
+      return normalized;
+    }
   }
 
   const forwardedFor = headerStore.get("x-forwarded-for") ?? "";
-  return forwardedFor.split(",")[0]?.trim() || headerStore.get("x-real-ip") || "unknown";
+  for (const value of forwardedFor.split(",")) {
+    const normalized = normalizeIp(value);
+    if (normalized) {
+      return normalized;
+    }
+  }
+
+  const forwarded = headerStore.get("forwarded") ?? "";
+  const forwardedMatch = forwarded.match(/for=(?:"?\[?)([0-9a-fA-F\.:]+)(?:\]?"?)/);
+  const normalizedForwarded = normalizeIp(forwardedMatch?.[1]);
+  if (normalizedForwarded) {
+    return normalizedForwarded;
+  }
+
+  return "unknown";
 }
 
 function cleanupRateLimitStore(now: number) {

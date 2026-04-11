@@ -95,10 +95,27 @@ run("getUtcRangeForTurkeyDate returns expected UTC range", () => {
 run("getClientIpFromHeadersSync prefers forwarded headers", () => {
   const headerStore = new Headers({
     "x-forwarded-for": "203.0.113.10, 10.0.0.2",
-    "x-real-ip": "198.51.100.1",
   });
 
   assert.equal(getClientIpFromHeadersSync(headerStore), "203.0.113.10");
+});
+
+run("getClientIpFromHeadersSync prefers provider headers and strips ports", () => {
+  const headerStore = new Headers({
+    "cf-connecting-ip": "198.51.100.9",
+    "x-forwarded-for": "203.0.113.10:443, 10.0.0.2",
+    "x-real-ip": "198.51.100.1",
+  });
+
+  assert.equal(getClientIpFromHeadersSync(headerStore), "198.51.100.9");
+});
+
+run("getClientIpFromHeadersSync falls back to RFC forwarded header syntax", () => {
+  const headerStore = new Headers({
+    forwarded: 'for="[2001:db8::1]:1234";proto=https',
+  });
+
+  assert.equal(getClientIpFromHeadersSync(headerStore), "2001:db8::1");
 });
 
 run("buildRequestFingerprintFromHeaders includes IP and user agent", () => {

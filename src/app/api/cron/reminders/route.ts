@@ -13,11 +13,14 @@ export async function GET(request: Request) {
   const cronSecret = env.CRON_SECRET;
 
   if (env.NODE_ENV === "production" && !cronSecret) {
-    return NextResponse.json({ error: "CRON_SECRET is required in production" }, { status: 500 });
+    return NextResponse.json(
+      { error: "CRON_SECRET is required in production" },
+      { status: 500, headers: { "Cache-Control": "no-store" } }
+    );
   }
 
   if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: { "Cache-Control": "no-store" } });
   }
 
   const tomorrowDate = getTomorrowDateInTurkey();
@@ -67,11 +70,18 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.json({
-    success: true,
-    total: appointments.length,
-    sent,
-    failed,
-    date: tomorrowDate,
-  });
+  return NextResponse.json(
+    {
+      success: true,
+      total: appointments.length,
+      sent,
+      failed,
+      date: tomorrowDate,
+    },
+    {
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    }
+  );
 }

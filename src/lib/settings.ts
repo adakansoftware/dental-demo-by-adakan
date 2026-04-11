@@ -2,10 +2,42 @@ import { prisma } from "@/lib/prisma";
 import { safeQuery } from "@/lib/safe-query";
 import type { SiteSettings } from "@/types";
 
+const LEGACY_BRAND_MARKERS = [
+  "dentacare",
+  "diş kliniği",
+  "dis klinigi",
+  "dental clinic",
+];
+
+const ADAKAN_INSTAGRAM = "https://instagram.com/adakansoftware";
+const ADAKAN_FACEBOOK = "https://facebook.com/adakansoftware";
+
+function normalizeForComparison(value?: string) {
+  return (value ?? "")
+    .toLocaleLowerCase("tr-TR")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function hasLegacyClinicBrand(value?: string) {
-  if (!value) return false;
-  const lower = value.toLowerCase();
-  return lower.includes("dentacare") || lower.includes("diş kliniği") || lower.includes("dental clinic");
+  const normalized = normalizeForComparison(value);
+  return LEGACY_BRAND_MARKERS.some((marker) => normalized.includes(normalizeForComparison(marker)));
+}
+
+function resolveBrandSocialUrl(value: string | undefined, fallback: string) {
+  if (!value || hasLegacyClinicBrand(value)) {
+    return fallback;
+  }
+
+  return value;
+}
+
+function resolveBrandText(value: string | undefined, fallback: string) {
+  if (!value || hasLegacyClinicBrand(value)) {
+    return fallback;
+  }
+
+  return value;
 }
 
 const DEFAULT_SETTINGS: SiteSettings = {
@@ -17,8 +49,8 @@ const DEFAULT_SETTINGS: SiteSettings = {
   address: "Gaziantep, Turkiye",
   addressEn: "Gaziantep, Turkey",
   mapEmbedUrl: "",
-  instagram: "",
-  facebook: "",
+  instagram: ADAKAN_INSTAGRAM,
+  facebook: ADAKAN_FACEBOOK,
   twitter: "",
   heroTitleTr: "Saglikli Bir Gulus Icin Dogru Adres",
   heroTitleEn: "The Right Address for a Healthy Smile",
@@ -39,27 +71,22 @@ const DEFAULT_SETTINGS: SiteSettings = {
 export async function getSiteSettings(): Promise<SiteSettings> {
   const rows = await safeQuery("site settings", () => prisma.siteSetting.findMany(), []);
   const map: Record<string, string> = {};
+
   for (const row of rows) {
     map[row.key] = row.value;
   }
 
   return {
-    clinicName: "Adakan",
-    clinicNameEn: "Adakan",
+    clinicName: DEFAULT_SETTINGS.clinicName,
+    clinicNameEn: DEFAULT_SETTINGS.clinicNameEn,
     phone: map.phone ?? DEFAULT_SETTINGS.phone,
     whatsapp: map.whatsapp ?? DEFAULT_SETTINGS.whatsapp,
-    email: map.email === "info@dentacare.com.tr" ? DEFAULT_SETTINGS.email : map.email ?? DEFAULT_SETTINGS.email,
+    email: hasLegacyClinicBrand(map.email) ? DEFAULT_SETTINGS.email : map.email ?? DEFAULT_SETTINGS.email,
     address: map.address ?? DEFAULT_SETTINGS.address,
     addressEn: map.addressEn ?? DEFAULT_SETTINGS.addressEn,
     mapEmbedUrl: map.mapEmbedUrl ?? DEFAULT_SETTINGS.mapEmbedUrl,
-    instagram:
-      !map.instagram || map.instagram.toLowerCase().includes("dentacare")
-        ? "https://instagram.com/adakansoftware"
-        : map.instagram,
-    facebook:
-      !map.facebook || map.facebook.toLowerCase().includes("dentacare")
-        ? "https://facebook.com/adakansoftware"
-        : map.facebook,
+    instagram: resolveBrandSocialUrl(map.instagram, DEFAULT_SETTINGS.instagram),
+    facebook: resolveBrandSocialUrl(map.facebook, DEFAULT_SETTINGS.facebook),
     twitter: map.twitter ?? DEFAULT_SETTINGS.twitter,
     heroTitleTr: map.heroTitleTr ?? DEFAULT_SETTINGS.heroTitleTr,
     heroTitleEn: map.heroTitleEn ?? DEFAULT_SETTINGS.heroTitleEn,
@@ -67,12 +94,12 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     heroSubtitleEn: map.heroSubtitleEn ?? DEFAULT_SETTINGS.heroSubtitleEn,
     aboutTitleTr: map.aboutTitleTr ?? DEFAULT_SETTINGS.aboutTitleTr,
     aboutTitleEn: map.aboutTitleEn ?? DEFAULT_SETTINGS.aboutTitleEn,
-    aboutTextTr: !map.aboutTextTr || hasLegacyClinicBrand(map.aboutTextTr) ? DEFAULT_SETTINGS.aboutTextTr : map.aboutTextTr,
-    aboutTextEn: !map.aboutTextEn || hasLegacyClinicBrand(map.aboutTextEn) ? DEFAULT_SETTINGS.aboutTextEn : map.aboutTextEn,
-    seoTitleTr: "Adakan",
-    seoTitleEn: "Adakan",
-    seoDescTr: !map.seoDescTr || hasLegacyClinicBrand(map.seoDescTr) ? DEFAULT_SETTINGS.seoDescTr : map.seoDescTr,
-    seoDescEn: !map.seoDescEn || hasLegacyClinicBrand(map.seoDescEn) ? DEFAULT_SETTINGS.seoDescEn : map.seoDescEn,
+    aboutTextTr: resolveBrandText(map.aboutTextTr, DEFAULT_SETTINGS.aboutTextTr),
+    aboutTextEn: resolveBrandText(map.aboutTextEn, DEFAULT_SETTINGS.aboutTextEn),
+    seoTitleTr: DEFAULT_SETTINGS.seoTitleTr,
+    seoTitleEn: DEFAULT_SETTINGS.seoTitleEn,
+    seoDescTr: resolveBrandText(map.seoDescTr, DEFAULT_SETTINGS.seoDescTr),
+    seoDescEn: resolveBrandText(map.seoDescEn, DEFAULT_SETTINGS.seoDescEn),
     logoUrl: map.logoUrl ?? DEFAULT_SETTINGS.logoUrl,
     faviconUrl: map.faviconUrl ?? DEFAULT_SETTINGS.faviconUrl,
   };
