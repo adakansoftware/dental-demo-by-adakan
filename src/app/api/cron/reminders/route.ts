@@ -1,26 +1,52 @@
 import { NextResponse } from "next/server";
+import { buildApiHeaders, getRequestIdFromHeaders, secureCompare } from "@/lib/api-security";
 import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/settings";
 import { buildReminderMessage, sendSms } from "@/lib/sms";
 import { getEnv } from "@/lib/env";
 import { dateToIsoDate, getTomorrowDateInTurkey, getUtcRangeForTurkeyDate } from "@/lib/date";
+import { getDurationMs, logEvent } from "@/lib/observability";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  const requestId = getRequestIdFromHeaders(request.headers);
+  const startedAt = Date.now();
   const authHeader = request.headers.get("authorization");
   const env = getEnv();
   const cronSecret = env.CRON_SECRET;
 
   if (env.NODE_ENV === "production" && !cronSecret) {
+    logEvent({
+      level: "error",
+      event: "cron_reminders_misconfigured",
+      requestId,
+      route: "/api/cron/reminders",
+      message: "CRON_SECRET is missing in production",
+    });
+
     return NextResponse.json(
       { error: "CRON_SECRET is required in production" },
-      { status: 500, headers: { "Cache-Control": "no-store" } }
+      { status: 500, headers: buildApiHeaders(requestId) }
     );
   }
 
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: { "Cache-Control": "no-store" } });
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice("Bearer ".length) : null;
+  const isAuthorized = secureCompare(cronSecret, bearerToken);
+
+  if (!isAuthorized) {
+    logEvent({
+      level: "warn",
+      event: "cron_reminders_unauthorized",
+      requestId,
+      route: "/api/cron/reminders",
+      meta: {
+        hasAuthorizationHeader: Boolean(authHeader),
+        durationMs: getDurationMs(startedAt),
+      },
+    });
+
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: buildApiHeaders(requestId) });
   }
 
   const tomorrowDate = getTomorrowDateInTurkey();
@@ -65,10 +91,36 @@ export async function GET(request: Request) {
 
       sent++;
     } catch (err) {
-      console.error(`Failed to send reminder for appointment ${apt.id}:`, err);
+      logEvent({
+        level: "error",
+        event: "cron_reminder_send_failed",
+        requestId,
+        route: "/api/cron/reminders",
+        message: err instanceof Error ? err.message : "Unknown SMS error",
+        meta: {
+          appointmentId: apt.id,
+          specialistId: apt.specialistId,
+          serviceId: apt.serviceId,
+        },
+      });
       failed++;
     }
   }
+
+  const durationMs = getDurationMs(startedAt);
+
+  logEvent({
+    event: "cron_reminders_completed",
+    requestId,
+    route: "/api/cron/reminders",
+    meta: {
+      total: appointments.length,
+      sent,
+      failed,
+      date: tomorrowDate,
+      durationMs,
+    },
+  });
 
   return NextResponse.json(
     {
@@ -77,11 +129,11 @@ export async function GET(request: Request) {
       sent,
       failed,
       date: tomorrowDate,
+      requestId,
+      responseTimeMs: durationMs,
     },
     {
-      headers: {
-        "Cache-Control": "no-store",
-      },
+      headers: buildApiHeaders(requestId, { "Server-Timing": `app;dur=${durationMs}` }),
     }
   );
 }

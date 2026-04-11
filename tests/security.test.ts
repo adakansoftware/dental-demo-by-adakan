@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { buildApiHeaders, getRequestIdFromHeaders, isAllowedBrowserOrigin, secureCompare } from "@/lib/api-security";
 import {
   buildRequestFingerprintFromHeaders,
   enforceRateLimitByKey,
@@ -41,6 +42,47 @@ test("buildRequestFingerprintFromHeaders includes IP and user agent", () => {
   });
 
   assert.equal(buildRequestFingerprintFromHeaders(headers), "198.51.100.1:SmokeTestAgent/1.0");
+});
+
+test("getRequestIdFromHeaders returns sanitized header when present", () => {
+  const headers = new Headers({
+    "x-request-id": "req-demo-12345",
+  });
+
+  assert.equal(getRequestIdFromHeaders(headers), "req-demo-12345");
+});
+
+test("buildApiHeaders always includes hardened defaults", () => {
+  const headers = buildApiHeaders("req-demo-12345", { Vary: "Origin" });
+
+  assert.equal(headers["Cache-Control"], "no-store");
+  assert.equal(headers["X-Content-Type-Options"], "nosniff");
+  assert.equal(headers["X-Robots-Tag"], "noindex, nofollow");
+  assert.equal(headers["X-Request-Id"], "req-demo-12345");
+  assert.equal(headers["Referrer-Policy"], "strict-origin-when-cross-origin");
+  assert.equal(headers.Vary, "Origin");
+});
+
+test("isAllowedBrowserOrigin accepts same-origin requests", () => {
+  const headers = new Headers({
+    origin: "https://example.com",
+  });
+
+  assert.equal(isAllowedBrowserOrigin(headers, "https://example.com/api/slots"), true);
+});
+
+test("isAllowedBrowserOrigin rejects unrelated origins", () => {
+  const headers = new Headers({
+    origin: "https://evil.example",
+  });
+
+  assert.equal(isAllowedBrowserOrigin(headers, "https://example.com/api/slots"), false);
+});
+
+test("secureCompare matches only exact secrets", () => {
+  assert.equal(secureCompare("secret-value", "secret-value"), true);
+  assert.equal(secureCompare("secret-value", "secret-value-2"), false);
+  assert.equal(secureCompare("secret-value", null), false);
 });
 
 test("validateHoneypot rejects filled bot field", () => {

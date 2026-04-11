@@ -1,18 +1,43 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAvailableSlots } from "@/lib/slots";
+import { buildApiHeaders, getRequestIdFromHeaders, isAllowedBrowserOrigin } from "@/lib/api-security";
 import { compareDateStrings, getTodayDateInTurkey } from "@/lib/date";
 import { buildRequestFingerprintFromHeaders, enforceRateLimitByKey } from "@/lib/security";
+import { getDurationMs, logEvent } from "@/lib/observability";
 
 export const dynamic = "force-dynamic";
 
 const slotsQuerySchema = z.object({
-  specialistId: z.string().trim().min(1).max(64),
+  specialistId: z.string().trim().min(1).max(64).regex(/^[a-zA-Z0-9_-]+$/, "Invalid specialist id"),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
 });
 
 export async function GET(request: Request) {
-  const requestId = request.headers.get("x-request-id") ?? "slots-api";
+  const requestId = getRequestIdFromHeaders(request.headers);
+  const startedAt = Date.now();
+
+  if (!isAllowedBrowserOrigin(request.headers, request.url)) {
+    logEvent({
+      level: "warn",
+      event: "slots_origin_rejected",
+      requestId,
+      route: "/api/slots",
+      meta: {
+        origin: request.headers.get("origin") ?? undefined,
+        referer: request.headers.get("referer") ?? undefined,
+      },
+    });
+
+    return NextResponse.json(
+      { error: "Origin not allowed" },
+      {
+        status: 403,
+        headers: buildApiHeaders(requestId),
+      }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const parsed = slotsQuerySchema.safeParse({
     specialistId: searchParams.get("specialistId"),
@@ -20,14 +45,21 @@ export async function GET(request: Request) {
   });
 
   if (!parsed.success) {
+    logEvent({
+      level: "warn",
+      event: "slots_validation_failed",
+      requestId,
+      route: "/api/slots",
+      meta: {
+        issue: parsed.error.errors[0]?.message ?? "Invalid query",
+      },
+    });
+
     return NextResponse.json(
       { error: parsed.error.errors[0]?.message ?? "specialistId and date required" },
       {
         status: 400,
-        headers: {
-          "Cache-Control": "no-store",
-          "X-Request-Id": requestId,
-        },
+        headers: buildApiHeaders(requestId),
       }
     );
   }
@@ -37,10 +69,21 @@ export async function GET(request: Request) {
       { error: "Past dates are not allowed" },
       {
         status: 400,
-        headers: {
-          "Cache-Control": "no-store",
-          "X-Request-Id": requestId,
-        },
+        headers: buildApiHeaders(requestId),
+      }
+    );
+  }
+
+  const maxAllowedDate = new Date();
+  maxAllowedDate.setUTCDate(maxAllowedDate.getUTCDate() + 180);
+  const maxAllowedDateString = maxAllowedDate.toISOString().slice(0, 10);
+
+  if (compareDateStrings(parsed.data.date, maxAllowedDateString) > 0) {
+    return NextResponse.json(
+      { error: "Date is too far in the future" },
+      {
+        status: 400,
+        headers: buildApiHeaders(requestId),
       }
     );
   }
@@ -56,37 +99,64 @@ export async function GET(request: Request) {
   );
 
   if (!allowed) {
+    logEvent({
+      level: "warn",
+      event: "slots_rate_limited",
+      requestId,
+      route: "/api/slots",
+      meta: {
+        specialistId: parsed.data.specialistId,
+        date: parsed.data.date,
+      },
+    });
+
     return NextResponse.json(
       { error: "Too many requests" },
       {
         status: 429,
-        headers: {
-          "Cache-Control": "no-store",
-          "Retry-After": "60",
-          "X-Request-Id": requestId,
-        },
+        headers: buildApiHeaders(requestId, { "Retry-After": "60" }),
       }
     );
   }
 
   try {
     const slots = await getAvailableSlots(parsed.data.specialistId, parsed.data.date);
-    return NextResponse.json(slots, {
-      headers: {
-        "Cache-Control": "no-store",
-        Vary: "Origin",
-        "X-Request-Id": requestId,
+    const durationMs = getDurationMs(startedAt);
+
+    logEvent({
+      event: "slots_fetched",
+      requestId,
+      route: "/api/slots",
+      meta: {
+        specialistId: parsed.data.specialistId,
+        date: parsed.data.date,
+        slotCount: slots.length,
+        durationMs,
       },
     });
-  } catch {
+
+    return NextResponse.json(slots, {
+      headers: buildApiHeaders(requestId, { Vary: "Origin", "Server-Timing": `app;dur=${durationMs}` }),
+    });
+  } catch (error) {
+    logEvent({
+      level: "error",
+      event: "slots_fetch_failed",
+      requestId,
+      route: "/api/slots",
+      message: error instanceof Error ? error.message : "Unknown slots error",
+      meta: {
+        specialistId: parsed.data.specialistId,
+        date: parsed.data.date,
+        durationMs: getDurationMs(startedAt),
+      },
+    });
+
     return NextResponse.json(
       { error: "Unable to fetch slots" },
       {
         status: 400,
-        headers: {
-          "Cache-Control": "no-store",
-          "X-Request-Id": requestId,
-        },
+        headers: buildApiHeaders(requestId),
       }
     );
   }

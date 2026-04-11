@@ -88,6 +88,23 @@ export default function HomeClient({ settings, services, specialists, reviews }:
     },
   ];
 
+  const premiumSignals = [
+    {
+      eyebrow: lang === "tr" ? "Planli deneyim" : "Planned experience",
+      text:
+        lang === "tr"
+          ? "Ana sayfadan randevuya kadar tum akista sakin, okunur ve karar vermeyi kolaylastiran bir kurgu korunur."
+          : "From the homepage to booking, the full flow stays calm, readable, and easy to act on.",
+    },
+    {
+      eyebrow: lang === "tr" ? "Guvenli altyapi" : "Protected infrastructure",
+      text:
+        lang === "tr"
+          ? "Bot korumasi, kontrollu endpoint davranisi ve izlenebilir istek akisiyla cekirdek sistem guclendirilir."
+          : "The core system is reinforced with bot protection, controlled endpoint behavior, and traceable requests.",
+    },
+  ];
+
   const trustStrip = [
     lang === "tr" ? "Steril ortam" : "Sterile environment",
     lang === "tr" ? "Uzman ekip" : "Specialist team",
@@ -159,6 +176,15 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                   <Link href="/services" className="btn-outline">
                     {lang === "tr" ? "Tedavileri Incele" : "Explore Treatments"}
                   </Link>
+                </div>
+
+                <div className="mt-8 grid gap-4 md:grid-cols-2">
+                  {premiumSignals.map((item) => (
+                    <div key={item.eyebrow} className="rounded-[1.5rem] border border-[rgba(217,210,200,0.84)] bg-[rgba(251,250,247,0.72)] p-5">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--accent-main)]">{item.eyebrow}</div>
+                      <p className="mt-3 text-sm leading-relaxed text-[color:var(--text-secondary)]">{item.text}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
 

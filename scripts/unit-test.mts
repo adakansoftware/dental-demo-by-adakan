@@ -17,6 +17,7 @@ import {
   validateFormAge,
   validateHoneypot,
 } from "../src/lib/security-core.ts";
+import { getDurationMs } from "../src/lib/observability.ts";
 
 const results: string[] = [];
 
@@ -126,6 +127,11 @@ run("buildRequestFingerprintFromHeaders includes IP and user agent", () => {
 
   assert.equal(buildRequestFingerprintFromHeaders(headerStore), "198.51.100.1:SmokeTestAgent/1.0");
 });
+
+run("getDurationMs never returns negative values", () => {
+  assert.equal(getDurationMs(Date.now() + 1000), 0);
+});
+
 
 run("validateHoneypot rejects filled bot field", () => {
   const formData = new FormData();

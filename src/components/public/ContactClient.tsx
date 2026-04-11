@@ -35,6 +35,30 @@ export default function ContactClient({ settings, workingHours }: Props) {
     6: { tr: "Cumartesi", en: "Saturday" },
   };
 
+  const trustPoints = [
+    {
+      title: lang === "tr" ? "Net geri donus akisi" : "Clear response flow",
+      text:
+        lang === "tr"
+          ? "Formlar daginik bir iletisim yerine duzenli bir kayit akisi olusturur."
+          : "Messages create a structured intake flow instead of a scattered contact experience.",
+    },
+    {
+      title: lang === "tr" ? "Hizli yonlendirme" : "Fast routing",
+      text:
+        lang === "tr"
+          ? "Randevu, tedavi bilgisi ve genel sorular daha kolay ayristirilir."
+          : "Appointment, treatment, and general support requests are easier to route correctly.",
+    },
+    {
+      title: lang === "tr" ? "Profesyonel gorunum" : "Professional presence",
+      text:
+        lang === "tr"
+          ? "Iletisim alani sade ama guven veren bir karar anina donusturulur."
+          : "The contact area becomes a calm, trust-building decision point.",
+    },
+  ];
+
   return (
     <>
       <PageHero
@@ -112,6 +136,15 @@ export default function ContactClient({ settings, workingHours }: Props) {
                   </button>
                 </form>
               )}
+
+              <div className="mt-8 grid gap-4 md:grid-cols-3">
+                {trustPoints.map((item) => (
+                  <div key={item.title} className="rounded-[1.4rem] border border-[rgba(217,210,200,0.84)] bg-[rgba(251,250,247,0.74)] p-4">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--accent-main)]">{item.title}</div>
+                    <p className="mt-3 text-sm leading-relaxed text-[color:var(--text-secondary)]">{item.text}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-6 lg:sticky lg:top-28">

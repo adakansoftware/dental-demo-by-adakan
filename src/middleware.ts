@@ -92,11 +92,12 @@ export function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/robots.txt") ||
     request.nextUrl.pathname.startsWith("/sitemap.xml");
 
+  const requestId = request.headers.get("x-request-id")?.trim() || buildRequestId();
+
   if (!isStaticAsset) {
     const clientKey = buildIpRateLimitKeyFromHeaders(request.headers);
     const policy = getRateLimitPolicy(request);
     const allowed = enforceRateLimitByKey(policy, clientKey);
-    const requestId = buildRequestId();
 
     if (!allowed) {
       return NextResponse.json(
@@ -113,8 +114,15 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  const response = NextResponse.next();
-  response.headers.set("X-Request-Id", buildRequestId());
+  const forwardedHeaders = new Headers(request.headers);
+  forwardedHeaders.set("x-request-id", requestId);
+
+  const response = NextResponse.next({
+    request: {
+      headers: forwardedHeaders,
+    },
+  });
+  response.headers.set("X-Request-Id", requestId);
 
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("X-Content-Type-Options", "nosniff");

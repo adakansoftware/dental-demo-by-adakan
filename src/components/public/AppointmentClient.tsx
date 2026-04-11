@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { startTransition, useActionState, useEffect, useState } from "react";
-import { createAppointmentAction, getAvailableSlotsAction } from "@/actions/appointment";
+import { cancelAppointmentByPhoneAction, createAppointmentAction, getAvailableSlotsAction, lookupAppointmentsByPhoneAction } from "@/actions/appointment";
 import SpamProtectionFields from "@/components/shared/SpamProtectionFields";
 import PageHero from "@/components/shared/PageHero";
 import { useLang } from "@/context/LangContext";
@@ -28,6 +28,61 @@ interface Props {
 
 const STEP_LABELS = ["step1", "step2", "step3", "step4"] as const;
 const initialState: ActionResult = { success: false };
+const cancelInitialState: ActionResult = { success: false };
+const lookupInitialState: ActionResult<
+  {
+    id: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    status: "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
+    serviceName: string;
+    specialistName: string;
+  }[]
+> = { success: false };
+
+function getPublicStatusMeta(
+  status: "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED",
+  lang: "tr" | "en"
+) {
+  if (lang === "tr") {
+    switch (status) {
+      case "CANCELLED":
+        return {
+          label: "Iptal Edildi",
+          className: "bg-red-50 text-red-700 border border-red-200",
+        };
+      case "COMPLETED":
+        return {
+          label: "Tamamlandi",
+          className: "bg-slate-100 text-slate-700 border border-slate-200",
+        };
+      default:
+        return {
+          label: "Aktif",
+          className: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+        };
+    }
+  }
+
+  switch (status) {
+    case "CANCELLED":
+      return {
+        label: "Cancelled",
+        className: "bg-red-50 text-red-700 border border-red-200",
+      };
+    case "COMPLETED":
+      return {
+        label: "Completed",
+        className: "bg-slate-100 text-slate-700 border border-slate-200",
+      };
+    default:
+      return {
+        label: "Active",
+        className: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+      };
+  }
+}
 
 function getInitials(name: string) {
   return name
@@ -58,6 +113,8 @@ export default function AppointmentClient({
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [state, formAction, isPending] = useActionState(createAppointmentAction, initialState);
+  const [cancelState, cancelFormAction, isCancelPending] = useActionState(cancelAppointmentByPhoneAction, cancelInitialState);
+  const [lookupState, lookupFormAction, isLookupPending] = useActionState(lookupAppointmentsByPhoneAction, lookupInitialState);
 
   const availableSpecialists = selectedService
     ? specialists.filter((specialist) =>
@@ -105,6 +162,29 @@ export default function AppointmentClient({
       : null,
     selectedSlot ? { label: t("appointment", "time", lang), value: `${selectedSlot.startTime} - ${selectedSlot.endTime}` } : null,
   ].filter(Boolean) as { label: string; value: string }[];
+
+  const assurancePoints = [
+    lang === "tr" ? "Uygun saatler anlik musaitlik mantigiyla listelenir." : "Available slots are listed against live availability rules.",
+    lang === "tr" ? "Form gonderimi bot korumasi ve hiz limiti ile korunur." : "Booking requests are protected with bot checks and rate limiting.",
+    lang === "tr" ? "Iptal ve goruntuleme akislari ad-soyad ve telefon eslesmesiyle calisir." : "Lookup and cancellation flows require both name and phone matching.",
+  ];
+
+  const supportHighlights = [
+    {
+      title: lang === "tr" ? "Planli akis" : "Structured flow",
+      text:
+        lang === "tr"
+          ? "Hizmet, uzman, tarih ve bilgi girisi tek ekranda dagilmadan tamamlanir."
+          : "Service, specialist, date, and patient details are completed in one focused flow.",
+    },
+    {
+      title: lang === "tr" ? "Guvenli istek yapisi" : "Protected request flow",
+      text:
+        lang === "tr"
+          ? "Form islemleri bot korumasi, hiz siniri ve kontrollu hata davranisiyla guclendirilir."
+          : "Form actions are reinforced with bot checks, rate limits, and controlled failure handling.",
+    },
+  ];
 
   if (state.success) {
     return (
@@ -404,6 +484,164 @@ export default function AppointmentClient({
                       : "Available time slots are listed automatically based on the specialist's schedule."}
                   </p>
                 </div>
+
+                <div className="mt-5 space-y-3 rounded-[1.5rem] border border-[rgba(217,210,200,0.82)] bg-[rgba(248,246,241,0.72)] p-4">
+                  {assurancePoints.map((item) => (
+                    <div key={item} className="flex items-start gap-3 text-sm leading-relaxed text-[color:var(--text-secondary)]">
+                      <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-[color:var(--accent-main)]" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="surface-panel p-6">
+                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
+                  {lang === "tr" ? "Neden Bu Akis Daha Guclu" : "Why This Flow Feels Stronger"}
+                </h3>
+                <div className="mt-4 space-y-4">
+                  {supportHighlights.map((item) => (
+                    <div key={item.title} className="rounded-[1.35rem] border border-[rgba(217,210,200,0.82)] bg-[rgba(251,250,247,0.9)] p-4">
+                      <div className="text-sm font-semibold uppercase tracking-[0.14em] text-[color:var(--accent-main)]">{item.title}</div>
+                      <p className="mt-2 text-sm leading-relaxed text-[color:var(--text-secondary)]">{item.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="surface-panel p-6">
+                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
+                  {lang === "tr" ? "Randevularimi Goruntule" : "View My Appointments"}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-[color:var(--text-secondary)]">
+                  {lang === "tr"
+                    ? "Ad-soyad ve telefon numaraniz ile yaklasan randevularinizi listeleyebilirsiniz. Robot dogrulamasi gereklidir."
+                    : "List your upcoming appointments with your full name and phone number. Bot verification is required."}
+                </p>
+
+                {lookupState.error ? (
+                  <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{lookupState.error}</div>
+                ) : null}
+
+                {lookupState.success && lookupState.message ? (
+                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                    {lookupState.message}
+                  </div>
+                ) : null}
+
+                <form
+                  action={(formData) => {
+                    startTransition(() => {
+                      void lookupFormAction(formData);
+                    });
+                  }}
+                  className="mt-5 space-y-4"
+                >
+                  <SpamProtectionFields />
+                  <input type="hidden" name="patientLanguage" value={lang.toUpperCase()} />
+
+                  <div>
+                    <label className="form-label">{t("appointment", "name", lang)} *</label>
+                    <input name="patientName" className="form-input" required minLength={2} />
+                  </div>
+
+                  <div>
+                    <label className="form-label">{t("appointment", "phone", lang)} *</label>
+                    <input name="patientPhone" type="tel" className="form-input" required />
+                  </div>
+
+                  <button type="submit" disabled={isLookupPending} className="btn-ghost w-full">
+                    {isLookupPending
+                      ? t("common", "loading", lang)
+                      : lang === "tr"
+                        ? "Telefon ile Randevularimi Getir"
+                        : "Find My Appointments"}
+                  </button>
+                </form>
+
+                {lookupState.success && lookupState.data?.length ? (
+                  <div className="mt-5 space-y-3">
+                    {lookupState.data.map((appointment) => (
+                      <div key={appointment.id} className="summary-row">
+                        <div>
+                          <div className="font-semibold text-[color:var(--text-primary)]">{appointment.serviceName}</div>
+                          <div className="mt-1 text-xs text-[color:var(--text-secondary)]">{appointment.specialistName}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-semibold text-[color:var(--text-primary)]">
+                            {appointment.date} / {appointment.startTime}
+                          </div>
+                          <div className="mt-2 flex justify-end">
+                            <span
+                              className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${getPublicStatusMeta(
+                                appointment.status,
+                                lang
+                              ).className}`}
+                            >
+                              {getPublicStatusMeta(appointment.status, lang).label}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="surface-panel p-6">
+                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
+                  {lang === "tr" ? "Randevu Iptali" : "Cancel Appointment"}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-[color:var(--text-secondary)]">
+                  {lang === "tr"
+                    ? "Ad-soyad, telefon numarasi ve randevu tarihiniz ile kayitli aktif randevunuzu iptal edebilirsiniz."
+                    : "Cancel your active appointment using your full name, phone number, and appointment date."}
+                </p>
+
+                {cancelState.error ? (
+                  <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{cancelState.error}</div>
+                ) : null}
+
+                {cancelState.success && cancelState.message ? (
+                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                    {cancelState.message}
+                  </div>
+                ) : null}
+
+                <form
+                  action={(formData) => {
+                    startTransition(() => {
+                      void cancelFormAction(formData);
+                    });
+                  }}
+                  className="mt-5 space-y-4"
+                >
+                  <SpamProtectionFields />
+                  <input type="hidden" name="patientLanguage" value={lang.toUpperCase()} />
+
+                  <div>
+                    <label className="form-label">{t("appointment", "name", lang)} *</label>
+                    <input name="patientName" className="form-input" required minLength={2} />
+                  </div>
+
+                  <div>
+                    <label className="form-label">{t("appointment", "phone", lang)} *</label>
+                    <input name="patientPhone" type="tel" className="form-input" required />
+                  </div>
+
+                  <div>
+                    <label className="form-label">{t("appointment", "date", lang)} *</label>
+                    <input name="date" type="date" min={today} className="form-input" required />
+                  </div>
+
+                  <button type="submit" disabled={isCancelPending} className="btn-outline w-full">
+                    {isCancelPending
+                      ? t("common", "loading", lang)
+                      : lang === "tr"
+                        ? "Telefon ile Randevu Iptal Et"
+                        : "Cancel by Phone"}
+                  </button>
+                </form>
               </div>
             </div>
           </div>
