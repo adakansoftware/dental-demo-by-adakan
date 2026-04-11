@@ -2,6 +2,10 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { buildIpRateLimitKeyFromHeaders, enforceRateLimitByKey } from "@/lib/security";
 
+function buildRequestId() {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 function isPrivateOrLocalHostname(hostname: string) {
   return (
     hostname === "localhost" ||
@@ -77,6 +81,10 @@ function getRateLimitPolicy(request: NextRequest) {
 }
 
 export function middleware(request: NextRequest) {
+  if (request.method === "TRACE" || request.method === "TRACK") {
+    return new NextResponse(null, { status: 405 });
+  }
+
   const isStaticAsset =
     request.nextUrl.pathname.startsWith("/_next") ||
     request.nextUrl.pathname.startsWith("/images") ||
@@ -88,6 +96,7 @@ export function middleware(request: NextRequest) {
     const clientKey = buildIpRateLimitKeyFromHeaders(request.headers);
     const policy = getRateLimitPolicy(request);
     const allowed = enforceRateLimitByKey(policy, clientKey);
+    const requestId = buildRequestId();
 
     if (!allowed) {
       return NextResponse.json(
@@ -97,6 +106,7 @@ export function middleware(request: NextRequest) {
           headers: {
             "Retry-After": "60",
             "Cache-Control": "no-store",
+            "X-Request-Id": requestId,
           },
         }
       );
@@ -104,6 +114,7 @@ export function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.next();
+  response.headers.set("X-Request-Id", buildRequestId());
 
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("X-Content-Type-Options", "nosniff");

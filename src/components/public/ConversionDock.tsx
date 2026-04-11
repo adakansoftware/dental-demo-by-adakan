@@ -12,10 +12,12 @@ export default function ConversionDock({ settings }: Props) {
   const { lang } = useLang();
   const phoneHref = `tel:${settings.phone.replace(/\s/g, "")}`;
   const whatsappHref = settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/\D/g, "")}` : null;
+  const helperText = lang === "tr" ? "Hizli iletisim ve randevu" : "Quick contact and booking";
 
   return (
     <div className="conversion-dock">
       <div className="conversion-dock__inner">
+        <div className="conversion-dock__meta">{helperText}</div>
         <a
           href={whatsappHref ?? phoneHref}
           className="conversion-dock__secondary"

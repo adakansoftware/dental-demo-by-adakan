@@ -60,13 +60,15 @@ export default function HomeClient({ settings, services, specialists, reviews }:
   const visibleReviews = reviews.filter((review) => review.isApproved && review.isVisible).slice(0, 3);
 
   const heroTitle =
-    lang === "tr"
+    (lang === "tr" ? settings.heroTitleTr : settings.heroTitleEn) ||
+    (lang === "tr"
       ? "Sakin, acik ve guven veren bir klinik deneyimi"
-      : "A calm, clear, and reassuring clinic experience";
+      : "A calm, clear, and reassuring clinic experience");
   const heroSubtitle =
-    lang === "tr"
+    (lang === "tr" ? settings.heroSubtitleTr : settings.heroSubtitleEn) ||
+    (lang === "tr"
       ? "Tedaviler, uzman profilleri ve randevu sureci; gereksiz gosteris olmadan, karar vermeyi kolaylastiran rafine bir duzende sunulur."
-      : "Treatments, specialist profiles, and the booking flow are presented in a refined structure that supports confident decision-making.";
+      : "Treatments, specialist profiles, and the booking flow are presented in a refined structure that supports confident decision-making.");
 
   const heroMetrics = [
     {
@@ -143,6 +145,7 @@ export default function HomeClient({ settings, services, specialists, reviews }:
           <div className="grid gap-12 xl:grid-cols-[1fr_0.96fr] xl:items-center">
             <div className="max-w-3xl">
               <div className="reveal-up">
+                <div className="section-kicker">{lang === "tr" ? "Adakan Klinigi" : "Adakan Clinic"}</div>
                 <h1 className="text-[2.9rem] font-semibold leading-[1.01] text-[color:var(--text-primary)] md:text-[4.7rem]" style={{ letterSpacing: "-0.065em" }}>
                   {heroTitle}
                 </h1>

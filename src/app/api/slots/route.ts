@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAvailableSlots } from "@/lib/slots";
+import { compareDateStrings, getTodayDateInTurkey } from "@/lib/date";
 import { buildRequestFingerprintFromHeaders, enforceRateLimitByKey } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
@@ -11,6 +12,7 @@ const slotsQuerySchema = z.object({
 });
 
 export async function GET(request: Request) {
+  const requestId = request.headers.get("x-request-id") ?? "slots-api";
   const { searchParams } = new URL(request.url);
   const parsed = slotsQuerySchema.safeParse({
     specialistId: searchParams.get("specialistId"),
@@ -20,7 +22,26 @@ export async function GET(request: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: parsed.error.errors[0]?.message ?? "specialistId and date required" },
-      { status: 400 }
+      {
+        status: 400,
+        headers: {
+          "Cache-Control": "no-store",
+          "X-Request-Id": requestId,
+        },
+      }
+    );
+  }
+
+  if (compareDateStrings(parsed.data.date, getTodayDateInTurkey()) < 0) {
+    return NextResponse.json(
+      { error: "Past dates are not allowed" },
+      {
+        status: 400,
+        headers: {
+          "Cache-Control": "no-store",
+          "X-Request-Id": requestId,
+        },
+      }
     );
   }
 
@@ -35,7 +56,17 @@ export async function GET(request: Request) {
   );
 
   if (!allowed) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.json(
+      { error: "Too many requests" },
+      {
+        status: 429,
+        headers: {
+          "Cache-Control": "no-store",
+          "Retry-After": "60",
+          "X-Request-Id": requestId,
+        },
+      }
+    );
   }
 
   try {
@@ -44,6 +75,7 @@ export async function GET(request: Request) {
       headers: {
         "Cache-Control": "no-store",
         Vary: "Origin",
+        "X-Request-Id": requestId,
       },
     });
   } catch {
@@ -53,6 +85,7 @@ export async function GET(request: Request) {
         status: 400,
         headers: {
           "Cache-Control": "no-store",
+          "X-Request-Id": requestId,
         },
       }
     );

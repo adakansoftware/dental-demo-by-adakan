@@ -85,7 +85,7 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
                 />
               ) : (
                 <div className="grid h-10 w-10 place-items-center rounded-2xl border border-[rgba(217,210,200,0.9)] bg-[rgba(239,233,225,0.82)] text-sm font-semibold text-[color:var(--accent-main)]">
-                  DC
+                  AD
                 </div>
               )}
               <div className="min-w-0">
@@ -141,6 +141,8 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
                 className="rounded-2xl border border-[rgba(217,210,200,0.9)] p-2.5 text-[color:var(--text-primary)] lg:hidden"
                 onClick={() => setOpen((value) => !value)}
                 aria-label="Menu"
+                aria-expanded={open}
+                aria-controls="mobile-nav-panel"
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {open ? (
@@ -155,7 +157,7 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
         </div>
 
         {open ? (
-          <div className="premium-surface mt-3 p-4 lg:hidden">
+          <div id="mobile-nav-panel" className="premium-surface mt-3 p-4 lg:hidden">
             <div className="mb-4 grid gap-3 rounded-2xl bg-[rgba(248,246,241,0.88)] p-4 text-sm text-[color:var(--text-secondary)]">
               {infoItems.map((item) => (
                 <div key={item.label}>

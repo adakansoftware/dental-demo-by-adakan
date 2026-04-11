@@ -42,6 +42,15 @@ a {
   text-decoration: none;
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgba(140, 129, 117, 0.6);
+  outline-offset: 3px;
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -463,6 +472,7 @@ select {
 
 .conversion-dock__inner {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   width: min(100%, 32rem);
   margin: 0 auto;
@@ -471,6 +481,16 @@ select {
   border-radius: 1.5rem;
   background: rgba(251, 250, 247, 0.97);
   box-shadow: var(--shadow-soft);
+}
+
+.conversion-dock__meta {
+  width: 100%;
+  padding: 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-main);
 }
 
 .conversion-dock__secondary,
