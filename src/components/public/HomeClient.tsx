@@ -81,41 +81,6 @@ export default function HomeClient({ settings, services, specialists, reviews }:
       ? "Muayene, koruyucu bakim, estetik uygulamalar ve tedavi surecleri hakkinda ihtiyaciniz olan bilgilere kolayca ulasabilir, uygun tarihe randevu olusturabilirsiniz."
       : "You can easily review examinations, preventive care, aesthetic procedures, and treatment options, then book an appointment for a suitable date.");
 
-  const heroMetrics = [
-    {
-      title: lang === "tr" ? "Uzman hekim profilleri" : "Specialist profiles",
-      value: `${specialists.length}+`,
-      note: lang === "tr" ? "Deneyim ve ilgi alanlariyla" : "With experience and focus areas",
-    },
-    {
-      title: lang === "tr" ? "Acik tedavi anlatimi" : "Clear treatment guidance",
-      value: `${services.length}+`,
-      note: lang === "tr" ? "Islem kapsami ve sure bilgisi" : "Procedure scope and duration",
-    },
-    {
-      title: lang === "tr" ? "Kolay randevu sureci" : "Easy booking flow",
-      value: lang === "tr" ? "4 Adim" : "4 Steps",
-      note: lang === "tr" ? "Kisa ve anlasilir basvuru" : "Short and guided request flow",
-    },
-  ];
-
-  const premiumSignals = [
-    {
-      eyebrow: lang === "tr" ? "Planli deneyim" : "Planned experience",
-      text:
-        lang === "tr"
-          ? "Tedavi sureciniz; ilk bilgilendirmeden muayene planlamasina kadar duzenli ve hasta odakli bir yapiyla ilerler."
-          : "Your care journey is structured clearly from first information to appointment planning.",
-    },
-    {
-      eyebrow: lang === "tr" ? "Hasta guveni" : "Patient trust",
-      text:
-        lang === "tr"
-          ? "Iletisim ve randevu adimlari; guvenli basvuru akisi ve kontrollu veri yonetimi ile korunur."
-          : "Contact and appointment flows are supported by secure request handling and controlled data management.",
-    },
-  ];
-
   const trustStrip = [
     lang === "tr" ? "Steril ortam" : "Sterile environment",
     lang === "tr" ? "Uzman ekip" : "Specialist team",
@@ -182,11 +147,11 @@ export default function HomeClient({ settings, services, specialists, reviews }:
               />
             </div>
             <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,17,15,0.68)_0%,rgba(17,17,15,0.48)_32%,rgba(17,17,15,0.16)_58%,rgba(17,17,15,0.28)_100%)]" />
-            <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[rgba(14,14,12,0.5)] to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[rgba(14,14,12,0.38)] to-transparent" />
 
-            <div className="relative min-h-[680px] px-6 py-8 md:px-10 md:py-10 xl:px-14 xl:py-14">
-              <div className="grid min-h-[600px] gap-10 xl:grid-cols-[1.05fr_0.95fr]">
-                <div className="flex max-w-3xl flex-col justify-between">
+            <div className="relative min-h-[540px] px-6 py-8 md:px-10 md:py-10 xl:px-14 xl:py-14">
+              <div className="grid min-h-[460px] gap-10 xl:grid-cols-[1.12fr_0.88fr] xl:items-end">
+                <div className="flex max-w-3xl flex-col justify-center">
                   <div className="reveal-up">
                     <div className="section-kicker border-white/20 bg-white/10 text-white">
                       {lang === "tr" ? "Adakan Klinigi" : "Adakan Clinic"}
@@ -205,44 +170,22 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                         {lang === "tr" ? "Tedavileri Incele" : "Explore Treatments"}
                       </Link>
                     </div>
-
-                    <div className="mt-8 grid gap-4 md:grid-cols-2">
-                      {premiumSignals.map((item) => (
-                        <div key={item.eyebrow} className="rounded-[1.5rem] border border-white/16 bg-[rgba(255,255,255,0.12)] p-5 backdrop-blur-sm">
-                          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/72">{item.eyebrow}</div>
-                          <p className="mt-3 text-sm leading-relaxed text-white/82">{item.text}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-10 grid gap-4 md:grid-cols-3">
-                    {heroMetrics.map((item, index) => (
-                      <div
-                        key={item.title}
-                        className={`rounded-[1.6rem] border border-white/16 bg-[rgba(255,255,255,0.12)] p-5 backdrop-blur-sm reveal-up reveal-delay-${Math.min(index + 1, 3)}`}
-                      >
-                        <div className="text-3xl font-semibold tracking-[-0.05em] text-white">{item.value}</div>
-                        <div className="mt-3 text-sm font-medium leading-relaxed text-white">{item.title}</div>
-                        <div className="mt-2 text-sm leading-relaxed text-white/72">{item.note}</div>
-                      </div>
-                    ))}
                   </div>
                 </div>
 
-                <div className="flex items-end justify-end">
-                  <div className="w-full max-w-md rounded-[1.9rem] border border-white/18 bg-[rgba(255,255,255,0.14)] p-6 backdrop-blur-md xl:mb-2">
+                <div className="flex items-end justify-end xl:justify-center">
+                  <div className="w-full max-w-[20rem] rounded-[1.5rem] border border-white/16 bg-[rgba(255,255,255,0.12)] p-5 backdrop-blur-md xl:mb-2">
                     <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/65">
                       {lang === "tr" ? "Klinik Bilgisi" : "Clinic Info"}
                     </div>
-                    <div className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-white">{clinicName}</div>
-                    <p className="mt-3 text-sm leading-relaxed text-white/80">{address}</p>
-                    <div className="mt-6 flex flex-wrap gap-3">
-                      <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="btn-outline border-white/16 bg-white/10 text-white hover:border-white/26 hover:bg-white/18">
+                    <div className="mt-3 text-[2rem] font-semibold tracking-[-0.05em] text-white">{clinicName}</div>
+                    <p className="mt-2 text-sm leading-relaxed text-white/78">{address}</p>
+                    <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                      <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="btn-outline border-white/14 bg-white/10 text-white hover:border-white/24 hover:bg-white/16">
                         {settings.phone}
                       </a>
-                      <Link href="/contact" className="btn-outline border-white/16 bg-white/10 text-white hover:border-white/26 hover:bg-white/18">
-                        {lang === "tr" ? "Konum ve Iletisim" : "Location and Contact"}
+                      <Link href="/contact" className="btn-outline border-white/14 bg-white/10 text-white hover:border-white/24 hover:bg-white/16">
+                        {lang === "tr" ? "Iletisim" : "Contact"}
                       </Link>
                     </div>
                   </div>
