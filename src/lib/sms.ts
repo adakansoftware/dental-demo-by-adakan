@@ -22,7 +22,8 @@ export function buildConfirmationMessage(
   if (lang === "EN") {
     return `Dear ${patientName}, your appointment at ${clinicName} on ${date} at ${time} has been confirmed. For info: ${phone}`;
   }
-  return `Sayın ${patientName}, ${clinicName} kliniğinde ${date} tarihinde saat ${time}'deki randevunuz onaylanmıştır. Bilgi: ${phone}`;
+
+  return `Sayin ${patientName}, ${clinicName} kliniginde ${date} tarihinde saat ${time}'deki randevunuz onaylanmistir. Bilgi: ${phone}`;
 }
 
 export function buildReminderMessage(
@@ -36,7 +37,8 @@ export function buildReminderMessage(
   if (lang === "EN") {
     return `Dear ${patientName}, this is a reminder for your appointment at ${clinicName} tomorrow (${date}) at ${time}. For info: ${phone}`;
   }
-  return `Sayın ${patientName}, ${clinicName} kliniğindeki yarınki randevunuzu (${date} - ${time}) hatırlatmak istedik. Bilgi: ${phone}`;
+
+  return `Sayin ${patientName}, ${clinicName} klinigindeki yarinki randevunuzu (${date} - ${time}) hatirlatmak istedik. Bilgi: ${phone}`;
 }
 
 export function buildCancellationMessage(
@@ -50,7 +52,8 @@ export function buildCancellationMessage(
   if (lang === "EN") {
     return `Dear ${patientName}, your appointment at ${clinicName} on ${date} at ${time} has been cancelled. For info: ${phone}`;
   }
-  return `Sayın ${patientName}, ${clinicName} kliniğinde ${date} tarihinde saat ${time}'deki randevunuz iptal edilmiştir. Bilgi: ${phone}`;
+
+  return `Sayin ${patientName}, ${clinicName} kliniginde ${date} tarihinde saat ${time}'deki randevunuz iptal edilmistir. Bilgi: ${phone}`;
 }
 
 async function sendNetgsm(phone: string, message: string): Promise<string> {
@@ -103,6 +106,7 @@ export async function sendSms(options: SmsOptions): Promise<void> {
         phone,
       },
     });
+
     await prisma.smsLog.update({
       where: { id: log.id },
       data: { status: "SENT", providerRef: "disabled" },
@@ -116,12 +120,13 @@ export async function sendSms(options: SmsOptions): Promise<void> {
       where: { id: log.id },
       data: { status: "SENT", providerRef: ref },
     });
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     await prisma.smsLog.update({
       where: { id: log.id },
       data: { status: "FAILED", errorMessage },
     });
+
     logEvent({
       level: "error",
       event: "sms_send_failed",
