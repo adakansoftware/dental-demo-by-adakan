@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import { hasConflictingActiveAppointment } from "@/lib/appointment-conflicts";
 import { checkSlotAvailabilityWithDb, getAvailableSlots } from "@/lib/slots";
 import { verifyTurnstileToken } from "@/lib/bot-protection";
 import { getSiteSettings } from "@/lib/settings";
@@ -15,6 +16,7 @@ import type { ActionResult, TimeSlot } from "@/types";
 
 const SLOT_UNAVAILABLE_ERROR = "SLOT_UNAVAILABLE_ERROR";
 const APPOINTMENT_CANCEL_CONFLICT = "APPOINTMENT_CANCEL_CONFLICT";
+const APPOINTMENT_STATUS_CONFLICT = "APPOINTMENT_STATUS_CONFLICT";
 
 function normalizePhoneForComparison(phone: string) {
   return phone.replace(/\D/g, "");
@@ -233,14 +235,46 @@ export async function updateAppointmentStatusAction(
     return { success: false, error: "Randevu bulunamadi" };
   }
 
-  await prisma.appointment.update({
-    where: { id: parsed.data.id },
-    data: {
-      status: parsed.data.status,
-      adminNote: parsed.data.adminNote ?? appointment.adminNote,
-    },
-  });
+  try {
+    await prisma.$transaction(async (tx) => {
+      const nextStatus = parsed.data.status;
 
+      if (nextStatus === "PENDING" || nextStatus === "CONFIRMED") {
+        const date = dateToIsoDate(appointment.date);
+        const lockKey = `appointment:${appointment.specialistId}:${date}:${appointment.startTime}:${appointment.endTime}`;
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
+
+        const hasConflict = await hasConflictingActiveAppointment(tx, {
+          specialistId: appointment.specialistId,
+          date,
+          startTime: appointment.startTime,
+          endTime: appointment.endTime,
+          excludeAppointmentId: appointment.id,
+        });
+
+        if (hasConflict) {
+          throw new Error(APPOINTMENT_STATUS_CONFLICT);
+        }
+      }
+
+      await tx.appointment.update({
+        where: { id: parsed.data.id },
+        data: {
+          status: parsed.data.status,
+          adminNote: parsed.data.adminNote ?? appointment.adminNote,
+        },
+      });
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === APPOINTMENT_STATUS_CONFLICT) {
+      return {
+        success: false,
+        error: "Bu uzman icin ayni tarih ve saatte baska aktif bir randevu zaten bulunuyor.",
+      };
+    }
+
+    throw error;
+  }
   if (parsed.data.status === "CANCELLED" && appointment.status !== "CANCELLED") {
     void (async () => {
       try {

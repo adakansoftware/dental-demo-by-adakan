@@ -9,6 +9,7 @@ import {
   getTomorrowDateInTurkey,
   getUtcRangeForTurkeyDate,
 } from "../src/lib/date.ts";
+import { isStatusBlockingSlot, timesOverlap } from "../src/lib/appointment-conflicts.ts";
 import { getEnv, resetEnvCacheForTests } from "../src/lib/env.ts";
 import {
   buildRequestFingerprintFromHeaders,
@@ -130,6 +131,19 @@ run("buildRequestFingerprintFromHeaders includes IP and user agent", () => {
 
 run("getDurationMs never returns negative values", () => {
   assert.equal(getDurationMs(Date.now() + 1000), 0);
+});
+
+run("timesOverlap detects overlapping slots but allows edge-aligned slots", () => {
+  assert.equal(timesOverlap("09:00", "09:30", "09:15", "09:45"), true);
+  assert.equal(timesOverlap("09:00", "09:30", "09:30", "10:00"), false);
+  assert.equal(timesOverlap("10:00", "10:30", "09:30", "10:00"), false);
+});
+
+run("isStatusBlockingSlot only blocks active booking states", () => {
+  assert.equal(isStatusBlockingSlot("PENDING"), true);
+  assert.equal(isStatusBlockingSlot("CONFIRMED"), true);
+  assert.equal(isStatusBlockingSlot("CANCELLED"), false);
+  assert.equal(isStatusBlockingSlot("COMPLETED"), false);
 });
 
 
