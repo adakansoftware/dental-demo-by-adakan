@@ -163,11 +163,13 @@ run("buildHealthSummary returns warn when configuration is incomplete", () => {
     hasCanonicalUrl: false,
     turnstileConfigured: false,
     cronConfigured: true,
+    dbHardeningConfigured: false,
   });
 
   assert.equal(summary.status, "warn");
   assert.equal(summary.checks.some((check) => check.key === "database" && check.ok), true);
   assert.equal(summary.checks.some((check) => check.key === "canonical_url" && check.ok === false), true);
+  assert.equal(summary.checks.some((check) => check.key === "db_hardening" && check.ok === false), true);
 });
 
 run("buildHealthSummary returns error when database is down", () => {
@@ -178,6 +180,7 @@ run("buildHealthSummary returns error when database is down", () => {
     hasCanonicalUrl: true,
     turnstileConfigured: true,
     cronConfigured: true,
+    dbHardeningConfigured: true,
   });
 
   assert.equal(summary.status, "error");

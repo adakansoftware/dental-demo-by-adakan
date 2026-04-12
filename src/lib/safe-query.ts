@@ -27,12 +27,13 @@ export async function safeQuery<T>(
   const timeoutMs = options.timeoutMs ?? 2500;
   const shouldLog = options.shouldLog ?? true;
   const logTimeouts = options.logTimeouts ?? false;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   try {
     return await Promise.race([
       query(),
       new Promise<T>((_, reject) => {
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           reject(new Error(`Timed out after ${timeoutMs}ms`));
         }, timeoutMs);
       }),
@@ -47,5 +48,9 @@ export async function safeQuery<T>(
       }
     }
     return fallback;
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
   }
 }

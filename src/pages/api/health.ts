@@ -32,6 +32,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     await prisma.$queryRaw`SELECT 1`;
+    const hardeningRows = await prisma.$queryRaw<Array<{ indexname: string }>>`
+      SELECT indexname
+      FROM pg_indexes
+      WHERE schemaname = 'public'
+        AND tablename = 'Appointment'
+        AND indexname = 'appointment_active_slot_unique'
+    `;
     const env = getOptionalEnv();
     const envIssues = getEnvIssues();
     const isEnvReady = envIssues.length === 0;
@@ -42,6 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const turnstileConfigured = Boolean(env.TURNSTILE_SECRET_KEY && env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
     const cronConfigured = Boolean(env.CRON_SECRET);
     const smsEnabled = env.SMS_ENABLED === "true";
+    const dbHardeningConfigured = hardeningRows.length > 0;
     const summary = buildHealthSummary({
       databaseOk: true,
       envIssues,
@@ -49,6 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       hasCanonicalUrl,
       turnstileConfigured,
       cronConfigured,
+      dbHardeningConfigured,
     });
 
     logEvent({
@@ -63,6 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         hasCanonicalUrl,
         turnstileConfigured,
         cronConfigured,
+        dbHardeningConfigured,
         healthStatus: summary.status,
       },
     });
@@ -97,6 +107,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       hasCanonicalUrl: false,
       turnstileConfigured: false,
       cronConfigured: false,
+      dbHardeningConfigured: false,
     });
 
     logEvent({

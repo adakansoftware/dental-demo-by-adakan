@@ -16,6 +16,7 @@ export function buildHealthSummary(options: {
   hasCanonicalUrl: boolean;
   turnstileConfigured: boolean;
   cronConfigured: boolean;
+  dbHardeningConfigured?: boolean;
 }) {
   const checks: HealthCheckItem[] = [
     {
@@ -42,6 +43,14 @@ export function buildHealthSummary(options: {
       key: "cron_secret",
       ok: options.cronConfigured,
       detail: options.cronConfigured ? "Cron secret is configured." : "Cron secret is not configured.",
+    },
+    {
+      key: "db_hardening",
+      ok: options.dbHardeningConfigured ?? false,
+      detail:
+        options.dbHardeningConfigured
+          ? "Database hardening index is present."
+          : "Database hardening index is missing.",
     },
     {
       key: "sms",

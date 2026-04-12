@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getEnv } from "@/lib/env";
+import { logEvent } from "@/lib/observability";
 
 const SMS_ENABLED = getEnv().SMS_ENABLED === "true";
 
@@ -93,7 +94,15 @@ export async function sendSms(options: SmsOptions): Promise<void> {
   });
 
   if (!SMS_ENABLED) {
-    console.log(`[SMS DISABLED] To: ${phone}, Message: ${message}`);
+    logEvent({
+      event: "sms_skipped_disabled",
+      route: "lib:sms",
+      meta: {
+        appointmentId,
+        type,
+        phone,
+      },
+    });
     await prisma.smsLog.update({
       where: { id: log.id },
       data: { status: "SENT", providerRef: "disabled" },
@@ -113,6 +122,16 @@ export async function sendSms(options: SmsOptions): Promise<void> {
       where: { id: log.id },
       data: { status: "FAILED", errorMessage },
     });
-    console.error("SMS send failed:", errorMessage);
+    logEvent({
+      level: "error",
+      event: "sms_send_failed",
+      route: "lib:sms",
+      message: errorMessage,
+      meta: {
+        appointmentId,
+        type,
+        phone,
+      },
+    });
   }
 }
