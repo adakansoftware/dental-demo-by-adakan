@@ -17,12 +17,9 @@ interface Props {
 }
 
 const VISUALS = {
-  clinicChair:
-    "https://images.pexels.com/photos/7422520/pexels-photo-7422520.jpeg?cs=srgb&dl=pexels-emerickalil-7422520.jpg&fm=jpg",
-  doctorMale:
-    "https://images.pexels.com/photos/14235194/pexels-photo-14235194.jpeg?cs=srgb&dl=pexels-filipgrobgaard-14235194.jpg&fm=jpg",
-  doctorFemale:
-    "https://images.pexels.com/photos/12917343/pexels-photo-12917343.jpeg?cs=srgb&dl=pexels-iamluisao-12917343.jpg&fm=jpg",
+  clinicChair: "/images/editorial/clinic-interior.jpg",
+  doctorMale: "/images/editorial/doctor-male.jpg",
+  doctorFemale: "/images/editorial/doctor-female.jpg",
 } as const;
 
 function getInitials(name: string) {
