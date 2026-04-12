@@ -9,22 +9,17 @@ import { getSiteSettings } from "@/lib/settings";
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  try {
-    const specialists = await safeQuery(
-      "specialist static params",
-      () =>
-        prisma.specialist.findMany({
-          where: { isActive: true },
-          select: { slug: true },
-        }),
-      []
-    );
+  const specialists = await safeQuery(
+    "specialist static params",
+    () =>
+      prisma.specialist.findMany({
+        where: { isActive: true },
+        select: { slug: true },
+      }),
+    []
+  );
 
-    return specialists.map((specialist) => ({ slug: specialist.slug }));
-  } catch (error) {
-    console.error("Failed to generate specialist static params:", error);
-    return [];
-  }
+  return specialists.map((specialist) => ({ slug: specialist.slug }));
 }
 
 export async function generateMetadata({

@@ -132,11 +132,14 @@ async function main() {
     const health = await request("/api/health");
     assert(health.status === 200, `/api/health expected 200, got ${health.status}`);
     assert(health.text.includes('"ok":true'), "/api/health did not report ok");
+    assert(health.text.includes('"status":"'), "/api/health did not report overall status");
+    assert(health.text.includes('"checks":['), "/api/health did not include checks");
     assert(health.text.includes('"appUrlConfigured":true'), "/api/health did not report appUrlConfigured");
     assert(health.text.includes('"envReady":'), "/api/health did not report envReady");
     assert(health.text.includes('"envWarnings":'), "/api/health did not report envWarnings");
     assertHeader(health, "x-content-type-options", "nosniff");
     assertHeader(health, "x-robots-tag", "noindex, nofollow");
+    assert(health.headers.get("x-health-status"), "/api/health did not include x-health-status header");
 
     const home = await request("/");
     assertHeader(home, "x-frame-options", "DENY");
@@ -181,6 +184,7 @@ async function main() {
 
     const validSlots = await request(`/api/slots?specialistId=${encodeURIComponent(specialist.id)}&date=${slotDate}`);
     assert(validSlots.status === 200, `/api/slots valid request expected 200, got ${validSlots.status}`);
+    assert(validSlots.headers.get("x-slots-cache"), "/api/slots did not include x-slots-cache header");
 
     const cronWrongSecret = await request("/api/cron/reminders", {
       headers: { authorization: "Bearer definitely-wrong" },

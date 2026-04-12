@@ -1,123 +1,149 @@
-# Dental Clinic White-Label System
+# Adakan Dental Demo
 
-Production-ready Next.js 15 white-label dental clinic booking & admin system built for Turkish dental clinics.
+Production-grade dental clinic demo and core booking system built with Next.js 15, Prisma, and PostgreSQL.
 
-## Tech Stack
+## Stack
 
-- **Next.js 15** (App Router, Server Actions, TypeScript strict)
-- **PostgreSQL + Prisma ORM** (Neon recommended)
-- **Tailwind CSS**
-- **Vercel** deployment + Cron Jobs
+- Next.js 15
+- React 19
+- TypeScript strict mode
+- PostgreSQL + Prisma
+- Tailwind CSS
+- Vercel deployment
 
-## Quick Start
+## Core Capabilities
 
-### 1. Install dependencies
+- Public clinic website with services, specialists, reviews, FAQ, and contact
+- 4-step appointment booking flow
+- Appointment lookup and cancellation by full name + phone
+- Admin panel for appointments, services, specialists, FAQ, reviews, working hours, blocked slots, and settings
+- Bot protection, rate limiting, origin validation, request hardening, and observability
+- Operational health endpoint and smoke-test coverage
+
+## Local Setup
+
+### 1. Install
+
 ```bash
 npm install
 ```
 
-### 2. Set up environment
-```bash
-cp .env.example .env.local
-# Edit .env.local with your values
+### 2. Configure environment
+
+Create your `.env` or `.env.local` file and fill production-like values.
+
+Minimum required values:
+
+```env
+DATABASE_URL=postgresql://...
+DIRECT_URL=postgresql://...
+SESSION_SECRET=your-32-char-or-longer-secret
+NEXT_PUBLIC_APP_URL=https://your-domain.example
+SMS_ENABLED=false
 ```
 
-### 3. Database setup
-```bash
-npm run db:generate   # Generate Prisma client
-npm run db:push       # Push schema to database
-npm run db:seed       # Seed with demo data
+Recommended additional values:
+
+```env
+CRON_SECRET=your-strong-cron-secret
+NEXT_PUBLIC_SITE_URL=https://your-domain.example
+NEXTAUTH_URL=https://your-domain.example
+TURNSTILE_SECRET_KEY=...
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=...
 ```
 
-### 4. Run development server
+### 3. Prepare database
+
+```bash
+npm run db:generate
+npm run db:push
+npm run db:seed
+```
+
+### 4. Apply database hardening
+
+This step is important for production-quality slot protection:
+
+```bash
+npm run db:hardening
+```
+
+This adds:
+
+- Partial unique index for active appointment slot collisions
+- Lookup indexes for appointment queries
+
+### 5. Run locally
+
 ```bash
 npm run dev
 ```
 
-## Default Admin Credentials
-- **URL**: `/admin/login`
-- **Email**: `admin@klinik.com`
-- **Password**: `Admin123!`
+## Validation Commands
 
-⚠️ **Change this immediately after first login via Settings → Admin password**
+Run these before every production deploy:
 
-## Features
+```bash
+npm run lint
+npm run typecheck
+npm run test:unit
+npm run build
+npm run test:smoke
+```
 
-### Public Pages
-| Route | Description |
-|-------|-------------|
-| `/` | Homepage (hero, services, specialists, reviews, CTA) |
-| `/about` | About us page |
-| `/services` | Service list |
-| `/services/[slug]` | Service detail |
-| `/specialists` | Specialist list |
-| `/specialists/[slug]` | Specialist detail |
-| `/reviews` | Patient reviews + submit form |
-| `/faq` | FAQ accordion |
-| `/contact` | Contact form + map + working hours |
-| `/appointment` | 4-step appointment booking |
+## Health Endpoint
 
-### Admin Panel (`/admin`)
-| Route | Description |
-|-------|-------------|
-| `/admin` | Dashboard with stats |
-| `/admin/appointments` | Appointment list, filter, status update |
-| `/admin/services` | Service CRUD |
-| `/admin/specialists` | Specialist CRUD + service assignment |
-| `/admin/working-hours` | Per-specialist working hours |
-| `/admin/blocked-slots` | Block specific time slots |
-| `/admin/faq` | FAQ management |
-| `/admin/reviews` | Review moderation |
-| `/admin/contact-requests` | Inbox |
-| `/admin/settings` | All site settings (colors, texts, SEO, etc.) |
+`/api/health` now reports more than simple uptime.
 
-### Bilingual Support
-- TR / EN toggle in navbar
-- Stored in `localStorage`
-- All UI strings in `src/lib/translations.ts`
-- Service/specialist names stored bilingual in DB
+It includes:
 
-### SMS (Netgsm)
-- Set `SMS_ENABLED=true` in `.env.local` to activate
-- Confirmation SMS on new appointment
-- Cancellation SMS when appointment is cancelled
-- **Reminder cron**: runs daily at 06:00 UTC for next-day confirmed appointments
+- database connectivity
+- environment readiness
+- canonical URL presence
+- bot protection readiness
+- cron secret readiness
+- SMS mode
+- DB hardening index presence
 
-## Deployment (Vercel + Neon)
+Response also includes:
 
-1. Create a [Neon](https://neon.tech) PostgreSQL database
-2. Push to GitHub
-3. Import in [Vercel](https://vercel.com)
-4. Add environment variables (see `.env.example`)
-5. After deploy: `npx prisma db push && npx prisma db seed`
-6. Cron jobs are automatically configured via `vercel.json`
+- `status`: `ok`, `warn`, or `error`
+- `checks`: individual diagnostic items
+- `X-Health-Status` response header
 
-## Customization
+## Slots API
 
-Everything is configurable from the admin panel:
-- Clinic name (TR + EN)
-- Phone, WhatsApp, email, address
-- Primary & accent colors (live preview)
-- Logo & favicon URLs
-- Hero section text
-- About page content
-- SEO meta titles & descriptions
-- Social media links
-- Google Maps embed URL
+`/api/slots` now exposes operational cache visibility with:
 
-## Environment Variables
+- `X-Slots-Cache: HIT`
+- `X-Slots-Cache: MISS`
 
-| Variable | Description | Required |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | ✅ |
-| `SESSION_SECRET` | Min 32-char secret for sessions | ✅ |
-| `SMS_ENABLED` | `true` or `false` | ✅ |
-| `NETGSM_USERNAME` | Netgsm account username | SMS only |
-| `NETGSM_PASSWORD` | Netgsm account password | SMS only |
-| `NETGSM_HEADER` | SMS sender header (max 11 chars) | SMS only |
-| `CRON_SECRET` | Bearer token for cron endpoint | Recommended |
-| `NEXT_PUBLIC_APP_URL` | Full production URL | Recommended |
+This helps smoke tests and live diagnostics.
 
-## License
+## Default Admin Login
 
-MIT — free to use, modify and deploy for any dental clinic.
+- URL: `/admin/login`
+- Email: `admin@klinik.com`
+- Password: `Admin123!`
+
+Change these immediately in a real client deployment.
+
+## Production Release Checklist
+
+Use this order for a real release:
+
+1. Set all production environment variables in Vercel.
+2. Confirm `NEXT_PUBLIC_APP_URL` and canonical domain are correct.
+3. Run `npm run db:push` against the production database.
+4. Run `npm run db:seed` only if demo data is intended.
+5. Run `npm run db:hardening`.
+6. Deploy to Vercel.
+7. Verify `/api/health` returns `ok` or expected `warn` state.
+8. Verify `/api/slots` returns `X-Slots-Cache`.
+9. Run smoke tests against the deployed app if you have production-safe test data.
+10. Check admin login, booking flow, appointment lookup, and cancellation manually once.
+
+## Notes
+
+- The repository is ready for production-style deployment.
+- The remaining difference between demo and full production is mostly operational discipline, real client data, and real infrastructure verification.
