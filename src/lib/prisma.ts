@@ -7,13 +7,7 @@ const globalForPrisma = globalThis as unknown as {
 
 const env = getEnv();
 
-function getRuntimeDatabaseUrl() {
-  const databaseUrl = env.DATABASE_URL;
-
-  if (process.env.NODE_ENV === "production") {
-    return databaseUrl;
-  }
-
+function normalizeRuntimeDatabaseUrl(databaseUrl: string) {
   try {
     const url = new URL(databaseUrl);
     const host = url.hostname.toLowerCase();
@@ -23,13 +17,25 @@ function getRuntimeDatabaseUrl() {
 
     if (isManagedPostgres && sslMode === "require" && !sslAccept) {
       url.searchParams.set("sslaccept", "accept_invalid_certs");
-      return url.toString();
     }
+
+    if (process.platform === "win32" && process.env.NODE_ENV !== "production") {
+      const channelBinding = url.searchParams.get("channel_binding");
+
+      if (channelBinding === "require") {
+        url.searchParams.delete("channel_binding");
+        url.searchParams.set("channel_binding", "disable");
+      }
+    }
+
+    return url.toString();
   } catch {
     return databaseUrl;
   }
+}
 
-  return databaseUrl;
+function getRuntimeDatabaseUrl() {
+  return normalizeRuntimeDatabaseUrl(env.DATABASE_URL);
 }
 
 export const prisma =
