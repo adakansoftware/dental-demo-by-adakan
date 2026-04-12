@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getAvailableSlots } from "@/lib/slots";
+import { getAvailableSlotsWithMeta } from "@/lib/slots";
 import { buildApiHeaders, getRequestIdFromHeaders, isAllowedBrowserOrigin } from "@/lib/api-security";
 import { compareDateStrings, getTodayDateInTurkey } from "@/lib/date";
 import { buildRequestFingerprintFromHeaders, enforceRateLimitByKey } from "@/lib/security";
@@ -120,7 +120,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const slots = await getAvailableSlots(parsed.data.specialistId, parsed.data.date);
+    const { slots, cacheHit } = await getAvailableSlotsWithMeta(parsed.data.specialistId, parsed.data.date);
     const durationMs = getDurationMs(startedAt);
 
     logEvent({
@@ -131,12 +131,17 @@ export async function GET(request: Request) {
         specialistId: parsed.data.specialistId,
         date: parsed.data.date,
         slotCount: slots.length,
+        cacheHit,
         durationMs,
       },
     });
 
     return NextResponse.json(slots, {
-      headers: buildApiHeaders(requestId, { Vary: "Origin", "Server-Timing": `app;dur=${durationMs}` }),
+      headers: buildApiHeaders(requestId, {
+        Vary: "Origin",
+        "Server-Timing": `app;dur=${durationMs}`,
+        "X-Slots-Cache": cacheHit ? "HIT" : "MISS",
+      }),
     });
   } catch (error) {
     logEvent({

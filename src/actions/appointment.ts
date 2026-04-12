@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 import { hasConflictingActiveAppointment } from "@/lib/appointment-conflicts";
+import { canTransitionAppointmentStatus } from "@/lib/appointment-state";
 import { checkSlotAvailabilityWithDb, getAvailableSlots } from "@/lib/slots";
 import { verifyTurnstileToken } from "@/lib/bot-protection";
 import { getSiteSettings } from "@/lib/settings";
@@ -233,6 +234,13 @@ export async function updateAppointmentStatusAction(
 
   if (!appointment) {
     return { success: false, error: "Randevu bulunamadi" };
+  }
+
+  if (!canTransitionAppointmentStatus(appointment.status, parsed.data.status)) {
+    return {
+      success: false,
+      error: "Bu randevu durumu icin secilen gecis desteklenmiyor.",
+    };
   }
 
   try {

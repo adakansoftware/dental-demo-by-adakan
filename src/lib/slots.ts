@@ -10,6 +10,11 @@ import {
 import type { TimeSlot } from "@/types";
 
 type SlotDb = PrismaClient | Prisma.TransactionClient;
+export interface SlotsResult {
+  slots: TimeSlot[];
+  cacheHit: boolean;
+}
+
 const globalSlotCache = globalThis as typeof globalThis & {
   __adakanSlotsCache?: Map<string, { expiresAt: number; slots: TimeSlot[] }>;
 };
@@ -114,12 +119,20 @@ export async function getAvailableSlots(
   specialistId: string,
   dateStr: string
 ): Promise<TimeSlot[]> {
+  const result = await getAvailableSlotsWithMeta(specialistId, dateStr);
+  return result.slots;
+}
+
+export async function getAvailableSlotsWithMeta(
+  specialistId: string,
+  dateStr: string
+): Promise<SlotsResult> {
   const key = `${specialistId}:${dateStr}`;
   const now = Date.now();
   const cached = slotsCache.get(key);
 
   if (cached && cached.expiresAt > now) {
-    return cached.slots;
+    return { slots: cached.slots, cacheHit: true };
   }
 
   for (const [cacheKey, entry] of slotsCache.entries()) {
@@ -130,7 +143,7 @@ export async function getAvailableSlots(
 
   const slots = await getAvailableSlotsFromDb(prisma, specialistId, dateStr);
   slotsCache.set(key, { slots, expiresAt: now + SLOTS_CACHE_TTL_MS });
-  return slots;
+  return { slots, cacheHit: false };
 }
 
 export async function checkSlotAvailabilityWithDb(

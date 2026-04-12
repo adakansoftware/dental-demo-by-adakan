@@ -9,6 +9,8 @@ import {
   getTomorrowDateInTurkey,
   getUtcRangeForTurkeyDate,
 } from "../src/lib/date.ts";
+import { buildHealthSummary } from "../src/lib/health.ts";
+import { canTransitionAppointmentStatus, getAllowedAppointmentTransitions } from "../src/lib/appointment-state.ts";
 import { isStatusBlockingSlot, timesOverlap } from "../src/lib/appointment-conflicts.ts";
 import { getEnv, resetEnvCacheForTests } from "../src/lib/env.ts";
 import {
@@ -144,6 +146,41 @@ run("isStatusBlockingSlot only blocks active booking states", () => {
   assert.equal(isStatusBlockingSlot("CONFIRMED"), true);
   assert.equal(isStatusBlockingSlot("CANCELLED"), false);
   assert.equal(isStatusBlockingSlot("COMPLETED"), false);
+});
+
+run("appointment transition rules allow only supported status changes", () => {
+  assert.deepEqual(getAllowedAppointmentTransitions("PENDING"), ["CONFIRMED", "CANCELLED"]);
+  assert.equal(canTransitionAppointmentStatus("PENDING", "COMPLETED"), false);
+  assert.equal(canTransitionAppointmentStatus("CANCELLED", "CONFIRMED"), true);
+  assert.equal(canTransitionAppointmentStatus("COMPLETED", "PENDING"), false);
+});
+
+run("buildHealthSummary returns warn when configuration is incomplete", () => {
+  const summary = buildHealthSummary({
+    databaseOk: true,
+    envIssues: ["Canonical URL missing"],
+    smsEnabled: false,
+    hasCanonicalUrl: false,
+    turnstileConfigured: false,
+    cronConfigured: true,
+  });
+
+  assert.equal(summary.status, "warn");
+  assert.equal(summary.checks.some((check) => check.key === "database" && check.ok), true);
+  assert.equal(summary.checks.some((check) => check.key === "canonical_url" && check.ok === false), true);
+});
+
+run("buildHealthSummary returns error when database is down", () => {
+  const summary = buildHealthSummary({
+    databaseOk: false,
+    envIssues: [],
+    smsEnabled: true,
+    hasCanonicalUrl: true,
+    turnstileConfigured: true,
+    cronConfigured: true,
+  });
+
+  assert.equal(summary.status, "error");
 });
 
 

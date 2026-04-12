@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getEnvIssues, getOptionalEnv } from "@/lib/env";
 import { getDurationMs, logEvent } from "@/lib/observability";
 import { buildApiHeaders } from "@/lib/api-security";
+import { buildHealthSummary } from "@/lib/health";
 
 function buildRequestId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
@@ -40,6 +41,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
     const turnstileConfigured = Boolean(env.TURNSTILE_SECRET_KEY && env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
     const cronConfigured = Boolean(env.CRON_SECRET);
+    const smsEnabled = env.SMS_ENABLED === "true";
+    const summary = buildHealthSummary({
+      databaseOk: true,
+      envIssues,
+      smsEnabled,
+      hasCanonicalUrl,
+      turnstileConfigured,
+      cronConfigured,
+    });
 
     logEvent({
       event: "health_check_ok",
@@ -49,20 +59,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         durationMs,
         envReady: isEnvReady,
         envIssueCount: envIssues.length,
-        smsEnabled: env.SMS_ENABLED === "true",
+        smsEnabled,
         hasCanonicalUrl,
         turnstileConfigured,
         cronConfigured,
+        healthStatus: summary.status,
       },
     });
 
-    applyApiHeaders(res, requestId, { "Server-Timing": `app;dur=${durationMs}` });
+    applyApiHeaders(res, requestId, {
+      "Server-Timing": `app;dur=${durationMs}`,
+      "X-Health-Status": summary.status,
+    });
     return res.status(200).json({
       ok: true,
       database: "up",
+      status: summary.status,
+      checks: summary.checks,
       envReady: isEnvReady,
       envWarnings: envIssues,
-      smsEnabled: env.SMS_ENABLED === "true",
+      smsEnabled,
       appUrlConfigured: hasCanonicalUrl,
       turnstileConfigured,
       cronConfigured,
@@ -74,6 +90,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch (error) {
     const isProduction = process.env.NODE_ENV === "production";
     const durationMs = getDurationMs(startedAt);
+    const summary = buildHealthSummary({
+      databaseOk: false,
+      envIssues: [],
+      smsEnabled: false,
+      hasCanonicalUrl: false,
+      turnstileConfigured: false,
+      cronConfigured: false,
+    });
 
     logEvent({
       level: "error",
@@ -84,10 +108,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       meta: { durationMs },
     });
 
-    applyApiHeaders(res, requestId, { "Server-Timing": `app;dur=${durationMs}` });
+    applyApiHeaders(res, requestId, {
+      "Server-Timing": `app;dur=${durationMs}`,
+      "X-Health-Status": summary.status,
+    });
     return res.status(500).json({
       ok: false,
       database: "down",
+      status: summary.status,
+      checks: summary.checks,
       error: isProduction ? "Health check failed" : error instanceof Error ? error.message : "Unknown error",
       requestId,
       responseTimeMs: durationMs,
