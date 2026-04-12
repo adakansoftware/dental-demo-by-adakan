@@ -174,12 +174,52 @@ run("getEnv rejects SMS_ENABLED without provider credentials", () => {
   );
 });
 
+run("getEnv rejects partial Turnstile configuration", () => {
+  withEnv(
+    {
+      DATABASE_URL: "postgresql://example",
+      SESSION_SECRET: "12345678901234567890123456789012",
+      TURNSTILE_SECRET_KEY: "turnstile-secret",
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: undefined,
+      NODE_ENV: "development",
+    },
+    () => {
+      assert.throws(
+        () => getEnv(),
+        /TURNSTILE_SECRET_KEY and NEXT_PUBLIC_TURNSTILE_SITE_KEY must either both be set or both be empty/
+      );
+    }
+  );
+});
+
+run("getEnv requires a canonical URL in production", () => {
+  withEnv(
+    {
+      DATABASE_URL: "postgresql://example",
+      SESSION_SECRET: "12345678901234567890123456789012",
+      SMS_ENABLED: "false",
+      NEXT_PUBLIC_APP_URL: undefined,
+      NEXT_PUBLIC_SITE_URL: undefined,
+      NEXTAUTH_URL: undefined,
+      VERCEL_PROJECT_PRODUCTION_URL: undefined,
+      NODE_ENV: "production",
+    },
+    () => {
+      assert.throws(
+        () => getEnv(),
+        /Production requires NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_SITE_URL, NEXTAUTH_URL, or VERCEL_PROJECT_PRODUCTION_URL/
+      );
+    }
+  );
+});
+
 run("getEnv accepts valid minimal configuration", () => {
   withEnv(
     {
       DATABASE_URL: "postgresql://example",
       SESSION_SECRET: "12345678901234567890123456789012",
       SMS_ENABLED: "false",
+      NEXT_PUBLIC_APP_URL: "https://adakan.example",
       NETGSM_USERNAME: undefined,
       NETGSM_PASSWORD: undefined,
       NETGSM_HEADER: undefined,
@@ -189,6 +229,7 @@ run("getEnv accepts valid minimal configuration", () => {
       const env = getEnv();
       assert.equal(env.DATABASE_URL, "postgresql://example");
       assert.equal(env.SMS_ENABLED, "false");
+      assert.equal(env.NEXT_PUBLIC_APP_URL, "https://adakan.example");
     }
   );
 });

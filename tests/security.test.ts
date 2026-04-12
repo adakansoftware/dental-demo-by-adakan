@@ -1,13 +1,19 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildApiHeaders, getRequestIdFromHeaders, isAllowedBrowserOrigin, secureCompare } from "@/lib/api-security";
+import {
+  buildApiHeaders,
+  getAllowedOrigins,
+  getRequestIdFromHeaders,
+  isAllowedBrowserOrigin,
+  secureCompare,
+} from "../src/lib/api-security.ts";
 import {
   buildRequestFingerprintFromHeaders,
   enforceRateLimitByKey,
   getClientIpFromHeadersSync,
   validateFormAge,
   validateHoneypot,
-} from "@/lib/security";
+} from "../src/lib/security-core.ts";
 
 test("getClientIpFromHeadersSync prefers forwarded headers", () => {
   const headers = new Headers({
@@ -78,6 +84,22 @@ test("isAllowedBrowserOrigin rejects unrelated origins", () => {
   });
 
   assert.equal(isAllowedBrowserOrigin(headers, "https://example.com/api/slots"), false);
+});
+
+test("getAllowedOrigins normalizes Vercel production hostnames", () => {
+  const previousValue = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  process.env.VERCEL_PROJECT_PRODUCTION_URL = "dental-demo-by-adakan-cx97.vercel.app";
+
+  try {
+    const origins = getAllowedOrigins();
+    assert.equal(origins.has("https://dental-demo-by-adakan-cx97.vercel.app"), true);
+  } finally {
+    if (previousValue === undefined) {
+      delete process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    } else {
+      process.env.VERCEL_PROJECT_PRODUCTION_URL = previousValue;
+    }
+  }
 });
 
 test("secureCompare matches only exact secrets", () => {

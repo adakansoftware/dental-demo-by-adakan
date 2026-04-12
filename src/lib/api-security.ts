@@ -1,5 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
-import { getOptionalEnv } from "./env";
+import { getOptionalEnv } from "./env.ts";
 
 function buildFallbackRequestId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;

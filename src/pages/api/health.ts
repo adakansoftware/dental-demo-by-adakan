@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/prisma";
-import { getOptionalEnv } from "@/lib/env";
+import { getEnvIssues, getOptionalEnv } from "@/lib/env";
 import { getDurationMs, logEvent } from "@/lib/observability";
+import { buildApiHeaders } from "@/lib/api-security";
 
 function buildRequestId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
@@ -13,13 +14,8 @@ function getRequestId(req: NextApiRequest) {
 }
 
 function applyApiHeaders(res: NextApiResponse, requestId: string, extras: Record<string, string> = {}) {
-  res.setHeader("Cache-Control", "no-store");
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Robots-Tag", "noindex, nofollow");
-  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-  res.setHeader("X-Request-Id", requestId);
-
-  for (const [key, value] of Object.entries(extras)) {
+  const headers = buildApiHeaders(requestId, extras);
+  for (const [key, value] of Object.entries(headers)) {
     res.setHeader(key, value);
   }
 }
@@ -36,7 +32,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     await prisma.$queryRaw`SELECT 1`;
     const env = getOptionalEnv();
+    const envIssues = getEnvIssues();
+    const isEnvReady = envIssues.length === 0;
     const durationMs = getDurationMs(startedAt);
+    const hasCanonicalUrl = Boolean(
+      env.NEXT_PUBLIC_APP_URL || env.NEXT_PUBLIC_SITE_URL || env.NEXTAUTH_URL || env.VERCEL_PROJECT_PRODUCTION_URL
+    );
+    const turnstileConfigured = Boolean(env.TURNSTILE_SECRET_KEY && env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+    const cronConfigured = Boolean(env.CRON_SECRET);
 
     logEvent({
       event: "health_check_ok",
@@ -44,8 +47,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       route: "/api/health",
       meta: {
         durationMs,
+        envReady: isEnvReady,
+        envIssueCount: envIssues.length,
         smsEnabled: env.SMS_ENABLED === "true",
-        hasAppUrl: Boolean(env.NEXT_PUBLIC_APP_URL || env.NEXT_PUBLIC_SITE_URL || env.NEXTAUTH_URL),
+        hasCanonicalUrl,
+        turnstileConfigured,
+        cronConfigured,
       },
     });
 
@@ -53,8 +60,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({
       ok: true,
       database: "up",
+      envReady: isEnvReady,
+      envWarnings: envIssues,
       smsEnabled: env.SMS_ENABLED === "true",
-      appUrlConfigured: Boolean(env.NEXT_PUBLIC_APP_URL || env.NEXT_PUBLIC_SITE_URL || env.NEXTAUTH_URL),
+      appUrlConfigured: hasCanonicalUrl,
+      turnstileConfigured,
+      cronConfigured,
       environment: process.env.NODE_ENV ?? "development",
       requestId,
       responseTimeMs: durationMs,

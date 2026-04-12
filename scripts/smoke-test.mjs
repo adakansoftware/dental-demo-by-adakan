@@ -16,6 +16,11 @@ function assert(condition, message) {
   }
 }
 
+function assertHeader(response, headerName, expectedValue) {
+  const actualValue = response.headers.get(headerName);
+  assert(actualValue === expectedValue, `${headerName} expected ${expectedValue}, got ${actualValue ?? "missing"}`);
+}
+
 async function waitForServer(baseUrl, timeoutMs = 45_000) {
   const startedAt = Date.now();
   let lastStatus = "no-response";
@@ -117,12 +122,30 @@ async function main() {
       assert(response.status === 200, `${route} expected 200, got ${response.status}`);
     }
 
+    const admin = await request("/admin");
+    assert([307, 308].includes(admin.status), `/admin expected redirect, got ${admin.status}`);
+    assert(
+      admin.headers.get("location")?.includes("/admin/login"),
+      `/admin redirect expected /admin/login, got ${admin.headers.get("location") ?? "missing"}`
+    );
+
     const health = await request("/api/health");
     assert(health.status === 200, `/api/health expected 200, got ${health.status}`);
     assert(health.text.includes('"ok":true'), "/api/health did not report ok");
     assert(health.text.includes('"appUrlConfigured":true'), "/api/health did not report appUrlConfigured");
+    assert(health.text.includes('"envReady":'), "/api/health did not report envReady");
+    assert(health.text.includes('"envWarnings":'), "/api/health did not report envWarnings");
+    assertHeader(health, "x-content-type-options", "nosniff");
+    assertHeader(health, "x-robots-tag", "noindex, nofollow");
 
     const home = await request("/");
+    assertHeader(home, "x-frame-options", "DENY");
+    assertHeader(home, "x-content-type-options", "nosniff");
+    assertHeader(home, "cross-origin-opener-policy", "same-origin");
+    assert(
+      (home.headers.get("content-security-policy") ?? "").includes("default-src 'self'"),
+      "Homepage did not include content-security-policy"
+    );
     const configuredSiteUrl =
       process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL;
     if (configuredSiteUrl) {
@@ -140,6 +163,10 @@ async function main() {
 
     const malformedDateSlots = await request("/api/slots?specialistId=test&date=07-04-2026");
     assert(malformedDateSlots.status === 400, `/api/slots malformed date expected 400, got ${malformedDateSlots.status}`);
+
+    const unsupportedHealthMethod = await request("/api/health", { method: "POST" });
+    assert(unsupportedHealthMethod.status === 405, `/api/health POST expected 405, got ${unsupportedHealthMethod.status}`);
+    assertHeader(unsupportedHealthMethod, "allow", "GET");
 
     const specialist = await prisma.specialist.findFirst({
       where: { isActive: true },
