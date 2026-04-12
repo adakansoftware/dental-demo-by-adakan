@@ -1,4 +1,15 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "methods": ["TRACE", "TRACK"],
+      "status": 405,
+      "headers": {
+        "Allow": "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD"
+      }
+    }
+  ],
   "crons": [
     {
       "path": "/api/cron/reminders",
