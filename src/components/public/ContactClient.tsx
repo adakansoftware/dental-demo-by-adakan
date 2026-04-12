@@ -4,6 +4,7 @@ import { useActionState, startTransition } from "react";
 import { useLang } from "@/context/LangContext";
 import SectionIntro from "@/components/shared/SectionIntro";
 import { t } from "@/lib/translations";
+import { isValidGoogleMapsEmbedUrl } from "@/lib/maps";
 import { submitContactAction } from "@/actions/contact";
 import SpamProtectionFields from "@/components/shared/SpamProtectionFields";
 import PageHero from "@/components/shared/PageHero";
@@ -21,6 +22,7 @@ export default function ContactClient({ settings, workingHours }: Props) {
   const [state, formAction, isPending] = useActionState(submitContactAction, initialState);
 
   const address = lang === "tr" ? settings.address : settings.addressEn;
+  const hasValidMapEmbed = isValidGoogleMapsEmbedUrl(settings.mapEmbedUrl);
   const dayOrder = [1, 2, 3, 4, 5, 6, 0];
   const hoursMap: Record<number, WorkingHourData> = {};
   for (const workingHour of workingHours) hoursMap[workingHour.dayOfWeek] = workingHour;
@@ -37,25 +39,25 @@ export default function ContactClient({ settings, workingHours }: Props) {
 
   const trustPoints = [
     {
-      title: lang === "tr" ? "Net geri donus akisi" : "Clear response flow",
+      title: lang === "tr" ? "Hizli geri donus" : "Prompt response",
       text:
         lang === "tr"
-          ? "Formlar daginik bir iletisim yerine duzenli bir kayit akisi olusturur."
-          : "Messages create a structured intake flow instead of a scattered contact experience.",
+          ? "Mesajlariniz ilgili birime duzenli sekilde ulasir ve en kisa surede geri donus planlanir."
+          : "Your message is routed to the relevant team and a timely response is planned.",
     },
     {
-      title: lang === "tr" ? "Hizli yonlendirme" : "Fast routing",
+      title: lang === "tr" ? "Dogru yonlendirme" : "Correct routing",
       text:
         lang === "tr"
-          ? "Randevu, tedavi bilgisi ve genel sorular daha kolay ayristirilir."
-          : "Appointment, treatment, and general support requests are easier to route correctly.",
+          ? "Randevu talebi, tedavi sorusu veya genel bilgi ihtiyaci daha dogru sekilde ayrilir."
+          : "Appointment requests, treatment questions, and general information needs are separated correctly.",
     },
     {
-      title: lang === "tr" ? "Profesyonel gorunum" : "Professional presence",
+      title: lang === "tr" ? "Kolay ulasim" : "Easy access",
       text:
         lang === "tr"
-          ? "Iletisim alani sade ama guven veren bir karar anina donusturulur."
-          : "The contact area becomes a calm, trust-building decision point.",
+          ? "Telefon, e-posta ve WhatsApp uzerinden klinigimize size en uygun kanaldan ulasabilirsiniz."
+          : "You can reach the clinic through phone, email, or WhatsApp using the channel that suits you best.",
     },
   ];
 
@@ -83,8 +85,8 @@ export default function ContactClient({ settings, workingHours }: Props) {
                 title={lang === "tr" ? "Ekibimizle dogrudan iletisime gecin" : "Contact our team directly"}
                 subtitle={
                   lang === "tr"
-                    ? "Randevu oncesi bilgi almak, tedavi sureciyle ilgili soru iletmek veya genel konularda bize yazmak icin formu kullanabilirsiniz."
-                    : "Use the form to request information before an appointment, ask about treatment, or reach us for general questions."
+                    ? "Tedavi oncesi bilgi almak, muayene randevusu planlamak veya surec hakkinda soru sormak icin formu doldurabilirsiniz."
+                    : "Use the form to request treatment information, plan an examination, or ask questions about your care process."
                 }
               />
 
@@ -215,7 +217,7 @@ export default function ContactClient({ settings, workingHours }: Props) {
                 </div>
               </div>
 
-              {settings.mapEmbedUrl ? (
+              {settings.mapEmbedUrl && hasValidMapEmbed ? (
                 <div className="editorial-panel overflow-hidden p-3">
                   <iframe
                     src={settings.mapEmbedUrl}
@@ -225,7 +227,31 @@ export default function ContactClient({ settings, workingHours }: Props) {
                     title="Location"
                   />
                 </div>
-              ) : null}
+              ) : (
+                <div className="editorial-panel overflow-hidden p-6">
+                  <div className="grid h-72 place-items-center rounded-[1.35rem] bg-[rgba(239,233,225,0.86)] text-center">
+                    <div>
+                      <div className="text-sm uppercase tracking-[0.2em] text-[color:var(--accent-main)]">
+                        {lang === "tr" ? "Konum" : "Location"}
+                      </div>
+                      <div className="mt-3 max-w-sm text-base leading-relaxed text-[color:var(--text-secondary)]">
+                        {settings.mapEmbedUrl && !hasValidMapEmbed
+                          ? lang === "tr"
+                            ? "Musteri konumu icin gecerli Google Maps embed baglantisi girildiginde bu alanda harita gosterilecektir."
+                            : "A live map will be shown here once a valid Google Maps embed link is added for the client location."
+                          : address}
+                      </div>
+                      {settings.mapEmbedUrl && !hasValidMapEmbed ? (
+                        <div className="mt-4 max-w-sm rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-700">
+                          {lang === "tr"
+                            ? "Harita alani korunmustur. Gecerli musteri konumu girildiginde dogrudan aktif harita olarak gorunecektir."
+                            : "The map area is preserved. It will automatically render as a live map once a valid client location is entered."}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

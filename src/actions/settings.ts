@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getGoogleMapsEmbedError } from "@/lib/maps";
 import { IMAGE_INPUT_SCHEMA_MESSAGE, isValidAssetInput, persistImageAsset } from "@/lib/upload-assets";
 import { revalidatePath } from "next/cache";
 import type { ActionResult } from "@/types";
@@ -65,6 +66,11 @@ export async function updateSettingsAction(_prev: ActionResult, formData: FormDa
   const parsed = settingsSchema.safeParse(raw);
   if (!parsed.success) {
     return { success: false, error: parsed.error.errors[0]?.message ?? "Ayarlar dogrulanamadi" };
+  }
+
+  const mapEmbedError = getGoogleMapsEmbedError(parsed.data.mapEmbedUrl);
+  if (mapEmbedError) {
+    return { success: false, error: mapEmbedError };
   }
 
   const existingAssets = await getExistingSettings(["logoUrl", "faviconUrl"]);

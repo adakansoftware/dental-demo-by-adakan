@@ -4,8 +4,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: getBaseUrl(),
-  title: "Adakan",
-  description: "Adakan",
+  title: "Adakan Dis Klinigi",
+  description: "Adakan Dis Klinigi resmi web sitesi. Muayene, tedavi planlamasi ve online randevu olusturma hizmetleri.",
   verification: {
     google: "F9CjZoLhgyYJb2LPXCUGlNthcunJ53kN_RQqINd2ZUU",
   },

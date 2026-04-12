@@ -160,7 +160,8 @@ select {
 .quiet-cta-band,
 .split-feature,
 .stack-card,
-.featured-split-card {
+.featured-split-card,
+.ambient-card {
   border: 1px solid rgba(217, 210, 200, 0.9);
   border-radius: 1.5rem;
   background: rgba(251, 250, 247, 0.92);
@@ -315,6 +316,11 @@ select {
 
 .featured-split-card {
   @apply overflow-hidden;
+}
+
+.ambient-card {
+  padding: 0.75rem;
+  background: linear-gradient(180deg, rgba(251, 250, 247, 0.98), rgba(242, 236, 228, 0.92));
 }
 
 .featured-split-card__media {

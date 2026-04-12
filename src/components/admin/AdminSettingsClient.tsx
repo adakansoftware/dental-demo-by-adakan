@@ -5,6 +5,7 @@ import type { ActionResult } from "@/types";
 
 import { useActionState, startTransition, useEffect, useState } from "react";
 import { updateSettingsAction } from "@/actions/settings";
+import { getGoogleMapsEmbedError } from "@/lib/maps";
 import type { SiteSettings } from "@/types";
 
 const initialState: ActionResult = { success: false };
@@ -119,12 +120,15 @@ export default function AdminSettingsClient({ settings }: Props) {
   const [state, formAction, isPending] = useActionState(updateSettingsAction, initialState);
   const [logoValue, setLogoValue] = useState(settings.logoUrl);
   const [faviconValue, setFaviconValue] = useState(settings.faviconUrl);
+  const [mapEmbedUrl, setMapEmbedUrl] = useState(settings.mapEmbedUrl);
   const [logoError, setLogoError] = useState("");
   const [faviconError, setFaviconError] = useState("");
+  const mapEmbedError = getGoogleMapsEmbedError(mapEmbedUrl);
 
   useEffect(() => {
     setLogoValue(settings.logoUrl);
     setFaviconValue(settings.faviconUrl);
+    setMapEmbedUrl(settings.mapEmbedUrl);
     setLogoError("");
     setFaviconError("");
   }, [settings]);
@@ -142,6 +146,7 @@ export default function AdminSettingsClient({ settings }: Props) {
         action={(fd) => {
           fd.set("logoUrl", logoValue);
           fd.set("faviconUrl", faviconValue);
+          fd.set("mapEmbedUrl", mapEmbedUrl);
           startTransition(() => {
             void formAction(fd);
           });
@@ -158,7 +163,24 @@ export default function AdminSettingsClient({ settings }: Props) {
           </div>
           <Field label="Adres (TR)" name="address" defaultValue={settings.address} />
           <Field label="Adres (EN)" name="addressEn" defaultValue={settings.addressEn} />
-          <Field label="Google Maps Embed URL" name="mapEmbedUrl" defaultValue={settings.mapEmbedUrl} placeholder="https://www.google.com/maps/embed?..." />
+          <div>
+            <label className="form-label">Google Maps Embed URL</label>
+            <input
+              name="mapEmbedUrl"
+              value={mapEmbedUrl}
+              onChange={(event) => setMapEmbedUrl(event.target.value)}
+              className="form-input"
+              placeholder="https://www.google.com/maps/embed?..."
+            />
+            <p className="mt-2 text-xs leading-relaxed text-slate-500">
+              Yalnizca Google Maps icindeki <strong>Harita yerlestir</strong> adimindan gelen <code>maps/embed</code> linkini kullanin. Link bos birakilirsa ya da gecersiz olursa sitede guvenli placeholder gorunur.
+            </p>
+            {mapEmbedError ? (
+              <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                {mapEmbedError}
+              </div>
+            ) : null}
+          </div>
         </Section>
 
         <Section title="Sosyal Medya">
