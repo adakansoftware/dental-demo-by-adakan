@@ -2,16 +2,34 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
+const ADMIN_EMAIL = "adakansoftware@gmail.com";
+const ADMIN_PASSWORD = "Adakan652134.";
+const ADMIN_NAME = "Adakan Software";
+const LEGACY_ADMIN_EMAIL = "admin@klinik.com";
 
 async function main() {
-  const passwordHash = await bcrypt.hash("Admin123!", 12);
+  const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
   const admin = await prisma.adminUser.upsert({
-    where: { email: "admin@klinik.com" },
-    update: {},
-    create: {
-      email: "admin@klinik.com",
+    where: { email: ADMIN_EMAIL },
+    update: {
       passwordHash,
-      name: "Klinik Yonetici",
+      name: ADMIN_NAME,
+    },
+    create: {
+      email: ADMIN_EMAIL,
+      passwordHash,
+      name: ADMIN_NAME,
+    },
+  });
+
+  await prisma.adminUser.deleteMany({
+    where: {
+      email: {
+        in: [LEGACY_ADMIN_EMAIL],
+      },
+      NOT: {
+        email: ADMIN_EMAIL,
+      },
     },
   });
   console.log("Admin created:", admin.email);
@@ -353,7 +371,7 @@ async function main() {
   console.log("Reviews seeded");
 
   console.log("\nSeed completed successfully!");
-  console.log("Admin login: admin@klinik.com / Admin123!");
+  console.log(`Admin login: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
 }
 
 main()
