@@ -27,7 +27,7 @@ export default async function AppointmentsPage({
     () =>
       prisma.appointment.findMany({
         where,
-        orderBy: [{ date: "desc" }, { startTime: "desc" }],
+        orderBy: [{ createdAt: "desc" }, { date: "desc" }, { startTime: "desc" }],
         include: { service: true, specialist: true },
       }),
     []
