@@ -18,6 +18,7 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
   const { lang, toggleLang } = useLang();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileNavHidden, setMobileNavHidden] = useState(false);
 
   const clinicName = lang === "tr" ? settings.clinicName : settings.clinicNameEn;
   const address = lang === "tr" ? settings.address : settings.addressEn;
@@ -25,15 +26,39 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
   const whatsappHref = settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/\D/g, "")}` : null;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    let lastScrollY = window.scrollY;
+
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 12);
+
+      if (window.innerWidth >= 1024 || open) {
+        setMobileNavHidden(false);
+      } else if (currentScrollY <= 24) {
+        setMobileNavHidden(false);
+      } else if (currentScrollY > lastScrollY + 8) {
+        setMobileNavHidden(true);
+      } else if (currentScrollY < lastScrollY - 8) {
+        setMobileNavHidden(false);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [open]);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (open) {
+      setMobileNavHidden(false);
+    }
+  }, [open]);
 
   const infoItems = [
     { label: lang === "tr" ? "Telefon" : "Phone", value: settings.phone, href: phoneHref },
@@ -51,7 +76,11 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 px-3 pt-3 md:px-5">
+    <header
+      className={`sticky top-0 z-40 px-3 pt-3 transition-transform duration-300 md:px-5 ${
+        mobileNavHidden ? "-translate-y-[calc(100%-1rem)] lg:translate-y-0" : "translate-y-0"
+      }`}
+    >
       <div className="section-shell">
         <div className={`nav-shell overflow-hidden ${scrolled ? "nav-shell--scrolled" : ""}`}>
           <div className="hidden items-center justify-between border-b border-[rgba(217,210,200,0.72)] px-5 py-2.5 md:flex">
