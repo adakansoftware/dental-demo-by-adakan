@@ -14,10 +14,8 @@ interface Props {
 }
 
 const SERVICE_VISUALS = {
-  feature:
-    "https://images.pexels.com/photos/15771800/pexels-photo-15771800.jpeg?cs=srgb&dl=pexels-gaspar-osorio-3389569-15771800.jpg&fm=jpg",
-  portrait:
-    "https://images.pexels.com/photos/14235194/pexels-photo-14235194.jpeg?cs=srgb&dl=pexels-filipgrobgaard-14235194.jpg&fm=jpg",
+  feature: "/images/editorial/clinic-interior.jpg",
+  portrait: "/images/editorial/doctor-female.jpg",
 } as const;
 
 export default function ServicesClient({ services }: Props) {
@@ -106,7 +104,7 @@ export default function ServicesClient({ services }: Props) {
                   <Link href="/appointment" className="btn-primary">
                     {lang === "tr" ? "Randevu Olustur" : "Book Appointment"}
                   </Link>
-                  <Link href={`/services/${services[0]?.slug ?? ""}`} className="btn-ghost">
+                  <Link href={services[0] ? `/services/${services[0].slug}` : "/services"} className="btn-ghost">
                     {lang === "tr" ? "Detayli Incele" : "Explore Details"}
                   </Link>
                 </div>

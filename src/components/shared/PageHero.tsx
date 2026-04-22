@@ -24,8 +24,13 @@ export default function PageHero({ kicker, title, subtitle, children, compact = 
       <div className={`section-shell relative z-10 ${sectionPadding}`}>
         <div className={`grid gap-10 md:gap-12 ${gridClass}`}>
           <div className={children ? "max-w-3xl pt-2 md:pt-3" : ""}>
+            {kicker ? (
+              <div className={`section-kicker ${children ? "" : "mx-auto"} w-fit`}>
+                {kicker}
+              </div>
+            ) : null}
             <h1
-              className={`${minimal ? "text-[2.5rem] md:text-5xl lg:text-[3.45rem]" : "text-[2.8rem] md:text-5xl lg:text-[4.25rem]"} font-semibold leading-[1.02] text-[color:var(--text-primary)]`}
+              className={`${kicker ? "mt-5" : ""} ${minimal ? "text-[2.5rem] md:text-5xl lg:text-[3.45rem]" : "text-[2.8rem] md:text-5xl lg:text-[4.25rem]"} font-semibold leading-[1.02] text-[color:var(--text-primary)]`}
               style={{ letterSpacing: "-0.06em" }}
             >
               {title}

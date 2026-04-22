@@ -32,6 +32,29 @@ export default function PublicFooter({ settings }: Props) {
   return (
     <footer className="border-t border-[rgba(217,210,200,0.84)] bg-[rgba(248,246,241,0.92)]">
       <div className="section-shell py-12 md:py-16">
+        <div className="quiet-cta-band mb-10 px-6 py-7 md:px-8">
+          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--accent-main)]">
+                {lang === "tr" ? "Planli iletisim" : "Planned contact"}
+              </div>
+              <h2 className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-[color:var(--text-primary)] md:text-[2rem]">
+                {lang === "tr"
+                  ? "Tedaviye dair ilk sorulariniz icin sakin ve net bir iletisim alani"
+                  : "A calm and clear contact space for your first treatment questions"}
+              </h2>
+            </div>
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              <Link href="/appointment" className="btn-primary">
+                {lang === "tr" ? "Online Randevu" : "Book Appointment"}
+              </Link>
+              <Link href="/contact" className="btn-ghost">
+                {lang === "tr" ? "Iletisime Gecin" : "Contact Us"}
+              </Link>
+            </div>
+          </div>
+        </div>
+
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
           <div className="max-w-md">
             <div className="mb-5 flex items-center gap-3">
