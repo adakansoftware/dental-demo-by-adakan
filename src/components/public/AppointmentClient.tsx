@@ -2,7 +2,12 @@
 
 import Image from "next/image";
 import { startTransition, useActionState, useEffect, useState } from "react";
-import { cancelAppointmentByPhoneAction, createAppointmentAction, getAvailableSlotsAction, lookupAppointmentsByPhoneAction } from "@/actions/appointment";
+import {
+  cancelAppointmentByPhoneAction,
+  createAppointmentAction,
+  getAvailableSlotsAction,
+  lookupAppointmentsByPhoneAction,
+} from "@/actions/appointment";
 import SpamProtectionFields from "@/components/shared/SpamProtectionFields";
 import PageHero from "@/components/shared/PageHero";
 import { useLang } from "@/context/LangContext";
@@ -48,39 +53,21 @@ function getPublicStatusMeta(
   if (lang === "tr") {
     switch (status) {
       case "CANCELLED":
-        return {
-          label: "Iptal Edildi",
-          className: "bg-red-50 text-red-700 border border-red-200",
-        };
+        return { label: "İptal Edildi", className: "bg-red-50 text-red-700 border border-red-200" };
       case "COMPLETED":
-        return {
-          label: "Tamamlandi",
-          className: "bg-slate-100 text-slate-700 border border-slate-200",
-        };
+        return { label: "Tamamlandı", className: "bg-slate-100 text-slate-700 border border-slate-200" };
       default:
-        return {
-          label: "Aktif",
-          className: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-        };
+        return { label: "Aktif", className: "bg-emerald-50 text-emerald-700 border border-emerald-200" };
     }
   }
 
   switch (status) {
     case "CANCELLED":
-      return {
-        label: "Cancelled",
-        className: "bg-red-50 text-red-700 border border-red-200",
-      };
+      return { label: "Cancelled", className: "bg-red-50 text-red-700 border border-red-200" };
     case "COMPLETED":
-      return {
-        label: "Completed",
-        className: "bg-slate-100 text-slate-700 border border-slate-200",
-      };
+      return { label: "Completed", className: "bg-slate-100 text-slate-700 border border-slate-200" };
     default:
-      return {
-        label: "Active",
-        className: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-      };
+      return { label: "Active", className: "bg-emerald-50 text-emerald-700 border border-emerald-200" };
   }
 }
 
@@ -113,8 +100,14 @@ export default function AppointmentClient({
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [state, formAction, isPending] = useActionState(createAppointmentAction, initialState);
-  const [cancelState, cancelFormAction, isCancelPending] = useActionState(cancelAppointmentByPhoneAction, cancelInitialState);
-  const [lookupState, lookupFormAction, isLookupPending] = useActionState(lookupAppointmentsByPhoneAction, lookupInitialState);
+  const [cancelState, cancelFormAction, isCancelPending] = useActionState(
+    cancelAppointmentByPhoneAction,
+    cancelInitialState
+  );
+  const [lookupState, lookupFormAction, isLookupPending] = useActionState(
+    lookupAppointmentsByPhoneAction,
+    lookupInitialState
+  );
 
   const availableSpecialists = selectedService
     ? specialists.filter((specialist) =>
@@ -144,10 +137,7 @@ export default function AppointmentClient({
       ? { label: t("appointment", "service", lang), value: lang === "tr" ? selectedService.nameTr : selectedService.nameEn }
       : null,
     selectedSpecialist
-      ? {
-          label: t("appointment", "specialist", lang),
-          value: lang === "tr" ? selectedSpecialist.nameTr : selectedSpecialist.nameEn,
-        }
+      ? { label: t("appointment", "specialist", lang), value: lang === "tr" ? selectedSpecialist.nameTr : selectedSpecialist.nameEn }
       : null,
     selectedDate
       ? {
@@ -160,28 +150,36 @@ export default function AppointmentClient({
           }),
         }
       : null,
-    selectedSlot ? { label: t("appointment", "time", lang), value: `${selectedSlot.startTime} - ${selectedSlot.endTime}` } : null,
+    selectedSlot
+      ? { label: t("appointment", "time", lang), value: `${selectedSlot.startTime} - ${selectedSlot.endTime}` }
+      : null,
   ].filter(Boolean) as { label: string; value: string }[];
 
   const assurancePoints = [
-    lang === "tr" ? "Uygun saatler anlik musaitlik mantigiyla listelenir." : "Available slots are listed against live availability rules.",
-    lang === "tr" ? "Form gonderimi bot korumasi ve hiz limiti ile korunur." : "Booking requests are protected with bot checks and rate limiting.",
-    lang === "tr" ? "Iptal ve goruntuleme akislari ad-soyad ve telefon eslesmesiyle calisir." : "Lookup and cancellation flows require both name and phone matching.",
+    lang === "tr"
+      ? "Uygun saatler anlık müsaitlik mantığıyla listelenir."
+      : "Available slots are listed against live availability rules.",
+    lang === "tr"
+      ? "Form gönderimi bot koruması ve hız limiti ile korunur."
+      : "Booking requests are protected with bot checks and rate limiting.",
+    lang === "tr"
+      ? "İptal ve görüntüleme akışları ad-soyad ve telefon eşleşmesiyle çalışır."
+      : "Lookup and cancellation flows require both name and phone matching.",
   ];
 
   const supportHighlights = [
     {
-      title: lang === "tr" ? "Planli akis" : "Structured flow",
+      title: lang === "tr" ? "Planlı akış" : "Structured flow",
       text:
         lang === "tr"
-          ? "Hizmet, uzman, tarih ve bilgi girisi tek ekranda dagilmadan tamamlanir."
+          ? "Hizmet, uzman, tarih ve bilgi girişi tek ekranda dağılmadan tamamlanır."
           : "Service, specialist, date, and patient details are completed in one focused flow.",
     },
     {
-      title: lang === "tr" ? "Guvenli istek yapisi" : "Protected request flow",
+      title: lang === "tr" ? "Güvenli istek yapısı" : "Protected request flow",
       text:
         lang === "tr"
-          ? "Form islemleri bot korumasi, hiz siniri ve kontrollu hata davranisiyla guclendirilir."
+          ? "Form işlemleri bot koruması, hız sınırı ve kontrollü hata davranışıyla güçlendirilir."
           : "Form actions are reinforced with bot checks, rate limits, and controlled failure handling.",
     },
   ];
@@ -192,9 +190,11 @@ export default function AppointmentClient({
         <div className="section-shell">
           <div className="success-panel mx-auto max-w-xl">
             <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
-              {lang === "tr" ? "Randevu talebiniz alindi" : "Your appointment request has been received"}
+              {lang === "tr" ? "Randevu talebiniz alındı" : "Your appointment request has been received"}
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-[color:var(--text-secondary)]">{t("appointment", "success", lang)}</p>
+            <p className="mt-4 text-base leading-relaxed text-[color:var(--text-secondary)]">
+              {t("appointment", "success", lang)}
+            </p>
           </div>
         </div>
       </section>
@@ -208,7 +208,7 @@ export default function AppointmentClient({
         title={t("appointment", "title", lang)}
         subtitle={
           lang === "tr"
-            ? "Hizmet, uzman, tarih ve saat secimini net, duzenli ve sakin bir akisla tamamlayabilirsiniz."
+            ? "Hizmet, uzman, tarih ve saat seçimini net, düzenli ve sakin bir akışla tamamlayabilirsiniz."
             : "Choose service, specialist, date, and time through a clear, structured, and calm booking flow."
         }
         minimal
@@ -243,15 +243,20 @@ export default function AppointmentClient({
         <div className="section-shell">
           <div className="grid items-start gap-8 lg:grid-cols-[1.02fr_0.98fr]">
             <div>
-              {state.error ? <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{state.error}</div> : null}
+              {state.error ? (
+                <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {state.error}
+                </div>
+              ) : null}
 
               {step === 1 ? (
                 <div className="step-shell p-6 md:p-8">
                   <div className="mb-6 flex items-center gap-4">
                     <div className="step-badge">01</div>
-                    <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">{t("appointment", "step1", lang)}</h2>
+                    <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
+                      {t("appointment", "step1", lang)}
+                    </h2>
                   </div>
-
                   <div className="grid gap-4 sm:grid-cols-2">
                     {services.map((service) => (
                       <button
@@ -263,7 +268,9 @@ export default function AppointmentClient({
                           setSelectedSlot(null);
                           setStep(2);
                         }}
-                        className={`selection-card flex min-h-[172px] w-full flex-col items-start overflow-hidden p-5 text-left ${selectedService?.id === service.id ? "selection-card--active" : ""}`}
+                        className={`selection-card flex min-h-[172px] w-full flex-col items-start overflow-hidden p-5 text-left ${
+                          selectedService?.id === service.id ? "selection-card--active" : ""
+                        }`}
                       >
                         <div className="service-chip w-fit">
                           {service.durationMinutes} {t("services", "minutes", lang)}
@@ -284,7 +291,9 @@ export default function AppointmentClient({
                 <div className="step-shell p-6 md:p-8">
                   <div className="mb-6 flex items-center gap-4">
                     <div className="step-badge">02</div>
-                    <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">{t("appointment", "step2", lang)}</h2>
+                    <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
+                      {t("appointment", "step2", lang)}
+                    </h2>
                   </div>
 
                   {availableSpecialists.length === 0 ? (
@@ -300,7 +309,9 @@ export default function AppointmentClient({
                             setSelectedSlot(null);
                             setStep(3);
                           }}
-                          className={`selection-card flex min-h-[112px] w-full items-center gap-4 overflow-hidden p-5 text-left ${selectedSpecialist?.id === specialist.id ? "selection-card--active" : ""}`}
+                          className={`selection-card flex min-h-[112px] w-full items-center gap-4 overflow-hidden p-5 text-left ${
+                            selectedSpecialist?.id === specialist.id ? "selection-card--active" : ""
+                          }`}
                         >
                           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-[color:var(--surface-muted)]">
                             {specialist.photoUrl ? (
@@ -341,12 +352,20 @@ export default function AppointmentClient({
                 <div className="step-shell p-6 md:p-8">
                   <div className="mb-6 flex items-center gap-4">
                     <div className="step-badge">03</div>
-                    <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">{t("appointment", "step3", lang)}</h2>
+                    <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
+                      {t("appointment", "step3", lang)}
+                    </h2>
                   </div>
 
                   <div className="mb-6 max-w-xs">
                     <label className="form-label">{t("appointment", "date", lang)}</label>
-                    <input type="date" min={today} value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} className="form-input" />
+                    <input
+                      type="date"
+                      min={today}
+                      value={selectedDate}
+                      onChange={(event) => setSelectedDate(event.target.value)}
+                      className="form-input"
+                    />
                   </div>
 
                   {selectedDate ? (
@@ -383,7 +402,11 @@ export default function AppointmentClient({
                     <button onClick={() => setStep(2)} className="text-sm text-[color:var(--text-secondary)]">
                       {"<-"} {t("appointment", "back", lang)}
                     </button>
-                    <button onClick={() => setStep(4)} disabled={!selectedSlot} className="btn-primary sm:ml-auto disabled:cursor-not-allowed disabled:opacity-50">
+                    <button
+                      onClick={() => setStep(4)}
+                      disabled={!selectedSlot}
+                      className="btn-primary sm:ml-auto disabled:cursor-not-allowed disabled:opacity-50"
+                    >
                       {t("appointment", "next", lang)} {"->"}
                     </button>
                   </div>
@@ -394,7 +417,9 @@ export default function AppointmentClient({
                 <div className="step-shell p-6 md:p-8">
                   <div className="mb-6 flex items-center gap-4">
                     <div className="step-badge">04</div>
-                    <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">{t("appointment", "step4", lang)}</h2>
+                    <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
+                      {t("appointment", "step4", lang)}
+                    </h2>
                   </div>
 
                   <form
@@ -450,11 +475,11 @@ export default function AppointmentClient({
             <div className="space-y-6 lg:sticky lg:top-28">
               <div className="surface-panel p-6">
                 <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
-                  {lang === "tr" ? "Secimleriniz" : "Your selections"}
+                  {lang === "tr" ? "Seçimleriniz" : "Your selections"}
                 </h3>
                 {summaryRows.length === 0 ? (
                   <p className="mt-4 text-sm leading-relaxed text-[color:var(--text-secondary)]">
-                    {lang === "tr" ? "Secimleriniz burada ozet olarak gorunecektir." : "Your selections will appear here as a summary."}
+                    {lang === "tr" ? "Seçimleriniz burada özet olarak görünecektir." : "Your selections will appear here as a summary."}
                   </p>
                 ) : (
                   <div className="mt-4 space-y-3">
@@ -475,12 +500,12 @@ export default function AppointmentClient({
                 <div className="space-y-3 text-sm leading-relaxed text-[color:var(--text-secondary)]">
                   <p>
                     {lang === "tr"
-                      ? "Online form bir randevu talebi olusturur. Klinik ekibi degerlendirme sonrasinda sizinle iletisime gecer."
+                      ? "Online form bir randevu talebi oluşturur. Klinik ekibi değerlendirme sonrasında sizinle iletişime geçer."
                       : "The online form creates an appointment request. Our team will contact you after review."}
                   </p>
                   <p>
                     {lang === "tr"
-                      ? "Uygun saatler, uzmanın calisma planina gore otomatik olarak listelenir."
+                      ? "Uygun saatler, uzmanın çalışma planına göre otomatik olarak listelenir."
                       : "Available time slots are listed automatically based on the specialist's schedule."}
                   </p>
                 </div>
@@ -497,7 +522,7 @@ export default function AppointmentClient({
 
               <div className="surface-panel p-6">
                 <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
-                  {lang === "tr" ? "Neden Bu Akis Daha Guclu" : "Why This Flow Feels Stronger"}
+                  {lang === "tr" ? "Bu Akış Neden Güven Verir?" : "Why This Flow Feels Stronger"}
                 </h3>
                 <div className="mt-4 space-y-4">
                   {supportHighlights.map((item) => (
@@ -511,22 +536,19 @@ export default function AppointmentClient({
 
               <div className="surface-panel p-6">
                 <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
-                  {lang === "tr" ? "Randevularimi Goruntule" : "View My Appointments"}
+                  {lang === "tr" ? "Randevularımı Görüntüle" : "View My Appointments"}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-[color:var(--text-secondary)]">
                   {lang === "tr"
-                    ? "Ad-soyad ve telefon numaraniz ile yaklasan randevularinizi listeleyebilirsiniz. Robot dogrulamasi gereklidir."
+                    ? "Ad-soyad ve telefon numaranız ile yaklaşan randevularınızı listeleyebilirsiniz. Robot doğrulaması gereklidir."
                     : "List your upcoming appointments with your full name and phone number. Bot verification is required."}
                 </p>
 
                 {lookupState.error ? (
                   <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{lookupState.error}</div>
                 ) : null}
-
                 {lookupState.success && lookupState.message ? (
-                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-                    {lookupState.message}
-                  </div>
+                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{lookupState.message}</div>
                 ) : null}
 
                 <form
@@ -544,18 +566,13 @@ export default function AppointmentClient({
                     <label className="form-label">{t("appointment", "name", lang)} *</label>
                     <input name="patientName" className="form-input" required minLength={2} />
                   </div>
-
                   <div>
                     <label className="form-label">{t("appointment", "phone", lang)} *</label>
                     <input name="patientPhone" type="tel" className="form-input" required />
                   </div>
 
                   <button type="submit" disabled={isLookupPending} className="btn-ghost w-full">
-                    {isLookupPending
-                      ? t("common", "loading", lang)
-                      : lang === "tr"
-                        ? "Telefon ile Randevularimi Getir"
-                        : "Find My Appointments"}
+                    {isLookupPending ? t("common", "loading", lang) : lang === "tr" ? "Telefon ile Randevularımı Getir" : "Find My Appointments"}
                   </button>
                 </form>
 
@@ -573,10 +590,7 @@ export default function AppointmentClient({
                           </div>
                           <div className="mt-2 flex justify-end">
                             <span
-                              className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${getPublicStatusMeta(
-                                appointment.status,
-                                lang
-                              ).className}`}
+                              className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${getPublicStatusMeta(appointment.status, lang).className}`}
                             >
                               {getPublicStatusMeta(appointment.status, lang).label}
                             </span>
@@ -590,22 +604,19 @@ export default function AppointmentClient({
 
               <div className="surface-panel p-6">
                 <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
-                  {lang === "tr" ? "Randevu Iptali" : "Cancel Appointment"}
+                  {lang === "tr" ? "Randevu İptali" : "Cancel Appointment"}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-[color:var(--text-secondary)]">
                   {lang === "tr"
-                    ? "Ad-soyad, telefon numarasi ve randevu tarihiniz ile kayitli aktif randevunuzu iptal edebilirsiniz."
+                    ? "Ad-soyad, telefon numarası ve randevu tarihiniz ile kayıtlı aktif randevunuzu iptal edebilirsiniz."
                     : "Cancel your active appointment using your full name, phone number, and appointment date."}
                 </p>
 
                 {cancelState.error ? (
                   <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{cancelState.error}</div>
                 ) : null}
-
                 {cancelState.success && cancelState.message ? (
-                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-                    {cancelState.message}
-                  </div>
+                  <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{cancelState.message}</div>
                 ) : null}
 
                 <form
@@ -623,23 +634,17 @@ export default function AppointmentClient({
                     <label className="form-label">{t("appointment", "name", lang)} *</label>
                     <input name="patientName" className="form-input" required minLength={2} />
                   </div>
-
                   <div>
                     <label className="form-label">{t("appointment", "phone", lang)} *</label>
                     <input name="patientPhone" type="tel" className="form-input" required />
                   </div>
-
                   <div>
                     <label className="form-label">{t("appointment", "date", lang)} *</label>
                     <input name="date" type="date" min={today} className="form-input" required />
                   </div>
 
                   <button type="submit" disabled={isCancelPending} className="btn-outline w-full">
-                    {isCancelPending
-                      ? t("common", "loading", lang)
-                      : lang === "tr"
-                        ? "Telefon ile Randevu Iptal Et"
-                        : "Cancel by Phone"}
+                    {isCancelPending ? t("common", "loading", lang) : lang === "tr" ? "Telefon ile Randevu İptal Et" : "Cancel by Phone"}
                   </button>
                 </form>
               </div>

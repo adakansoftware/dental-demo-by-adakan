@@ -233,13 +233,13 @@ export async function updateAppointmentStatusAction(
   });
 
   if (!appointment) {
-    return { success: false, error: "Randevu bulunamadi" };
+    return { success: false, error: "Randevu bulunamadı" };
   }
 
   if (!canTransitionAppointmentStatus(appointment.status, parsed.data.status)) {
     return {
       success: false,
-      error: "Bu randevu durumu icin secilen gecis desteklenmiyor.",
+      error: "Bu randevu durumu için seçilen geçiş desteklenmiyor.",
     };
   }
 
@@ -422,7 +422,7 @@ export async function cancelAppointmentByPhoneAction(
         error:
           patientLanguage === "EN"
             ? "No active appointment was found for this phone number on the selected date."
-            : "Secilen tarihte bu telefon numarasina ait aktif bir randevu bulunamadi.",
+            : "Seçilen tarihte bu telefon numarasına ait aktif bir randevu bulunamadı.",
       };
     }
 
@@ -601,7 +601,7 @@ export async function lookupAppointmentsByPhoneAction(
         error:
           patientLanguage === "EN"
             ? "No upcoming appointments were found for this phone number."
-            : "Bu telefon numarasina ait yaklasan bir randevu bulunamadi.",
+            : "Bu telefon numarasına ait yaklaşan bir randevu bulunamadı.",
       };
     }
 

@@ -12,7 +12,7 @@ export default function ConversionDock({ settings }: Props) {
   const { lang } = useLang();
   const phoneHref = `tel:${settings.phone.replace(/\s/g, "")}`;
   const whatsappHref = settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/\D/g, "")}` : null;
-  const helperText = lang === "tr" ? "Hizli iletisim ve randevu" : "Quick contact and booking";
+  const helperText = lang === "tr" ? "Hızlı iletişim ve randevu" : "Quick contact and booking";
 
   return (
     <div className="conversion-dock">
@@ -27,7 +27,7 @@ export default function ConversionDock({ settings }: Props) {
           {whatsappHref ? "WhatsApp" : lang === "tr" ? "Telefon" : "Call"}
         </a>
         <Link href="/appointment" className="conversion-dock__primary">
-          {lang === "tr" ? "Online Randevu" : "Book Appointment"}
+          {lang === "tr" ? "Online Randevu Al" : "Book Appointment"}
         </Link>
       </div>
     </div>

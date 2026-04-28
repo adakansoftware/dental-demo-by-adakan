@@ -66,49 +66,46 @@ export default function HomeClient({ settings, services, specialists, reviews }:
   const visibleServices = services.slice(0, 6);
   const visibleSpecialists = specialists.slice(0, 3);
   const visibleReviews = reviews.filter((review) => review.isApproved && review.isVisible).slice(0, 3);
+  const whatsappHref = settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/\D/g, "")}` : null;
 
-  const heroTitle =
-    (lang === "tr" ? settings.heroTitleTr : settings.heroTitleEn) ||
-    (lang === "tr"
-      ? "Agiz ve Dis Sagliginiz Icin Guvenilir Klinik Destegi"
-      : "Reliable Clinical Support for Your Oral Health");
-  const heroSubtitle =
-    (lang === "tr" ? settings.heroSubtitleTr : settings.heroSubtitleEn) ||
-    (lang === "tr"
-      ? "Muayene, koruyucu bakim, estetik uygulamalar ve tedavi surecleri hakkinda ihtiyaciniz olan bilgilere kolayca ulasabilir, uygun tarihe randevu olusturabilirsiniz."
-      : "You can easily review examinations, preventive care, aesthetic procedures, and treatment options, then book an appointment for a suitable date.");
+  const heroTitle = (lang === "tr" ? settings.heroTitleTr : settings.heroTitleEn) || (lang === "tr"
+    ? "Sağlıklı, estetik ve güvenli gülüşler için modern diş kliniği"
+    : "Modern dental care for healthy, aesthetic, and confident smiles");
+  const heroSubtitle = (lang === "tr" ? settings.heroSubtitleTr : settings.heroSubtitleEn) || (lang === "tr"
+    ? "Uzman kadro, dijital randevu deneyimi ve kişiye özel tedavi planlarıyla ağız ve diş sağlığınız için yanınızdayız."
+    : "We support your oral health with a specialist team, digital booking experience, and treatment plans tailored to each patient.");
 
   const trustStrip = [
-    lang === "tr" ? "Steril ortam" : "Sterile environment",
-    lang === "tr" ? "Uzman ekip" : "Specialist team",
-    lang === "tr" ? "Hizli iletisim" : "Responsive communication",
-    lang === "tr" ? "Seffaf bilgilendirme" : "Transparent guidance",
+    lang === "tr" ? "Steril klinik ortamı" : "Sterile clinical environment",
+    lang === "tr" ? "Uzman hekim kadrosu" : "Specialist team",
+    lang === "tr" ? "Hızlı iletişim" : "Responsive communication",
+    lang === "tr" ? "Şeffaf bilgilendirme" : "Transparent guidance",
   ];
 
   const promises = [
     {
       number: "01",
-      title: lang === "tr" ? "Acik tedavi anlatimi" : "Clear treatment guidance",
+      title: lang === "tr" ? "Net tedavi planlaması" : "Clear treatment planning",
       text:
         lang === "tr"
-          ? "Her tedavinin amaci, uygulama sureci ve tahmini randevu suresi acik bir sekilde aktarilir."
-          : "Each treatment explains its purpose, care process, and expected appointment duration clearly.",
+          ? "Her tedavinin kapsamı, tahmini seans yapısı ve süreç içeriği ilk görüşmeden itibaren açık şekilde paylaşılır."
+          : "Treatment scope, estimated session structure, and process details are shared clearly from the first visit.",
     },
     {
       number: "02",
-      title: lang === "tr" ? "Uzman kadro" : "Specialist team",
+      title: lang === "tr" ? "Uzmanlık odaklı yaklaşım" : "Specialist-led care",
       text:
         lang === "tr"
-          ? "Hekimlerimizin uzmanlik alanlari ve ilgilendigi tedaviler kolayca incelenebilir."
-          : "You can quickly review each clinician's expertise and relevant treatment areas.",
+          ? "Hekimlerimizin uzmanlık alanları ve ilgilendiği tedaviler düzenli bir yapıda sunulur."
+          : "Each clinician's expertise and relevant treatment areas are presented in a structured way.",
     },
     {
       number: "03",
-      title: lang === "tr" ? "Randevu ve iletisim" : "Booking and contact",
+      title: lang === "tr" ? "Kolay randevu ve iletişim" : "Accessible booking and contact",
       text:
         lang === "tr"
-          ? "Telefon, WhatsApp ve online randevu kanallariyla klinige hizli sekilde ulasabilirsiniz."
-          : "You can reach the clinic quickly through phone, WhatsApp, and online booking channels.",
+          ? "Telefon, WhatsApp ve online randevu kanalları sayesinde kliniğimize hızlı ve güvenli şekilde ulaşabilirsiniz."
+          : "Phone, WhatsApp, and online booking channels make it easy to reach the clinic quickly and confidently.",
     },
   ];
 
@@ -120,7 +117,7 @@ export default function HomeClient({ settings, services, specialists, reviews }:
       ? {
           label: "WhatsApp",
           value: settings.whatsapp,
-          href: `https://wa.me/${settings.whatsapp.replace(/\D/g, "")}`,
+          href: whatsappHref ?? undefined,
           external: true,
         }
       : null,
@@ -134,14 +131,7 @@ export default function HomeClient({ settings, services, specialists, reviews }:
         <div className="section-shell section-block relative z-10">
           <div className="relative overflow-hidden rounded-[2.4rem] border border-white/30 shadow-[0_32px_80px_rgba(28,24,20,0.16)]">
             <div className="absolute inset-0">
-              <Image
-                src="/images/hero.jpg"
-                alt={clinicName}
-                fill
-                priority
-                sizes="100vw"
-                className="image-cover scale-[1.04]"
-              />
+              <Image src="/images/hero.jpg" alt={clinicName} fill priority sizes="100vw" className="image-cover scale-[1.04]" />
             </div>
             <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,17,15,0.68)_0%,rgba(17,17,15,0.48)_32%,rgba(17,17,15,0.16)_58%,rgba(17,17,15,0.28)_100%)]" />
             <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[rgba(14,14,12,0.38)] to-transparent" />
@@ -151,20 +141,30 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                 <div className="flex max-w-3xl flex-col justify-center">
                   <div className="reveal-up">
                     <div className="section-kicker border-white/20 bg-white/10 text-white">
-                      {lang === "tr" ? "Adakan Klinigi" : "Adakan Clinic"}
+                      {lang === "tr" ? "Adakan Dental Klinik" : "Adakan Dental Clinic"}
                     </div>
-                    <h1 className="mt-5 text-[3.2rem] font-semibold leading-[0.98] text-white md:text-[5.35rem]" style={{ letterSpacing: "-0.075em" }}>
+                    <h1 className="mt-5 text-[3.1rem] font-semibold leading-[0.98] text-white md:text-[5.1rem]" style={{ letterSpacing: "-0.075em" }}>
                       {heroTitle}
                     </h1>
                     <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/80 md:text-lg">
                       {heroSubtitle}
                     </p>
-                    <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                       <Link href="/appointment" className="btn-primary">
-                        {lang === "tr" ? "Online Randevu" : "Book Appointment"}
+                        {lang === "tr" ? "Online Randevu Al" : "Book Appointment"}
                       </Link>
+                      {whatsappHref ? (
+                        <a
+                          href={whatsappHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-outline border-white/20 bg-white/10 text-white hover:border-white/30 hover:bg-white/18"
+                        >
+                          {lang === "tr" ? "WhatsApp'tan Yaz" : "Write on WhatsApp"}
+                        </a>
+                      ) : null}
                       <Link href="/services" className="btn-outline border-white/20 bg-white/10 text-white hover:border-white/30 hover:bg-white/18">
-                        {lang === "tr" ? "Tedavileri Incele" : "Explore Treatments"}
+                        {lang === "tr" ? "Hizmetleri İncele" : "Explore Treatments"}
                       </Link>
                     </div>
                   </div>
@@ -182,7 +182,7 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                         {settings.phone}
                       </a>
                       <Link href="/contact" className="btn-outline border-white/14 bg-white/10 text-white hover:border-white/24 hover:bg-white/16">
-                        {lang === "tr" ? "Iletisim" : "Contact"}
+                        {lang === "tr" ? "İletişim" : "Contact"}
                       </Link>
                     </div>
                   </div>
@@ -210,16 +210,8 @@ export default function HomeClient({ settings, services, specialists, reviews }:
         <div className="section-shell">
           <SectionIntro
             kicker={lang === "tr" ? "Neden Biz" : "Why Us"}
-            title={
-              lang === "tr"
-                ? "Muayeneden tedavi planina kadar guven veren bir hasta yolculugu"
-                : "A reassuring patient journey from examination to treatment planning"
-            }
-            subtitle={
-              lang === "tr"
-                ? "Klinigimizi ilk kez ziyaret eden hastalarin ihtiyac duydugu temel bilgiler tek bir duzenli akis icinde sunulur."
-                : "Core information needed by first-time patients is presented in one clear and organized flow."
-            }
+            title={lang === "tr" ? "Muayeneden tedavi planına kadar güven veren bir hasta yolculuğu" : "A reassuring patient journey from examination to treatment planning"}
+            subtitle={lang === "tr" ? "Kliniğimizi ilk kez ziyaret eden hastaların ihtiyaç duyduğu temel bilgiler tek bir düzenli akış içinde sunulur." : "Core information needed by first-time patients is presented in one clear and organized flow."}
           />
 
           <div className="grid gap-6 md:grid-cols-3">
@@ -236,35 +228,25 @@ export default function HomeClient({ settings, services, specialists, reviews }:
             <div className="featured-split-card overflow-hidden">
               <div className="grid gap-0 lg:grid-cols-[1.02fr_0.98fr]">
                 <div className="featured-split-card__media min-h-[320px]">
-                  <Image
-                    src={VISUALS.clinicChair}
-                    alt={lang === "tr" ? "Implant tedavi gorseli" : "Implant treatment visual"}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 42vw"
-                    className="image-cover"
-                  />
+                  <Image src={VISUALS.clinicChair} alt={lang === "tr" ? "Klinik tedavi alanı" : "Clinic treatment visual"} fill sizes="(max-width: 1024px) 100vw, 42vw" className="image-cover" />
                   <div className="featured-split-card__overlay" />
-                  <div className="featured-split-card__badge">{lang === "tr" ? "Tedavi Sahnesi" : "Treatment Scene"}</div>
+                  <div className="featured-split-card__badge">{lang === "tr" ? "Klinik Deneyimi" : "Treatment Scene"}</div>
                 </div>
 
                 <div className="featured-split-card__content">
-                  <div className="featured-split-card__meta">{lang === "tr" ? "Gorsel Ritim" : "Visual Rhythm"}</div>
+                  <div className="featured-split-card__meta">{lang === "tr" ? "Güven Veren Ortam" : "Clinical Experience"}</div>
                   <h3 className="featured-split-card__title">
-                    {lang === "tr"
-                      ? "Klinik ortami ve tedavi alanlarini onceden tanima imkani"
-                      : "A clearer preview of the clinic environment and treatment areas"}
+                    {lang === "tr" ? "Klinik ortamını ve tedavi alanlarını önceden tanıma imkânı" : "A clearer preview of the clinic environment and treatment areas"}
                   </h3>
                   <p className="featured-split-card__body">
-                    {lang === "tr"
-                      ? "Muayene odalari, tedavi alanlari ve ekip yapisi hakkinda ilk izlenimi guclendiren gorsel bir tanitim alani."
-                      : "A visual introduction area that helps patients understand the clinic rooms, treatment spaces, and team structure."}
+                    {lang === "tr" ? "Muayene odaları, tedavi alanları ve ekip yapısı hakkında güven veren ilk izlenimi güçlendiren görsel bir tanıtım alanı." : "A visual introduction area that helps patients understand the clinic rooms, treatment spaces, and team structure."}
                   </p>
                   <div className="featured-split-card__actions">
                     <Link href="/about" className="btn-ghost">
-                      {lang === "tr" ? "Klinigi Tani" : "Meet the Clinic"}
+                      {lang === "tr" ? "Kliniği Tanıyın" : "Meet the Clinic"}
                     </Link>
                     <Link href="/specialists" className="btn-outline">
-                      {lang === "tr" ? "Uzmanlari Incele" : "View Specialists"}
+                      {lang === "tr" ? "Uzmanları İnceleyin" : "View Specialists"}
                     </Link>
                   </div>
                 </div>
@@ -274,37 +256,21 @@ export default function HomeClient({ settings, services, specialists, reviews }:
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
               <div className="stack-card overflow-hidden p-3">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[1.2rem]">
-                  <Image
-                    src={VISUALS.doctorMale}
-                    alt={lang === "tr" ? "Uzman hekim portresi" : "Specialist portrait"}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 24vw"
-                    className="image-cover"
-                  />
+                  <Image src={VISUALS.doctorMale} alt={lang === "tr" ? "Uzman hekim portresi" : "Specialist portrait"} fill sizes="(max-width: 1024px) 100vw, 24vw" className="image-cover" />
                 </div>
                 <div className="px-2 pb-2 pt-4">
-                  <div className="stack-card__meta">{lang === "tr" ? "Hekim Profili" : "Doctor Profile"}</div>
-                  <h3 className="stack-card__title">
-                    {lang === "tr" ? "Uzman hekim kadrosunu daha yakindan taniyin" : "Get to know the clinical team more closely"}
-                  </h3>
+                  <div className="stack-card__meta">{lang === "tr" ? "Uzman Hekim" : "Doctor Profile"}</div>
+                  <h3 className="stack-card__title">{lang === "tr" ? "Uzman hekim kadromuzu daha yakından tanıyın" : "Get to know the clinical team more closely"}</h3>
                 </div>
               </div>
 
               <div className="stack-card overflow-hidden p-3">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[1.2rem]">
-                  <Image
-                    src={VISUALS.doctorFemale}
-                    alt={lang === "tr" ? "Klinik uygulama gorseli" : "Clinical application visual"}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 24vw"
-                    className="image-cover"
-                  />
+                  <Image src={VISUALS.doctorFemale} alt={lang === "tr" ? "Klinik uygulama görseli" : "Clinical application visual"} fill sizes="(max-width: 1024px) 100vw, 24vw" className="image-cover" />
                 </div>
                 <div className="px-2 pb-2 pt-4">
-                  <div className="stack-card__meta">{lang === "tr" ? "Detay Katmani" : "Detail Layer"}</div>
-                  <h3 className="stack-card__title">
-                    {lang === "tr" ? "Tedavi sureclerine dair daha net bir ilk bakis" : "A clearer first look at treatment procedures"}
-                  </h3>
+                  <div className="stack-card__meta">{lang === "tr" ? "Tedavi Detayı" : "Detail Layer"}</div>
+                  <h3 className="stack-card__title">{lang === "tr" ? "Tedavi süreçlerine dair daha net bir ilk bakış" : "A clearer first look at treatment procedures"}</h3>
                 </div>
               </div>
             </div>
@@ -317,19 +283,11 @@ export default function HomeClient({ settings, services, specialists, reviews }:
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <SectionIntro
               kicker={lang === "tr" ? "Hizmetler" : "Services"}
-              title={
-                lang === "tr"
-                  ? "Size uygun tedaviyi daha rahat secebilmeniz icin hizmetlerimizi inceleyin"
-                  : "Review our treatments to choose the care that fits your needs"
-              }
-              subtitle={
-                lang === "tr"
-                  ? "Her hizmet kartinda uygulamanin kisa ozeti, ortalama sure ve randevu yonlendirmesi birlikte yer alir."
-                  : "Each treatment card includes a short overview, estimated duration, and a direct booking path."
-              }
+              title={lang === "tr" ? "Size uygun tedaviyi daha rahat seçebilmeniz için hizmetlerimizi inceleyin" : "Review our treatments to choose the care that fits your needs"}
+              subtitle={lang === "tr" ? "Her hizmet kartında uygulamanın kısa özeti, ortalama süre ve randevu yönlendirmesi birlikte yer alır." : "Each treatment card includes a short overview, estimated duration, and a direct booking path."}
             />
             <Link href="/services" className="btn-ghost w-fit">
-              {lang === "tr" ? "Tum Hizmetler" : "All Services"}
+              {lang === "tr" ? "Tüm Hizmetler" : "All Services"}
             </Link>
           </div>
 
@@ -337,13 +295,7 @@ export default function HomeClient({ settings, services, specialists, reviews }:
             {visibleServices.map((service) => (
               <article key={service.id} className="card flex h-full flex-col overflow-hidden">
                 <div className="relative aspect-[4/3] overflow-hidden bg-[color:var(--surface-muted)]">
-                  <Image
-                    src={service.imageUrl || getServiceImage(service.slug)}
-                    alt={lang === "tr" ? service.nameTr : service.nameEn}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                    className="image-cover transition-transform duration-500 hover:scale-[1.02]"
-                  />
+                  <Image src={service.imageUrl || getServiceImage(service.slug)} alt={lang === "tr" ? service.nameTr : service.nameEn} fill sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" className="image-cover transition-transform duration-500 hover:scale-[1.02]" />
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
@@ -358,10 +310,10 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3">
                     <Link href={`/services/${service.slug}`} className="btn-ghost">
-                      {lang === "tr" ? "Detay Linki" : "Details"}
+                      {lang === "tr" ? "Detayları İncele" : "Details"}
                     </Link>
                     <Link href={`/appointment?service=${service.id}`} className="btn-outline">
-                      {lang === "tr" ? "Randevu" : "Appointment"}
+                      {lang === "tr" ? "Randevu Al" : "Appointment"}
                     </Link>
                   </div>
                 </div>
@@ -382,10 +334,10 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                 </div>
                 <div className="flex flex-wrap gap-3 lg:justify-end">
                   <Link href={`/services/${leadService.slug}`} className="btn-ghost">
-                    {lang === "tr" ? "Tedavi Detayi" : "Treatment Details"}
+                    {lang === "tr" ? "Tedavi Detayları" : "Treatment Details"}
                   </Link>
                   <Link href={`/appointment?service=${leadService.id}`} className="btn-primary">
-                    {lang === "tr" ? "Online Randevu" : "Book Appointment"}
+                    {lang === "tr" ? "Online Randevu Al" : "Book Appointment"}
                   </Link>
                 </div>
               </div>
@@ -399,19 +351,11 @@ export default function HomeClient({ settings, services, specialists, reviews }:
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <SectionIntro
               kicker={lang === "tr" ? "Uzman Kadro" : "Specialists"}
-              title={
-                lang === "tr"
-                  ? "Tedavi surecinizde size eslik edecek hekimleri tanitin"
-                  : "Meet the clinicians who will support your treatment journey"
-              }
-              subtitle={
-                lang === "tr"
-                  ? "Hekimlerimizin uzmanlik alanlari, deneyimi ve ilgi duydugu tedaviler tek bakista gorulebilir."
-                  : "Each profile shows expertise, experience, and relevant treatment areas at a glance."
-              }
+              title={lang === "tr" ? "Tedavi sürecinizde size eşlik edecek hekimleri tanıyın" : "Meet the clinicians who will support your treatment journey"}
+              subtitle={lang === "tr" ? "Hekimlerimizin uzmanlık alanları, deneyimi ve ilgi duyduğu tedaviler tek bakışta görülebilir." : "Each profile shows expertise, experience, and relevant treatment areas at a glance."}
             />
             <Link href="/specialists" className="btn-ghost w-fit">
-              {lang === "tr" ? "Tum Uzmanlar" : "All Specialists"}
+              {lang === "tr" ? "Tüm Uzmanlar" : "All Specialists"}
             </Link>
           </div>
 
@@ -423,17 +367,9 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                 <article key={specialist.id} className="card flex h-full flex-col overflow-hidden bg-[rgba(248,246,241,0.95)]">
                   <div className="relative aspect-[4/4.4] overflow-hidden bg-[color:var(--surface-muted)]">
                     {specialist.photoUrl ? (
-                      <Image
-                        src={specialist.photoUrl}
-                        alt={lang === "tr" ? specialist.nameTr : specialist.nameEn}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                        className="image-cover"
-                      />
+                      <Image src={specialist.photoUrl} alt={lang === "tr" ? specialist.nameTr : specialist.nameEn} fill sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" className="image-cover" />
                     ) : (
-                      <div className="grid h-full place-items-center text-sm uppercase tracking-[0.2em] text-[color:var(--accent-main)]">
-                        Portrait
-                      </div>
+                      <div className="grid h-full place-items-center text-sm uppercase tracking-[0.2em] text-[color:var(--accent-main)]">Portrait</div>
                     )}
                   </div>
 
@@ -449,7 +385,7 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                     </p>
                     <div className="mt-6">
                       <Link href={`/specialists/${specialist.slug}`} className="btn-ghost">
-                        {lang === "tr" ? "Profili Incele" : "View Profile"}
+                        {lang === "tr" ? "Profili İncele" : "View Profile"}
                       </Link>
                     </div>
                   </div>
@@ -463,17 +399,9 @@ export default function HomeClient({ settings, services, specialists, reviews }:
       <section className="soft-section section-block">
         <div className="section-shell">
           <SectionIntro
-            kicker={lang === "tr" ? "Yorumlar" : "Reviews"}
-              title={
-                lang === "tr"
-                  ? "Hastalarimizin klinik deneyimi hakkindaki geri bildirimleri"
-                  : "Feedback from patients about their clinical experience"
-              }
-              subtitle={
-                lang === "tr"
-                  ? "Muayene, tedavi sureci ve klinik yaklasimimiz hakkindaki yorumlari inceleyebilirsiniz."
-                  : "You can review comments about examinations, treatment care, and the overall clinic approach."
-              }
+            kicker={lang === "tr" ? "Hasta Yorumları" : "Reviews"}
+            title={lang === "tr" ? "Hastalarımızın klinik deneyimi hakkındaki geri bildirimleri" : "Feedback from patients about their clinical experience"}
+            subtitle={lang === "tr" ? "Muayene, tedavi süreci ve klinik yaklaşımımız hakkındaki yorumları inceleyebilirsiniz." : "You can review comments about examinations, treatment care, and the overall clinic approach."}
           />
 
           {visibleReviews.length > 0 ? (
@@ -503,9 +431,7 @@ export default function HomeClient({ settings, services, specialists, reviews }:
             </div>
           ) : (
             <div className="surface-panel p-10 text-center text-sm leading-relaxed text-[color:var(--text-secondary)]">
-              {lang === "tr"
-                ? "Yorumlar burada sakin ve guven veren bir duzende yer alacak."
-                : "Reviews will appear here in a calm, trust-building layout."}
+              {lang === "tr" ? "Yorumlar burada sakin ve güven veren bir düzende yer alacak." : "Reviews will appear here in a calm, trust-building layout."}
             </div>
           )}
         </div>
@@ -516,17 +442,9 @@ export default function HomeClient({ settings, services, specialists, reviews }:
           <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
             <div>
               <SectionIntro
-                kicker={lang === "tr" ? "Iletisim" : "Contact"}
-                title={
-                  lang === "tr"
-                    ? "Randevu, bilgi alma ve ulasim icin tum iletisim yollarimiz burada"
-                    : "All clinic contact channels for appointments, information, and directions"
-                }
-                subtitle={
-                  lang === "tr"
-                    ? "Telefon, e-posta, WhatsApp ve konum bilgileri ile bize kolayca ulasabilirsiniz."
-                    : "Reach us easily through phone, email, WhatsApp, and clinic location details."
-                }
+                kicker={lang === "tr" ? "İletişim" : "Contact"}
+                title={lang === "tr" ? "Randevu, bilgi alma ve ulaşım için tüm iletişim yollarımız burada" : "All clinic contact channels for appointments, information, and directions"}
+                subtitle={lang === "tr" ? "Telefon, e-posta, WhatsApp ve konum bilgileri ile bize kolayca ulaşabilirsiniz." : "Reach us easily through phone, email, WhatsApp, and clinic location details."}
               />
               <div className="grid gap-4 sm:grid-cols-2">
                 {contactCards.map((item) => {
@@ -540,12 +458,7 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                   );
 
                   return item.href ? (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      target={item.external ? "_blank" : undefined}
-                      rel={item.external ? "noopener noreferrer" : undefined}
-                    >
+                    <a key={item.label} href={item.href} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener noreferrer" : undefined}>
                       {content}
                     </a>
                   ) : (
@@ -557,13 +470,7 @@ export default function HomeClient({ settings, services, specialists, reviews }:
 
             <div className="editorial-panel overflow-hidden p-3">
               {settings.mapEmbedUrl && hasValidMapEmbed ? (
-                <iframe
-                  src={settings.mapEmbedUrl}
-                  className="h-[420px] w-full rounded-[1.4rem]"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Clinic map"
-                />
+                <iframe src={settings.mapEmbedUrl} className="h-[420px] w-full rounded-[1.4rem]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Clinic map" />
               ) : (
                 <div className="grid h-[420px] place-items-center rounded-[1.4rem] bg-[rgba(239,233,225,0.86)] text-center">
                   <div>
@@ -573,14 +480,14 @@ export default function HomeClient({ settings, services, specialists, reviews }:
                     <div className="mt-3 max-w-sm text-base leading-relaxed text-[color:var(--text-secondary)]">
                       {settings.mapEmbedUrl && !hasValidMapEmbed
                         ? lang === "tr"
-                          ? "Gecerli bir Google Maps embed baglantisi girildiginde klinik konumu bu alanda gosterilecektir."
+                          ? "Geçerli bir Google Maps embed bağlantısı girildiğinde klinik konumu bu alanda gösterilecektir."
                           : "The clinic location will appear here once a valid Google Maps embed link is provided."
                         : address}
                     </div>
                     {settings.mapEmbedUrl && !hasValidMapEmbed ? (
                       <div className="mt-4 max-w-sm rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-700">
                         {lang === "tr"
-                          ? "Bu alan, musteriye ait gecerli konum baglantisi eklendiginde otomatik olarak aktif haritaya donusecektir."
+                          ? "Bu alan, müşteriye ait geçerli konum bağlantısı eklendiğinde otomatik olarak aktif haritaya dönüşecektir."
                           : "This area will automatically switch to a live map once a valid customer location link is added."}
                       </div>
                     ) : null}
@@ -598,23 +505,19 @@ export default function HomeClient({ settings, services, specialists, reviews }:
             <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
                 <h2 className="text-3xl font-semibold tracking-[-0.05em] text-[color:var(--text-primary)] md:text-4xl">
-                  {lang === "tr"
-                    ? "Muayenenizi planlamak icin ilk adimi simdi atin"
-                    : "Take the first step now to plan your dental visit"}
+                  {lang === "tr" ? "Muayenenizi planlamak için ilk adımı şimdi atın" : "Take the first step now to plan your dental visit"}
                 </h2>
                 <p className="mt-4 max-w-2xl text-base leading-relaxed text-[color:var(--text-secondary)]">
-                  {lang === "tr"
-                    ? "Uygun hizmeti, hekimi ve tarihi secerek online randevu talebinizi birkac adimda iletebilirsiniz."
-                    : "Choose the right treatment, clinician, and date to send your appointment request in just a few steps."}
+                  {lang === "tr" ? "Uygun hizmeti, hekimi ve tarihi seçerek online randevu talebinizi birkaç adımda iletebilirsiniz." : "Choose the right treatment, clinician, and date to send your appointment request in just a few steps."}
                 </p>
               </div>
 
               <div className="flex flex-wrap gap-3 lg:justify-end">
                 <Link href="/appointment" className="btn-primary">
-                  {lang === "tr" ? "Online Randevu" : "Book Appointment"}
+                  {lang === "tr" ? "Online Randevu Al" : "Book Appointment"}
                 </Link>
                 <Link href="/contact" className="btn-ghost">
-                  {lang === "tr" ? "Iletisim" : "Contact"}
+                  {lang === "tr" ? "İletişim" : "Contact"}
                 </Link>
               </div>
             </div>

@@ -63,7 +63,7 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
   const infoItems = [
     { label: lang === "tr" ? "Telefon" : "Phone", value: settings.phone, href: phoneHref },
     { label: lang === "tr" ? "Konum" : "Location", value: address },
-    { label: lang === "tr" ? "Saatler" : "Hours", value: hoursLabel || (lang === "tr" ? "Bilgi icin iletisim" : "Contact for details") },
+    { label: lang === "tr" ? "Çalışma Saatleri" : "Hours", value: hoursLabel || (lang === "tr" ? "Bilgi için iletişime geçin" : "Contact for details") },
   ];
 
   const links = [
@@ -163,7 +163,7 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
               ) : null}
 
               <Link href="/appointment" className="hidden btn-primary sm:inline-flex">
-                {lang === "tr" ? "Online Randevu" : "Book Appointment"}
+                {lang === "tr" ? "Online Randevu Al" : "Book Appointment"}
               </Link>
 
               <button
@@ -231,7 +231,7 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
                 </a>
               ) : null}
               <Link href="/appointment" className="btn-primary w-full">
-                {lang === "tr" ? "Online Randevu" : "Book Appointment"}
+                {lang === "tr" ? "Online Randevu Al" : "Book Appointment"}
               </Link>
             </div>
           </div>

@@ -35,44 +35,44 @@ async function main() {
   console.log("Admin created:", admin.email);
 
   const settings = [
-    { key: "clinicName", value: "Adakan" },
-    { key: "clinicNameEn", value: "Adakan" },
-    { key: "phone", value: "+90 342 000 00 00" },
-    { key: "whatsapp", value: "+905320000000" },
-    { key: "email", value: "info@adakan.com" },
-    { key: "address", value: "Gaziantep, Turkiye" },
-    { key: "addressEn", value: "Gaziantep, Turkey" },
+    { key: "clinicName", value: "Adakan Dental Klinik" },
+    { key: "clinicNameEn", value: "Adakan Dental Clinic" },
+    { key: "phone", value: "+90 342 555 27 27" },
+    { key: "whatsapp", value: "+905325552727" },
+    { key: "email", value: "info@adakandental.com" },
+    { key: "address", value: "Gaziantep, Şehitkamil" },
+    { key: "addressEn", value: "Sehitkamil, Gaziantep" },
     { key: "mapEmbedUrl", value: "" },
     { key: "instagram", value: "https://instagram.com/adakansoftware" },
     { key: "facebook", value: "https://facebook.com/adakansoftware" },
     { key: "twitter", value: "" },
-    { key: "heroTitleTr", value: "Saglikli ve Guvenli Gulusler Icin Yandayiz" },
+    { key: "heroTitleTr", value: "Sağlıklı, Estetik ve Güvenli Gülüşler İçin Modern Diş Kliniği" },
     { key: "heroTitleEn", value: "Trusted Dental Care for Healthy Smiles" },
     {
       key: "heroSubtitleTr",
-      value: "Genel dis hekimligi, estetik uygulamalar ve koruyucu bakim sureclerinde size ozenli ve anlasilir bir tedavi deneyimi sunuyoruz.",
+      value: "Uzman kadro, dijital randevu deneyimi ve kişiye özel tedavi planlarıyla ağız ve diş sağlığınız için yanınızdayız.",
     },
     {
       key: "heroSubtitleEn",
       value: "We provide attentive and transparent care across general dentistry, aesthetic treatments, and preventive oral health services.",
     },
-    { key: "aboutTitleTr", value: "Hakkimizda" },
+    { key: "aboutTitleTr", value: "Adakan Dental Klinik Hakkında" },
     { key: "aboutTitleEn", value: "About Us" },
     {
       key: "aboutTextTr",
       value:
-        "Klinigimizde her hastayi ayrintili muayene, acik bilgilendirme ve kisinin ihtiyacina uygun tedavi planlamasi ile karsiliyoruz. Amacimiz yalnizca mevcut sikayeti gidermek degil, uzun vadeli agiz ve dis sagligini koruyan guvenli bir bakim sureci sunmaktir.",
+        "Adakan Dental Klinik, muayeneden tedavi planlamasına kadar her adımda güven veren, sakin ve şeffaf bir hasta deneyimi sunmak için kurgulanmıştır. Estetik diş hekimliği, implant planlaması, çocuk diş sağlığı ve koruyucu bakım süreçleri kişiye özel değerlendirme ile ele alınır.",
     },
     {
       key: "aboutTextEn",
       value:
         "At our clinic, each patient is welcomed with a careful examination, clear communication, and a treatment plan tailored to individual needs. Our goal is not only to solve the current complaint, but also to support long-term oral health through reliable care.",
     },
-    { key: "seoTitleTr", value: "Adakan" },
+    { key: "seoTitleTr", value: "Adakan Dental Klinik | Modern Diş Kliniği Demo" },
     { key: "seoTitleEn", value: "Adakan" },
     {
       key: "seoDescTr",
-      value: "Adakan dis klinigi; muayene, estetik uygulamalar ve koruyucu bakim hizmetleri icin randevu olusturabileceginiz resmi klinik sitesidir.",
+      value: "Diş klinikleri için modern, mobil uyumlu, online randevu destekli web sitesi demosu.",
     },
     {
       key: "seoDescEn",
@@ -98,10 +98,10 @@ async function main() {
       slug: "implant",
       nameTr: "Implant Tedavisi",
       nameEn: "Implant Treatment",
-      shortDescTr: "Eksik disler icin kalici ve guvenli cozum",
+      shortDescTr: "Eksik dişler için planlı, estetik ve kalıcı çözüm",
       shortDescEn: "A reliable and lasting solution for missing teeth",
       descriptionTr:
-        "Dental implant, eksik dislerin yerine yerlestirilen yapay kok yapisidir. Hem estetik gorunumu hem de cigneme fonksiyonunu destekleyen guvenilir bir tedavi secenegidir.",
+        "İmplant tedavisi, eksik dişlerin yerine uzun ömürlü ve güvenli bir çözüm sunmak için planlanır. Kemik yapısı, estetik beklenti ve çiğneme konforu birlikte değerlendirilir.",
       descriptionEn:
         "A dental implant is an artificial root structure placed to replace missing teeth. It is a dependable treatment option that supports both aesthetics and chewing function.",
       iconName: "implant",
@@ -112,10 +112,10 @@ async function main() {
       slug: "ortodonti",
       nameTr: "Ortodonti",
       nameEn: "Orthodontics",
-      shortDescTr: "Dis teli ve seffaf plak planlamalari",
+      shortDescTr: "Diş teli ve şeffaf plak ile düzenli gülüş planlaması",
       shortDescEn: "Braces and clear aligner planning",
       descriptionTr:
-        "Ortodonti, dislerin ve cene yapisinin daha duzenli hale gelmesini hedefler. Tel ya da seffaf plak uygulamalariyla hem islev hem gorunum desteklenir.",
+        "Ortodonti tedavileri, dişlerin ve çene yapısının daha dengeli hale gelmesini hedefler. Tel ya da şeffaf plak seçenekleri kişiye özel planlanır.",
       descriptionEn:
         "Orthodontics focuses on improving the alignment of teeth and jaw structure. Braces or clear aligners can support both function and appearance.",
       iconName: "braces",
@@ -124,12 +124,12 @@ async function main() {
     },
     {
       slug: "dis-beyazlatma",
-      nameTr: "Dis Beyazlatma",
+      nameTr: "Diş Beyazlatma",
       nameEn: "Teeth Whitening",
-      shortDescTr: "Daha parlak ve temiz gorunum icin klinik uygulama",
+      shortDescTr: "Daha parlak ve doğal bir gülüş için klinik beyazlatma uygulaması",
       shortDescEn: "In-clinic whitening for a brighter smile",
       descriptionTr:
-        "Profesyonel dis beyazlatma uygulamasi, dis rengini daha acik ve temiz bir gorunume tasimayi hedefler. Klinik ortaminda kontrollu sekilde uygulanir.",
+        "Profesyonel diş beyazlatma uygulaması, diş tonunu daha canlı ve temiz bir görünüme taşımak için klinik ortamında kontrollü şekilde uygulanır.",
       descriptionEn:
         "Professional teeth whitening aims to improve tooth shade for a cleaner and brighter appearance. It is performed in a controlled clinical setting.",
       iconName: "sparkle",
@@ -140,10 +140,10 @@ async function main() {
       slug: "kanal-tedavisi",
       nameTr: "Kanal Tedavisi",
       nameEn: "Root Canal Treatment",
-      shortDescTr: "Dogal disi korumaya yonelik tedavi",
+      shortDescTr: "Doğal dişi korumaya odaklanan kök kanal tedavisi",
       shortDescEn: "Treatment focused on preserving the natural tooth",
       descriptionTr:
-        "Kanal tedavisi, disin ic kismindaki enfekte ya da hasarli dokunun temizlenerek disin korunmasini hedefleyen bir islemdir.",
+        "Kanal tedavisi, dişin iç kısmındaki enfekte ya da hasarlı dokuyu temizleyerek doğal dişi mümkün olduğunca korumayı hedefler.",
       descriptionEn:
         "Root canal treatment is a procedure designed to preserve the tooth by removing infected or damaged tissue from inside it.",
       iconName: "tooth",
@@ -152,12 +152,12 @@ async function main() {
     },
     {
       slug: "protez",
-      nameTr: "Protez Dis",
+      nameTr: "Protez Diş",
       nameEn: "Dental Prosthetics",
-      shortDescTr: "Eksik disler icin tamamlayici protez cozumleri",
+      shortDescTr: "Eksik dişler için tamamlayıcı protez çözümleri",
       shortDescEn: "Prosthetic solutions for missing teeth",
       descriptionTr:
-        "Protez uygulamalari, eksik dislerin tamamlanmasi ve cigneme konforunun artirilmasi amaciyla planlanir. Tam ve kismi secenekler degerlendirilebilir.",
+        "Protez uygulamaları, eksik dişlerin tamamlanması ve çiğneme konforunun artırılması amacıyla planlanır. Tam ve kısmi seçenekler değerlendirilir.",
       descriptionEn:
         "Dental prosthetics are planned to restore missing teeth and improve chewing comfort. Both full and partial options can be evaluated.",
       iconName: "tooth",
@@ -166,12 +166,12 @@ async function main() {
     },
     {
       slug: "cocuk-dis-hekimligi",
-      nameTr: "Cocuk Dis Hekimligi",
+      nameTr: "Çocuk Diş Hekimliği",
       nameEn: "Pediatric Dentistry",
-      shortDescTr: "Cocuklar icin sakin ve koruyucu dis bakimi",
+      shortDescTr: "Çocuklar için sakin ve koruyucu diş bakımı",
       shortDescEn: "Calm and preventive dental care for children",
       descriptionTr:
-        "Cocuk dis hekimligi, sut dislerinden kalici dislere gecis surecine kadar cocuklarin agiz ve dis sagligini korumaya odaklanir.",
+        "Çocuk diş hekimliği, süt dişlerinden kalıcı dişlere geçiş sürecine kadar çocukların ağız ve diş sağlığını korumaya odaklanır.",
       descriptionEn:
         "Pediatric dentistry focuses on protecting children's oral health from early teeth through the transition to permanent teeth.",
       iconName: "child",
@@ -196,10 +196,10 @@ async function main() {
       slug: "dr-ayse-kaya",
       nameTr: "Dr. Ayse Kaya",
       nameEn: "Dr. Ayse Kaya",
-      titleTr: "Dis Hekimi, Implantoloji Uzmani",
+      titleTr: "Diş Hekimi, İmplantoloji Uzmanı",
       titleEn: "Dentist, Implantology Specialist",
       biographyTr:
-        "Dr. Ayse Kaya, implant ve estetik dis hekimligi alanlarinda deneyimli bir klinik uzmandir. Hastalarina acik bilgilendirme ve planli tedavi sureci sunmayi onceliklendirir.",
+        "Dr. Ayşe Kaya, implant planlaması ve estetik diş hekimliği alanlarında deneyimli bir klinik uzmandır. Açık bilgilendirme ve planlı tedavi sürecini önceliklendirir.",
       biographyEn:
         "Dr. Ayse Kaya is an experienced clinician in implant and aesthetic dentistry. She prioritizes clear communication and a structured treatment process.",
       photoUrl: "/images/specialists/doctor-ayse.jpg",
@@ -209,10 +209,10 @@ async function main() {
       slug: "dr-mehmet-yilmaz",
       nameTr: "Dr. Mehmet Yilmaz",
       nameEn: "Dr. Mehmet Yilmaz",
-      titleTr: "Ortodonti Uzmani",
+      titleTr: "Ortodonti Uzmanı",
       titleEn: "Orthodontics Specialist",
       biographyTr:
-        "Dr. Mehmet Yilmaz, ortodontik planlama, dis teli ve seffaf plak sureclerinde hastalarina duzenli takip ve anlasilir yonlendirme saglar.",
+        "Dr. Mehmet Yılmaz, ortodontik planlama, diş teli ve şeffaf plak süreçlerinde hastalarına düzenli takip ve anlaşılır yönlendirme sağlar.",
       biographyEn:
         "Dr. Mehmet Yilmaz provides structured follow-up and clear guidance across orthodontic planning, braces, and clear aligner treatments.",
       photoUrl: "/images/specialists/doctor-mehmet.jpg",
@@ -222,10 +222,10 @@ async function main() {
       slug: "dr-fatma-demir",
       nameTr: "Dr. Fatma Demir",
       nameEn: "Dr. Fatma Demir",
-      titleTr: "Cocuk Dis Hekimi",
+      titleTr: "Çocuk Diş Hekimi",
       titleEn: "Pediatric Dentist",
       biographyTr:
-        "Dr. Fatma Demir, cocuk hastalar icin sakin, guven veren ve koruyucu bakim odakli bir yaklasim benimser.",
+        "Dr. Fatma Demir, çocuk hastalar için sakin, güven veren ve koruyucu bakım odaklı bir yaklaşım benimser.",
       biographyEn:
         "Dr. Fatma Demir takes a calm, reassuring, and preventive care-focused approach for pediatric patients.",
       photoUrl: "/images/specialists/doctor-fatma.jpg",
@@ -287,39 +287,40 @@ async function main() {
   }
   console.log("Working hours seeded");
 
+  await prisma.fAQItem.deleteMany();
   const faqs = [
     {
-      questionTr: "Randevu nasil alirim?",
+      questionTr: "Online randevu nasıl alabilirim?",
       questionEn: "How do I make an appointment?",
-      answerTr: "Web sitesi uzerinden online talep olusturabilir, telefonla arayabilir veya WhatsApp ile iletisime gecebilirsiniz.",
+      answerTr: "Web sitesi üzerinden hizmet, uzman ve uygun tarih seçerek online randevu talebi oluşturabilirsiniz. İsterseniz telefon veya WhatsApp üzerinden de bize ulaşabilirsiniz.",
       answerEn: "You can create an online request through the website, call by phone, or contact us via WhatsApp.",
       order: 1,
     },
     {
       questionTr: "Randevumu iptal edebilir miyim?",
       questionEn: "Can I cancel my appointment?",
-      answerTr: "Evet, aktif randevunuzu telefon numaraniz ve ad-soyad bilginiz ile sistem uzerinden iptal edebilirsiniz.",
+      answerTr: "Evet. Aktif randevunuzu ad-soyad, telefon numarası ve randevu tarihiniz ile sistem üzerinden iptal edebilirsiniz.",
       answerEn: "Yes, you can cancel your active appointment through the system using your phone number and full name.",
       order: 2,
     },
     {
-      questionTr: "Sigorta kapsaminda tedavi yapiyor musunuz?",
+      questionTr: "Tedavi ücretleri ve ödeme seçenekleri hakkında nasıl bilgi alabilirim?",
       questionEn: "Do you provide treatment under insurance?",
-      answerTr: "Anlasmali kurum ve odeme detaylari icin klinik ile dogrudan iletisime gecebilirsiniz.",
+      answerTr: "Muayene sonrası oluşturulan tedavi planına göre ücretlendirme paylaşılır. Detaylı bilgi için kliniğimizle doğrudan iletişime geçebilirsiniz.",
       answerEn: "Please contact the clinic directly for information about insurance and payment details.",
       order: 3,
     },
     {
-      questionTr: "Dis beyazlatma kalici midir?",
+      questionTr: "Diş beyazlatma kalıcı mıdır?",
       questionEn: "Is teeth whitening permanent?",
-      answerTr: "Dis beyazlatma kalici bir islem degildir; ancak bakim aliskanliklarina gore etkisi uzun sure korunabilir.",
+      answerTr: "Diş beyazlatma kalıcı bir işlem değildir; ancak kişisel bakım alışkanlıklarına göre etkisi uzun süre korunabilir.",
       answerEn: "Teeth whitening is not permanent, but the effect can be preserved for a long time depending on care habits.",
       order: 4,
     },
     {
-      questionTr: "Implant tedavisi agrili midir?",
+      questionTr: "İmplant tedavisi ağrılı mıdır?",
       questionEn: "Is implant treatment painful?",
-      answerTr: "Implant islemleri lokal anestezi altinda planlanir. Surec ve sonrasindaki konfor hakkinda ayrintili bilgilendirme yapilir.",
+      answerTr: "İmplant uygulamaları lokal anestezi altında planlanır. Süreç öncesinde ve sonrasında konforu artırmak için ayrıntılı bilgilendirme yapılır.",
       answerEn: "Implant procedures are planned under local anesthesia. Detailed guidance is provided about comfort during and after treatment.",
       order: 5,
     },
@@ -330,19 +331,20 @@ async function main() {
   }
   console.log("FAQ seeded");
 
+  await prisma.review.deleteMany();
   const reviews = [
     {
-      patientName: "Elif Sahin",
+      patientName: "Elif Şahin",
       ratingStars: 5,
-      contentTr: "Randevu akisi cok duzenliydi. Tedavi sureci oncesinde tum detaylar acikca anlatildi.",
+      contentTr: "İlk muayeneden itibaren süreç çok düzenli ilerledi. Tedavi planı ve seans içeriği açık şekilde anlatıldı.",
       contentEn: "The appointment flow was very organized. Every step of the treatment was explained clearly beforehand.",
       isApproved: true,
       isVisible: true,
     },
     {
-      patientName: "Ahmet Celik",
+      patientName: "Ahmet Çelik",
       ratingStars: 5,
-      contentTr: "Klinik ortami sakin ve temizdi. Hekim ve ekip iletisim konusunda cok ilgiliydi.",
+      contentTr: "Klinik ortamı temiz ve sakindi. Hekim ve ekip, iletişim konusunda oldukça ilgiliydi.",
       contentEn: "The clinic environment was calm and clean. The clinician and team were very attentive in communication.",
       isApproved: true,
       isVisible: true,
@@ -350,15 +352,15 @@ async function main() {
     {
       patientName: "Zeynep Arslan",
       ratingStars: 5,
-      contentTr: "Online randevu talebi olusturmak kolaydi. Geri donus hizli ve acik oldu.",
+      contentTr: "Online randevu talebi oluşturmak kolaydı. Kısa sürede dönüş sağlandı ve süreç net şekilde aktarıldı.",
       contentEn: "Creating an online appointment request was easy. The follow-up was quick and clear.",
       isApproved: true,
       isVisible: true,
     },
     {
-      patientName: "Mustafa Ozturk",
+      patientName: "Mustafa Öztürk",
       ratingStars: 4,
-      contentTr: "Tedavi oncesi bilgilendirme guven vericiydi. Surec planli sekilde ilerledi.",
+      contentTr: "Tedavi öncesi bilgilendirme güven vericiydi. Süreç planlı şekilde ilerledi ve kontrol randevuları düzenli hatırlatıldı.",
       contentEn: "The pre-treatment guidance was reassuring. The process moved forward in a planned way.",
       isApproved: true,
       isVisible: true,

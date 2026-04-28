@@ -1,12 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import type { ActionResult } from "@/types";
-
 import { useActionState, startTransition, useEffect, useState } from "react";
 import { updateSettingsAction } from "@/actions/settings";
 import { getGoogleMapsEmbedError } from "@/lib/maps";
-import type { SiteSettings } from "@/types";
+import type { ActionResult, SiteSettings } from "@/types";
 
 const initialState: ActionResult = { success: false };
 
@@ -138,9 +136,7 @@ export default function AdminSettingsClient({ settings }: Props) {
       <h1 className="mb-6 text-2xl font-bold text-gray-900">Site Ayarları</h1>
 
       {state.error ? <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{state.error}</div> : null}
-      {state.success ? (
-        <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">Ayarlar kaydedildi</div>
-      ) : null}
+      {state.success ? <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">Ayarlar kaydedildi</div> : null}
 
       <form
         action={(fd) => {
@@ -157,8 +153,8 @@ export default function AdminSettingsClient({ settings }: Props) {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Klinik Adı (TR)" name="clinicName" defaultValue={settings.clinicName} />
             <Field label="Klinik Adı (EN)" name="clinicNameEn" defaultValue={settings.clinicNameEn} />
-            <Field label="Telefon" name="phone" defaultValue={settings.phone} placeholder="+90 312 000 00 00" />
-            <Field label="WhatsApp" name="whatsapp" defaultValue={settings.whatsapp} placeholder="+905320000000" />
+            <Field label="Telefon" name="phone" defaultValue={settings.phone} placeholder="+90 342 555 27 27" />
+            <Field label="WhatsApp" name="whatsapp" defaultValue={settings.whatsapp} placeholder="+905325552727" />
             <Field label="E-posta" name="email" defaultValue={settings.email} type="email" />
           </div>
           <Field label="Adres (TR)" name="address" defaultValue={settings.address} />
@@ -173,7 +169,7 @@ export default function AdminSettingsClient({ settings }: Props) {
               placeholder="https://www.google.com/maps/embed?..."
             />
             <p className="mt-2 text-xs leading-relaxed text-slate-500">
-              Yalnizca Google Maps icindeki <strong>Harita yerlestir</strong> adimindan gelen <code>maps/embed</code> linkini kullanin. Link bos birakilirsa ya da gecersiz olursa sitede guvenli placeholder gorunur.
+              Yalnızca Google Maps içindeki <strong>Harita yerleştir</strong> adımından gelen <code>maps/embed</code> bağlantısını kullanın. Link boş bırakılırsa ya da geçersiz olursa sitede güvenli placeholder görünür.
             </p>
             {mapEmbedError ? (
               <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
@@ -187,7 +183,7 @@ export default function AdminSettingsClient({ settings }: Props) {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Instagram URL" name="instagram" defaultValue={settings.instagram} placeholder="https://instagram.com/..." />
             <Field label="Facebook URL" name="facebook" defaultValue={settings.facebook} placeholder="https://facebook.com/..." />
-            <Field label="Twitter/X URL" name="twitter" defaultValue={settings.twitter} placeholder="https://twitter.com/..." />
+            <Field label="Twitter / X URL" name="twitter" defaultValue={settings.twitter} placeholder="https://twitter.com/..." />
           </div>
         </Section>
 

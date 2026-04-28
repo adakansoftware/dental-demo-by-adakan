@@ -23,7 +23,7 @@ export function buildConfirmationMessage(
     return `Dear ${patientName}, your appointment at ${clinicName} on ${date} at ${time} has been confirmed. For info: ${phone}`;
   }
 
-  return `Sayin ${patientName}, ${clinicName} kliniginde ${date} tarihinde saat ${time}'deki randevunuz onaylanmistir. Bilgi: ${phone}`;
+  return `Sayın ${patientName}, ${clinicName} kliniğinde ${date} tarihinde saat ${time}'deki randevunuz onaylanmıştır. Bilgi: ${phone}`;
 }
 
 export function buildReminderMessage(
@@ -38,7 +38,7 @@ export function buildReminderMessage(
     return `Dear ${patientName}, this is a reminder for your appointment at ${clinicName} tomorrow (${date}) at ${time}. For info: ${phone}`;
   }
 
-  return `Sayin ${patientName}, ${clinicName} klinigindeki yarinki randevunuzu (${date} - ${time}) hatirlatmak istedik. Bilgi: ${phone}`;
+  return `Sayın ${patientName}, ${clinicName} kliniğindeki yarınki randevunuzu (${date} - ${time}) hatırlatmak istedik. Bilgi: ${phone}`;
 }
 
 export function buildCancellationMessage(
@@ -53,7 +53,7 @@ export function buildCancellationMessage(
     return `Dear ${patientName}, your appointment at ${clinicName} on ${date} at ${time} has been cancelled. For info: ${phone}`;
   }
 
-  return `Sayin ${patientName}, ${clinicName} kliniginde ${date} tarihinde saat ${time}'deki randevunuz iptal edilmistir. Bilgi: ${phone}`;
+  return `Sayın ${patientName}, ${clinicName} kliniğinde ${date} tarihinde saat ${time}'deki randevunuz iptal edilmiştir. Bilgi: ${phone}`;
 }
 
 async function sendNetgsm(phone: string, message: string): Promise<string> {

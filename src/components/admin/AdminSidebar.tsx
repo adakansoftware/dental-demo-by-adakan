@@ -10,16 +10,16 @@ interface Props {
 }
 
 const navItems = [
-  { href: "/admin", label: "Genel Bakis", badge: "GB", exact: true },
+  { href: "/admin", label: "Genel Bakış", badge: "GB", exact: true },
   { href: "/admin/appointments", label: "Randevular", badge: "RN" },
   { href: "/admin/services", label: "Hizmetler", badge: "HZ" },
   { href: "/admin/specialists", label: "Uzmanlar", badge: "UZ" },
-  { href: "/admin/working-hours", label: "Calisma Saatleri", badge: "CS" },
+  { href: "/admin/working-hours", label: "Çalışma Saatleri", badge: "CS" },
   { href: "/admin/blocked-slots", label: "Bloke Slotlar", badge: "BS" },
   { href: "/admin/faq", label: "SSS", badge: "SS" },
   { href: "/admin/reviews", label: "Yorumlar", badge: "YR" },
-  { href: "/admin/contact-requests", label: "Iletisim", badge: "IL" },
-  { href: "/admin/settings", label: "Site Ayarlari", badge: "AY" },
+  { href: "/admin/contact-requests", label: "İletişim", badge: "IL" },
+  { href: "/admin/settings", label: "Site Ayarları", badge: "AY" },
 ];
 
 export default function AdminSidebar({ adminName }: Props) {
@@ -40,7 +40,7 @@ export default function AdminSidebar({ adminName }: Props) {
             </div>
           </div>
           <p className="text-sm leading-relaxed text-[color:var(--text-secondary)]">
-            Klinik operasyonlarini daha sakin ve duzenli bir panelden yonetin.
+            Klinik operasyonlarını daha sakin ve düzenli bir panelden yönetin.
           </p>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function AdminSidebar({ adminName }: Props) {
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-[rgba(239,233,225,0.9)] text-[10px] font-semibold tracking-[0.12em] text-[color:var(--accent-main)]">
             WS
           </span>
-          <span>Siteyi Ac</span>
+          <span>Siteyi Aç</span>
         </Link>
         <form
           action={() => {
@@ -78,7 +78,7 @@ export default function AdminSidebar({ adminName }: Props) {
             <span className="grid h-8 w-8 place-items-center rounded-xl bg-red-50 text-[10px] font-semibold tracking-[0.12em] text-red-500">
               CK
             </span>
-            <span>Cikis Yap</span>
+            <span>Çıkış Yap</span>
           </button>
         </form>
       </div>

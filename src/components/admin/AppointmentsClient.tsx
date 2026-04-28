@@ -38,9 +38,9 @@ interface Props {
 const STATUS_OPTS = ["ALL", "PENDING", "CONFIRMED", "CANCELLED", "COMPLETED"];
 const STATUS_LABELS: Record<string, string> = {
   PENDING: "Bekliyor",
-  CONFIRMED: "Onaylandi",
-  CANCELLED: "Iptal",
-  COMPLETED: "Tamamlandi",
+  CONFIRMED: "Onaylandı",
+  CANCELLED: "İptal Edildi",
+  COMPLETED: "Tamamlandı",
 };
 const STATUS_BADGE: Record<string, string> = {
   PENDING: "badge-pending",
@@ -64,7 +64,7 @@ function AppointmentModal({ apt, onClose }: { apt: AppointmentItem; onClose: () 
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-gray-100 p-6">
-          <h2 className="text-lg font-bold text-gray-900">Randevu Detayi</h2>
+          <h2 className="text-lg font-bold text-gray-900">Randevu Detayı</h2>
           <button onClick={onClose} className="text-2xl leading-none text-gray-400 hover:text-gray-600">
             &times;
           </button>
@@ -75,7 +75,7 @@ function AppointmentModal({ apt, onClose }: { apt: AppointmentItem; onClose: () 
             <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{state.error}</div>
           ) : null}
           {state.success ? (
-            <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">Guncellendi</div>
+            <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">Güncellendi</div>
           ) : null}
 
           <div className="grid grid-cols-2 gap-3 text-sm">
@@ -87,7 +87,7 @@ function AppointmentModal({ apt, onClose }: { apt: AppointmentItem; onClose: () 
               ["Uzman", apt.specialist.nameTr],
               ["Tarih/Saat", `${new Date(apt.date).toLocaleDateString("tr-TR")} ${apt.startTime}-${apt.endTime}`],
               ["Dil", apt.patientLanguage],
-              ["SMS", apt.smsSent ? "Gonderildi" : "Gonderilmedi"],
+              ["SMS", apt.smsSent ? "Gönderildi" : "Gönderilmedi"],
             ].map(([label, value]) => (
               <div key={label}>
                 <span className="text-xs text-gray-500">{label}</span>
@@ -122,7 +122,7 @@ function AppointmentModal({ apt, onClose }: { apt: AppointmentItem; onClose: () 
                   </option>
                 ))}
               </select>
-              <p className="mt-2 text-xs text-gray-500">Sadece izin verilen durum gecisleri listelenir.</p>
+              <p className="mt-2 text-xs text-gray-500">Sadece izin verilen durum geçişleri listelenir.</p>
             </div>
 
             <div>
@@ -177,7 +177,7 @@ export default function AppointmentsClient({ appointments }: Props) {
               }`}
               style={statusFilter === status ? { background: "var(--color-primary)" } : {}}
             >
-              {status === "ALL" ? "Tumu" : STATUS_LABELS[status]}
+              {status === "ALL" ? "Tümü" : STATUS_LABELS[status]}
             </button>
           ))}
         </div>
@@ -199,7 +199,7 @@ export default function AppointmentsClient({ appointments }: Props) {
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-500">
-                    Randevu bulunamadi
+                    Randevu bulunamadı
                   </td>
                 </tr>
               ) : (

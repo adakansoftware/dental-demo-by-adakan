@@ -40,16 +40,16 @@ export default function PublicFooter({ settings }: Props) {
               </div>
               <h2 className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-[color:var(--text-primary)] md:text-[2rem]">
                 {lang === "tr"
-                  ? "Tedaviye dair ilk sorulariniz icin sakin ve net bir iletisim alani"
+                  ? "Tedaviye dair ilk sorularınız için sakin ve net bir iletişim alanı"
                   : "A calm and clear contact space for your first treatment questions"}
               </h2>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
               <Link href="/appointment" className="btn-primary">
-                {lang === "tr" ? "Online Randevu" : "Book Appointment"}
+                {lang === "tr" ? "Online Randevu Al" : "Book Appointment"}
               </Link>
               <Link href="/contact" className="btn-ghost">
-                {lang === "tr" ? "Iletisime Gecin" : "Contact Us"}
+                {lang === "tr" ? "İletişime Geçin" : "Contact Us"}
               </Link>
             </div>
           </div>
@@ -78,7 +78,7 @@ export default function PublicFooter({ settings }: Props) {
 
             <p className="text-sm leading-relaxed text-[color:var(--text-secondary)]">
               {lang === "tr"
-                ? "Sakin, acik ve guven veren bir klinik deneyimi sunmak icin calisiyoruz."
+                ? "Sakin, açık ve güven veren bir klinik deneyimi sunmak için çalışıyoruz."
                 : "We focus on a calm, clear, and reassuring clinical experience."}
             </p>
           </div>

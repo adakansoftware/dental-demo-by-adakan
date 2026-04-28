@@ -40,24 +40,24 @@ export default async function AdminDashboard() {
 
   const statusLabels: Record<string, string> = {
     PENDING: "Bekliyor",
-    CONFIRMED: "Onaylandi",
-    CANCELLED: "Iptal",
-    COMPLETED: "Tamamlandi",
+    CONFIRMED: "Onaylandı",
+    CANCELLED: "İptal Edildi",
+    COMPLETED: "Tamamlandı",
   };
 
   const completionRate = weekCount > 0 ? Math.max(0, Math.min(100, Math.round(((weekCount - pendingCount) / weekCount) * 100))) : 0;
 
   const stats = [
-    { label: "Bugunku Randevular", value: todayCount, accent: "text-cyan-700" },
+    { label: "Bugünkü Randevular", value: todayCount, accent: "text-cyan-700" },
     { label: "Bu Hafta", value: weekCount, accent: "text-sky-700" },
     { label: "Bekleyen", value: pendingCount, accent: "text-amber-600" },
-    { label: "Okunmamis Mesaj", value: unreadContacts, accent: "text-violet-700" },
+    { label: "Okunmamış Mesaj", value: unreadContacts, accent: "text-violet-700" },
   ];
 
   const attentionItems = [
     { label: "Onay bekleyen randevu", value: pendingCount, tone: pendingCount > 0 ? "text-amber-600" : "text-emerald-600" },
-    { label: "Okunmamis mesaj", value: unreadContacts, tone: unreadContacts > 0 ? "text-amber-600" : "text-emerald-600" },
-    { label: "Haftalik tamamlanma ritmi", value: `${completionRate}%`, tone: "text-slate-900" },
+    { label: "Okunmamış mesaj", value: unreadContacts, tone: unreadContacts > 0 ? "text-amber-600" : "text-emerald-600" },
+    { label: "Haftalık tamamlanma ritmi", value: `${completionRate}%`, tone: "text-slate-900" },
   ];
 
   return (
@@ -65,10 +65,10 @@ export default async function AdminDashboard() {
       <div className="surface-panel relative overflow-hidden p-7 md:p-8">
         <div className="absolute inset-y-0 right-0 w-72 bg-cyan-400/10 blur-3xl" />
         <div className="relative z-10">
-          <div className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Operasyon Ozeti</div>
+          <div className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Operasyon Özeti</div>
           <h1 className="mb-2 text-3xl font-bold tracking-[-0.04em] text-gray-900">Dashboard</h1>
           <p className="max-w-2xl text-slate-600">
-            Gunluk yogunlugu, bekleyen aksiyonlari ve operasyon ritmini tek bakista takip edebileceginiz yonetim gorunumu.
+            Günlük yoğunluğu, bekleyen aksiyonları ve operasyon ritmini tek bakışta takip edebileceğiniz yönetim görünümü.
           </p>
         </div>
       </div>
@@ -85,9 +85,9 @@ export default async function AdminDashboard() {
       <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="surface-panel p-6">
           <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Operasyon Kalitesi</div>
-          <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-slate-900">Gunluk akista ilk bakista risk gorunurlugu</h2>
+          <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-slate-900">Günlük akışta ilk bakışta risk görünürlüğü</h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-600">
-            Panel; bekleyen randevular, okunmamis mesajlar ve haftalik operasyon ritmini tek alanda gorunur tutar.
+            Panel; bekleyen randevular, okunmamış mesajlar ve haftalık operasyon ritmini tek alanda görünür tutar.
           </p>
         </div>
 
@@ -105,13 +105,13 @@ export default async function AdminDashboard() {
 
       <div className="surface-panel overflow-hidden">
         <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
-          <h2 className="text-lg font-semibold tracking-[-0.02em] text-gray-900">Yaklasan Randevular</h2>
+          <h2 className="text-lg font-semibold tracking-[-0.02em] text-gray-900">Yaklaşan Randevular</h2>
           <a href="/admin/appointments" className="text-sm font-medium" style={{ color: "var(--color-primary)" }}>
-            Tumunu Gor -&gt;
+            Tümünü Gör -&gt;
           </a>
         </div>
         {recentAppointments.length === 0 ? (
-          <div className="px-6 py-10 text-center text-sm text-gray-500">Yaklasan randevu yok</div>
+          <div className="px-6 py-10 text-center text-sm text-gray-500">Yaklaşan randevu yok</div>
         ) : (
           <div className="divide-y divide-gray-50">
             {recentAppointments.map((appointment) => (
