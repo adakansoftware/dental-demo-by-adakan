@@ -61,7 +61,7 @@ async function main() {
     {
       key: "aboutTextTr",
       value:
-        "Adakan Dental Klinik, muayeneden tedavi planlamasına kadar her adımda güven veren, sakin ve şeffaf bir hasta deneyimi sunmak için kurgulanmıştır. Estetik diş hekimliği, implant planlaması, çocuk diş sağlığı ve koruyucu bakım süreçleri kişiye özel değerlendirme ile ele alınır.",
+        "Adakan Dental Klinik, muayeneden tedavi planlamasına kadar her adımda güven veren, sakin ve şeffaf bir hasta deneyimi sunmak için kurgulanmıştır. Estetik diş hekimliği, İmplant planlaması, çocuk diş sağlığı ve koruyucu bakım süreçleri kişiye özel değerlendirme ile ele alınır.",
     },
     {
       key: "aboutTextEn",
@@ -96,7 +96,7 @@ async function main() {
   const services = [
     {
       slug: "implant",
-      nameTr: "Implant Tedavisi",
+      nameTr: "İmplant Tedavisi",
       nameEn: "Implant Treatment",
       shortDescTr: "Eksik dişler için planlı, estetik ve kalıcı çözüm",
       shortDescEn: "A reliable and lasting solution for missing teeth",
@@ -199,7 +199,7 @@ async function main() {
       titleTr: "Diş Hekimi, İmplantoloji Uzmanı",
       titleEn: "Dentist, Implantology Specialist",
       biographyTr:
-        "Dr. Ayşe Kaya, implant planlaması ve estetik diş hekimliği alanlarında deneyimli bir klinik uzmandır. Açık bilgilendirme ve planlı tedavi sürecini önceliklendirir.",
+        "Dr. Ayşe Kaya, İmplant planlaması ve estetik diş hekimliği alanlarında deneyimli bir klinik uzmandır. Açık bilgilendirme ve planlı tedavi sürecini önceliklendirir.",
       biographyEn:
         "Dr. Ayse Kaya is an experienced clinician in implant and aesthetic dentistry. She prioritizes clear communication and a structured treatment process.",
       photoUrl: "/images/specialists/doctor-ayse.jpg",
