@@ -223,7 +223,7 @@ export default function PublicNavbar({ settings, hoursLabel }: Props) {
 
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
               <button onClick={toggleLang} className="btn-ghost w-full">
-                {lang === "tr" ? "English" : "Turkce"}
+                {lang === "tr" ? "English" : "Türkçe"}
               </button>
               {whatsappHref ? (
                 <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full text-center">

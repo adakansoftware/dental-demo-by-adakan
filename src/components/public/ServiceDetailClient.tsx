@@ -46,14 +46,14 @@ export default function ServiceDetailClient({ service }: Props) {
   const description = lang === "tr" ? service.descriptionTr : service.descriptionEn;
   const shortDescription = lang === "tr" ? service.shortDescTr : service.shortDescEn;
   const notes = [
-    lang === "tr" ? "Tedavi kapsami muayene sonrasinda netlestirilir." : "The exact treatment scope is clarified after consultation.",
-    lang === "tr" ? "Sure ve planlama hasta ihtiyacina gore sekillenir." : "Duration and planning are shaped around patient needs.",
-    lang === "tr" ? "Randevu oncesi on bilgi icin klinikle iletisime gecebilirsiniz." : "You can contact the clinic for preliminary information before booking.",
+    lang === "tr" ? "Tedavi kapsamı muayene sonrasında netleştirilir." : "The exact treatment scope is clarified after consultation.",
+    lang === "tr" ? "Süre ve planlama hasta ihtiyacına göre şekillenir." : "Duration and planning are shaped around patient needs.",
+    lang === "tr" ? "Randevu öncesi ön bilgi için klinikle iletişime geçebilirsiniz." : "You can contact the clinic for preliminary information before booking.",
   ];
 
   return (
     <>
-      <PageHero kicker={lang === "tr" ? "Hizmet Detayi" : "Service Detail"} title={name} subtitle={shortDescription}>
+      <PageHero kicker={lang === "tr" ? "Hizmet Detayı" : "Service Detail"} title={name} subtitle={shortDescription}>
         <div className="hero-panel p-3 md:p-4">
           <div className="media-frame">
             <Image
@@ -74,7 +74,7 @@ export default function ServiceDetailClient({ service }: Props) {
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.06fr)_minmax(19rem,0.94fr)]">
             <div className="space-y-8">
               <div className="editorial-panel p-8 md:p-10">
-                <SectionIntro title={lang === "tr" ? `${name} hakkinda genel bilgi` : `General information about ${name}`} />
+                <SectionIntro title={lang === "tr" ? `${name} hakkında genel bilgi` : `General information about ${name}`} />
                 <p className="whitespace-pre-line text-base leading-relaxed text-[color:var(--text-secondary)] md:text-lg">{description}</p>
               </div>
 
@@ -94,7 +94,7 @@ export default function ServiceDetailClient({ service }: Props) {
               <div className="editorial-panel p-6">
                 <div className="space-y-3">
                   <div className="summary-row">
-                    <span className="text-[color:var(--text-secondary)]">{lang === "tr" ? "Tahmini sure" : "Estimated duration"}</span>
+                    <span className="text-[color:var(--text-secondary)]">{lang === "tr" ? "Tahmini süre" : "Estimated duration"}</span>
                     <strong className="text-[color:var(--text-primary)]">
                       {service.durationMinutes} {t("services", "minutes", lang)}
                     </strong>
@@ -102,7 +102,7 @@ export default function ServiceDetailClient({ service }: Props) {
                   <div className="summary-row">
                     <span className="text-[color:var(--text-secondary)]">{lang === "tr" ? "Planlama" : "Planning"}</span>
                     <span className="text-[color:var(--text-primary)]">
-                      {lang === "tr" ? "Muayene ve degerlendirme sonrasinda" : "After consultation and evaluation"}
+                      {lang === "tr" ? "Muayene ve değerlendirme sonrasında" : "After consultation and evaluation"}
                     </span>
                   </div>
                 </div>
@@ -112,7 +112,7 @@ export default function ServiceDetailClient({ service }: Props) {
                     {lang === "tr" ? "Online Randevu" : "Book Appointment"}
                   </Link>
                   <Link href="/contact" className="btn-ghost">
-                    {lang === "tr" ? "Iletisim" : "Contact"}
+                    {lang === "tr" ? "İletişim" : "Contact"}
                   </Link>
                 </div>
               </div>
@@ -120,7 +120,7 @@ export default function ServiceDetailClient({ service }: Props) {
               {service.specialistServices.length > 0 ? (
                 <div className="surface-panel p-6">
                   <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--accent-main)]">
-                    {lang === "tr" ? "Ilgili Uzmanlar" : "Related Specialists"}
+                    {lang === "tr" ? "İlgili Uzmanlar" : "Related Specialists"}
                   </div>
                   <div className="space-y-4">
                     {service.specialistServices.map(({ specialist }) => (

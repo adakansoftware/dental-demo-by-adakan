@@ -24,7 +24,7 @@ export default function FAQClient({ faqs }: Props) {
         minimal
       >
         <div className="hero-panel hero-panel--compact p-6 text-sm leading-relaxed text-[color:var(--text-secondary)]">
-          {lang === "tr" ? "Sik sorulan basliklar daha sakin bir okuma akisi ile listelenir." : "Frequently asked topics are listed in a calmer reading flow."}
+          {lang === "tr" ? "Sık sorulan başlıklar daha sakin bir okuma akışı ile listelenir." : "Frequently asked topics are listed in a calmer reading flow."}
         </div>
       </PageHero>
 
@@ -33,7 +33,7 @@ export default function FAQClient({ faqs }: Props) {
           <div className="mx-auto max-w-4xl">
             {faqs.length === 0 ? (
               <div className="surface-panel p-10 text-center text-[color:var(--text-secondary)]">
-                {lang === "tr" ? "Henuz SSS eklenmemis." : "No FAQ items yet."}
+                {lang === "tr" ? "Henüz SSS eklenmemiş." : "No FAQ items yet."}
               </div>
             ) : (
               <div className="space-y-4">
@@ -52,7 +52,7 @@ export default function FAQClient({ faqs }: Props) {
                           </div>
                         </div>
                         <span className="mt-1 text-sm uppercase tracking-[0.18em] text-[color:var(--accent-main)]">
-                          {active ? (lang === "tr" ? "Kapat" : "Close") : lang === "tr" ? "Ac" : "Open"}
+                          {active ? (lang === "tr" ? "Kapat" : "Close") : lang === "tr" ? "Aç" : "Open"}
                         </span>
                       </button>
 

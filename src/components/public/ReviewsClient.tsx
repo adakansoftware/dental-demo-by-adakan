@@ -72,7 +72,7 @@ export default function ReviewsClient({ data }: Props) {
         <div className="section-shell">
           {reviews.length === 0 ? (
             <div className="surface-panel p-12 text-center text-[color:var(--text-secondary)]">
-              {lang === "tr" ? "Henuz onayli yorum bulunmuyor." : "There are no approved reviews yet."}
+              {lang === "tr" ? "Henüz onaylı yorum bulunmuyor." : "There are no approved reviews yet."}
             </div>
           ) : (
             <>
@@ -80,16 +80,16 @@ export default function ReviewsClient({ data }: Props) {
                 title={
                   source === "google"
                     ? lang === "tr"
-                      ? "Google yorumlari sakin ve guven veren bir duzende sunuluyor"
+                      ? "Google yorumları sakin ve güven veren bir düzende sunuluyor"
                       : "Google reviews are presented in a calm, trust-building layout"
                     : lang === "tr"
-                      ? "Yorumlar sakin ve guven veren bir duzende sunuluyor"
+                      ? "Yorumlar sakin ve güven veren bir düzende sunuluyor"
                       : "Reviews are presented in a calm, trust-building layout"
                 }
                 subtitle={
                   placeName
                     ? lang === "tr"
-                      ? `${placeName} icin yayinlanan gercek kullanici yorumlari.`
+                      ? `${placeName} için yayınlanan gerçek kullanıcı yorumları.`
                       : `Real user reviews published for ${placeName}.`
                     : undefined
                 }
@@ -136,23 +136,23 @@ export default function ReviewsClient({ data }: Props) {
             <h2 className="text-center text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
               {source === "google"
                 ? lang === "tr"
-                  ? "Google uzerinden tum yorumlari inceleyin"
+                  ? "Google üzerinden tüm yorumları inceleyin"
                   : "See all reviews on Google"
                 : t("reviews", "writeReview", lang)}
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-center text-sm leading-relaxed text-[color:var(--text-secondary)]">
               {source === "google"
                 ? lang === "tr"
-                  ? "Sitede gosterilen yorumlar Google Places uzerinden alinmaktadir. Tam listeyi ve yorum detaylarini Google'da gorebilirsiniz."
+                  ? "Sitede gösterilen yorumlar Google Places üzerinden alınmaktadır. Tam listeyi ve yorum detaylarını Google'da görebilirsiniz."
                   : "The reviews shown on this site are fetched from Google Places. You can view the full list and review details on Google."
                 : lang === "tr"
-                  ? "Google Places ayarlari tanimlanana kadar mevcut yorumlar gosterilmeye devam eder."
+                  ? "Google Places ayarları tanımlanana kadar mevcut yorumlar gösterilmeye devam eder."
                   : "Existing reviews continue to be shown until Google Places settings are configured."}
             </p>
             {placeUrl ? (
               <div className="mt-6 flex justify-center">
                 <a href={placeUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
-                  {lang === "tr" ? "Google Yorumlarini Ac" : "Open Google Reviews"}
+                  {lang === "tr" ? "Google Yorumlarını Aç" : "Open Google Reviews"}
                 </a>
               </div>
             ) : null}

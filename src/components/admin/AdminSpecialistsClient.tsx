@@ -52,7 +52,7 @@ function SpecialistForm({ specialist, onClose }: { specialist?: SpecialistItem; 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-[rgba(217,210,200,0.84)] bg-[rgba(251,250,247,0.98)] shadow-2xl" onMouseDown={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[rgba(217,210,200,0.84)] p-6">
-          <h2 className="font-bold text-[color:var(--text-primary)]">{specialist ? "Uzman Duzenle" : "Yeni Uzman"}</h2>
+          <h2 className="font-bold text-[color:var(--text-primary)]">{specialist ? "Uzman Düzenle" : "Yeni Uzman"}</h2>
           <button onClick={onClose} className="text-2xl text-gray-400 hover:text-gray-600">&times;</button>
         </div>
         <form action={(fd) => startTransition(() => void formAction(fd))} className="space-y-4 p-6">
@@ -66,11 +66,11 @@ function SpecialistForm({ specialist, onClose }: { specialist?: SpecialistItem; 
               <input name="slug" defaultValue={specialist?.slug} className="form-input" required placeholder="dr-ad-soyad" />
             </div>
             <div>
-              <label className="form-label">Adi (TR)</label>
+              <label className="form-label">Adı (TR)</label>
               <input name="nameTr" defaultValue={specialist?.nameTr} className="form-input" required />
             </div>
             <div>
-              <label className="form-label">Adi (EN)</label>
+              <label className="form-label">Adı (EN)</label>
               <input name="nameEn" defaultValue={specialist?.nameEn} className="form-input" required />
             </div>
             <div>
@@ -90,7 +90,7 @@ function SpecialistForm({ specialist, onClose }: { specialist?: SpecialistItem; 
               <textarea name="biographyEn" defaultValue={specialist?.biographyEn} className="form-input min-h-[80px]" required />
             </div>
             <div className="col-span-2">
-              <label className="form-label">Fotograf Yukle</label>
+              <label className="form-label">Fotoğraf Yükle</label>
               <input
                 type="file"
                 accept="image/*"
@@ -99,7 +99,7 @@ function SpecialistForm({ specialist, onClose }: { specialist?: SpecialistItem; 
                   const file = event.target.files?.[0];
                   if (!file) return;
                   if (file.size > 4 * 1024 * 1024) {
-                    setFileError("Gorsel en fazla 4 MB olabilir.");
+                    setFileError("Görsel en fazla 4 MB olabilir.");
                     event.target.value = "";
                     return;
                   }
@@ -111,21 +111,21 @@ function SpecialistForm({ specialist, onClose }: { specialist?: SpecialistItem; 
                   reader.readAsDataURL(file);
                 }}
               />
-              <p className="mt-2 text-xs text-[color:var(--text-secondary)]">Yerelden gorsel secebilir veya asagiya baglanti yapistirabilirsiniz.</p>
+              <p className="mt-2 text-xs text-[color:var(--text-secondary)]">Yerelden görsel seçebilir veya aşağıya bağlantı yapıştırabilirsiniz.</p>
             </div>
             <div className="col-span-2">
-              <label className="form-label">Fotograf URL</label>
+              <label className="form-label">Fotoğraf URL</label>
               <input value={photoValue} onChange={(event) => setPhotoValue(event.target.value)} className="form-input" placeholder="https://..." />
             </div>
             {photoValue ? (
               <div className="col-span-2">
                 <div className="relative h-44 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
-                  <Image src={photoValue} alt="Uzman onizleme" fill sizes="176px" className="object-cover" unoptimized />
+                  <Image src={photoValue} alt="Uzman önizleme" fill sizes="176px" className="object-cover" unoptimized />
                 </div>
               </div>
             ) : null}
             <div>
-              <label className="form-label">Sira</label>
+              <label className="form-label">Sıra</label>
               <input name="order" type="number" defaultValue={specialist?.order ?? 0} className="form-input" />
             </div>
             <div>
@@ -138,7 +138,7 @@ function SpecialistForm({ specialist, onClose }: { specialist?: SpecialistItem; 
           </div>
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={onClose} className="flex-1 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600">
-              Iptal
+              İptal
             </button>
             <button type="submit" disabled={isPending} className="btn-primary flex-1">
               {isPending ? "Kaydediliyor..." : "Kaydet"}
@@ -192,9 +192,9 @@ export default function AdminSpecialistsClient({ specialists, services }: Props)
                   Hizmetler
                 </button>
                 <button onClick={() => { setEditing(sp); setShowForm(true); }} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50">
-                  Duzenle
+                  Düzenle
                 </button>
-                <form action={(fd) => { if (!confirm("Silmek istediginize emin misiniz?")) return; startTransition(() => void deleteAction(fd)); }}>
+                <form action={(fd) => { if (!confirm("Silmek istediğinize emin misiniz?")) return; startTransition(() => void deleteAction(fd)); }}>
                   <input type="hidden" name="id" value={sp.id} />
                   <button type="submit" className="rounded-lg border border-red-200 px-3 py-1.5 text-xs text-red-600 hover:bg-red-50">
                     Sil
@@ -205,7 +205,7 @@ export default function AdminSpecialistsClient({ specialists, services }: Props)
 
             {expanded === sp.id ? (
               <div className="border-t border-gray-100 p-5">
-                <h3 className="mb-3 text-sm font-semibold text-gray-700">Hizmet Atamasi</h3>
+                <h3 className="mb-3 text-sm font-semibold text-gray-700">Hizmet Ataması</h3>
                 <div className="mb-3 flex flex-wrap gap-2">
                   {sp.specialistServices.map(({ id, service }) => (
                     <div key={id} className="flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1.5 text-sm">

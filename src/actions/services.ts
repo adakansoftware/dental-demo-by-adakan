@@ -14,13 +14,13 @@ const serviceSchema = z.object({
   slug: z
     .string()
     .min(2)
-    .regex(/^[a-z0-9-]+$/, "Slug sadece kucuk harf, rakam ve tire icerebilir"),
-  nameTr: z.string().min(2, "Turkce ad gerekli"),
-  nameEn: z.string().min(2, "Ingilizce ad gerekli"),
-  shortDescTr: z.string().min(5, "Turkce kisa aciklama gerekli"),
-  shortDescEn: z.string().min(5, "Ingilizce kisa aciklama gerekli"),
-  descriptionTr: z.string().min(10, "Turkce aciklama gerekli"),
-  descriptionEn: z.string().min(10, "Ingilizce aciklama gerekli"),
+    .regex(/^[a-z0-9-]+$/, "Slug sadece küçük harf, rakam ve tire içerebilir"),
+  nameTr: z.string().min(2, "Türkçe ad gerekli"),
+  nameEn: z.string().min(2, "İngilizce ad gerekli"),
+  shortDescTr: z.string().min(5, "Türkçe kısa açıklama gerekli"),
+  shortDescEn: z.string().min(5, "İngilizce kısa açıklama gerekli"),
+  descriptionTr: z.string().min(10, "Türkçe açıklama gerekli"),
+  descriptionEn: z.string().min(10, "İngilizce açıklama gerekli"),
   iconName: z.string().default("tooth"),
   durationMinutes: z.coerce.number().min(15).max(480),
   order: z.coerce.number().default(0),
@@ -84,7 +84,7 @@ export async function createServiceAction(
   });
 
   if (exists) {
-    return { success: false, error: "Bu slug zaten kullanimda" };
+    return { success: false, error: "Bu slug zaten kullanımda" };
   }
 
   let imageUrl: string | null = null;
@@ -93,7 +93,7 @@ export async function createServiceAction(
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Gorsel kaydedilemedi.",
+      error: error instanceof Error ? error.message : "Görsel kaydedilemedi.",
     };
   }
 
@@ -147,7 +147,7 @@ export async function updateServiceAction(
   });
 
   if (conflict) {
-    return { success: false, error: "Bu slug zaten kullanimda" };
+    return { success: false, error: "Bu slug zaten kullanımda" };
   }
 
   const existing = await prisma.service.findUnique({
@@ -161,7 +161,7 @@ export async function updateServiceAction(
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Gorsel kaydedilemedi.",
+      error: error instanceof Error ? error.message : "Görsel kaydedilemedi.",
     };
   }
 

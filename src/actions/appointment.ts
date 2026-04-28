@@ -44,19 +44,19 @@ interface PublicAppointmentLookupItem {
 
 const createAppointmentSchema = z
   .object({
-    serviceId: z.string().min(1, "Hizmet secimi gerekli"),
-    specialistId: z.string().min(1, "Uzman secimi gerekli"),
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Gecerli tarih girin"),
-    startTime: z.string().regex(/^\d{2}:\d{2}$/, "Gecerli saat girin"),
-    endTime: z.string().regex(/^\d{2}:\d{2}$/, "Gecerli bitis saati girin"),
-    patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmali").max(120),
-    patientPhone: z.string().trim().min(10, "Gecerli telefon numarasi girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
+    serviceId: z.string().min(1, "Hizmet seçimi gerekli"),
+    specialistId: z.string().min(1, "Uzman seçimi gerekli"),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Geçerli tarih girin"),
+    startTime: z.string().regex(/^\d{2}:\d{2}$/, "Geçerli saat girin"),
+    endTime: z.string().regex(/^\d{2}:\d{2}$/, "Geçerli bitiş saati girin"),
+    patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmalı").max(120),
+    patientPhone: z.string().trim().min(10, "Geçerli telefon numarası girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
     patientEmail: z.string().trim().email().or(z.literal("")),
     patientNote: z.string().trim().max(500).optional(),
     patientLanguage: z.enum(["TR", "EN"]).default("TR"),
   })
   .refine((data) => data.startTime < data.endTime, {
-    message: "Bitis saati baslangic saatinden sonra olmali",
+    message: "Bitiş saati başlangıç saatinden sonra olmalı",
     path: ["endTime"],
   });
 
@@ -65,12 +65,12 @@ export async function createAppointmentAction(
   formData: FormData
 ): Promise<ActionResult> {
   if (!validateHoneypot(formData) || !validateFormAge(formData)) {
-    return { success: false, error: "Istek dogrulanamadi. Lutfen formu tekrar gonderin." };
+    return { success: false, error: "İstek doğrulanamadı. Lütfen formu tekrar gönderin." };
   }
 
   const turnstileValid = await verifyTurnstileToken(formData.get("cf-turnstile-response"));
   if (!turnstileValid) {
-    return { success: false, error: "Bot dogrulamasi basarisiz oldu. Lutfen tekrar deneyin." };
+    return { success: false, error: "Bot doğrulaması başarısız oldu. Lütfen tekrar deneyin." };
   }
 
   const allowed = await enforceRateLimit({
@@ -80,7 +80,7 @@ export async function createAppointmentAction(
   });
 
   if (!allowed) {
-    return { success: false, error: "Cok fazla deneme yapildi. Lutfen biraz sonra tekrar deneyin." };
+    return { success: false, error: "Çok fazla deneme yapıldı. Lütfen biraz sonra tekrar deneyin." };
   }
 
   const parsed = createAppointmentSchema.safeParse({
@@ -105,7 +105,7 @@ export async function createAppointmentAction(
   if (compareDateStrings(date, getTodayDateInTurkey()) < 0) {
     return {
       success: false,
-      error: patientLanguage === "EN" ? "Please choose a future date." : "Lutfen ileri bir tarih secin.",
+      error: patientLanguage === "EN" ? "Please choose a future date." : "Lütfen ileri bir tarih seçin.",
     };
   }
 
@@ -179,7 +179,7 @@ export async function createAppointmentAction(
         error:
           patientLanguage === "EN"
             ? "This time slot is no longer available. Please choose another time."
-            : "Bu zaman dilimi artik uygun degil. Lutfen baska bir saat secin.",
+            : "Bu zaman dilimi artık uygun değil. Lütfen başka bir saat seçin.",
       };
     }
 
@@ -341,9 +341,9 @@ export async function getAvailableSlotsAction(
 }
 
 const cancelAppointmentSchema = z.object({
-  patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmali").max(120),
-  patientPhone: z.string().trim().min(10, "Gecerli telefon numarasi girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Gecerli tarih girin"),
+  patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmalı").max(120),
+  patientPhone: z.string().trim().min(10, "Geçerli telefon numarası girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Geçerli tarih girin"),
   patientLanguage: z.enum(["TR", "EN"]).default("TR"),
 });
 
@@ -352,12 +352,12 @@ export async function cancelAppointmentByPhoneAction(
   formData: FormData
 ): Promise<ActionResult<{ cancelledId: string }>> {
   if (!validateHoneypot(formData) || !validateFormAge(formData)) {
-    return { success: false, error: "Istek dogrulanamadi. Lutfen formu tekrar gonderin." };
+    return { success: false, error: "İstek doğrulanamadı. Lütfen formu tekrar gönderin." };
   }
 
   const turnstileValid = await verifyTurnstileToken(formData.get("cf-turnstile-response"));
   if (!turnstileValid) {
-    return { success: false, error: "Bot dogrulamasi basarisiz oldu. Lutfen tekrar deneyin." };
+    return { success: false, error: "Bot doğrulaması başarısız oldu. Lütfen tekrar deneyin." };
   }
 
   const allowed = await enforceRateLimit({
@@ -367,7 +367,7 @@ export async function cancelAppointmentByPhoneAction(
   });
 
   if (!allowed) {
-    return { success: false, error: "Cok fazla iptal denemesi yapildi. Lutfen biraz sonra tekrar deneyin." };
+    return { success: false, error: "Çok fazla iptal denemesi yapıldı. Lütfen biraz sonra tekrar deneyin." };
   }
 
   const parsed = cancelAppointmentSchema.safeParse({
@@ -386,7 +386,7 @@ export async function cancelAppointmentByPhoneAction(
   if (compareDateStrings(date, getTodayDateInTurkey()) < 0) {
     return {
       success: false,
-      error: patientLanguage === "EN" ? "Please enter today or a future date." : "Lutfen bugun veya ileri bir tarih girin.",
+      error: patientLanguage === "EN" ? "Please enter today or a future date." : "Lütfen bugün veya ileri bir tarih girin.",
     };
   }
 
@@ -487,7 +487,7 @@ export async function cancelAppointmentByPhoneAction(
         error:
           patientLanguage === "EN"
             ? "Multiple appointments were found for that phone number on the selected date. Please contact the clinic."
-            : "Secilen tarihte bu numaraya ait birden fazla randevu bulundu. Lutfen klinikle iletisime gecin.",
+            : "Seçilen tarihte bu numaraya ait birden fazla randevu bulundu. Lütfen klinikle iletişime geçin.",
       };
     }
 
@@ -510,8 +510,8 @@ export async function cancelAppointmentByPhoneAction(
 }
 
 const lookupAppointmentsSchema = z.object({
-  patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmali").max(120),
-  patientPhone: z.string().trim().min(10, "Gecerli telefon numarasi girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
+  patientName: z.string().trim().min(2, "Ad soyad en az 2 karakter olmalı").max(120),
+  patientPhone: z.string().trim().min(10, "Geçerli telefon numarası girin").max(30).regex(/^[\d\s\+\-\(\)]+$/),
   patientLanguage: z.enum(["TR", "EN"]).default("TR"),
 });
 
@@ -520,12 +520,12 @@ export async function lookupAppointmentsByPhoneAction(
   formData: FormData
 ): Promise<ActionResult<PublicAppointmentLookupItem[]>> {
   if (!validateHoneypot(formData) || !validateFormAge(formData)) {
-    return { success: false, error: "Istek dogrulanamadi. Lutfen formu tekrar gonderin." };
+    return { success: false, error: "İstek doğrulanamadı. Lütfen formu tekrar gönderin." };
   }
 
   const turnstileValid = await verifyTurnstileToken(formData.get("cf-turnstile-response"));
   if (!turnstileValid) {
-    return { success: false, error: "Bot dogrulamasi basarisiz oldu. Lutfen tekrar deneyin." };
+    return { success: false, error: "Bot doğrulaması başarısız oldu. Lütfen tekrar deneyin." };
   }
 
   const allowed = await enforceRateLimit({
@@ -535,7 +535,7 @@ export async function lookupAppointmentsByPhoneAction(
   });
 
   if (!allowed) {
-    return { success: false, error: "Cok fazla sorgu yapildi. Lutfen biraz sonra tekrar deneyin." };
+    return { success: false, error: "Çok fazla sorgu yapıldı. Lütfen biraz sonra tekrar deneyin." };
   }
 
   const parsed = lookupAppointmentsSchema.safeParse({

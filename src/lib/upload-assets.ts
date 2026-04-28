@@ -34,7 +34,7 @@ function isLocalUploadPath(value: string) {
 function parseDataUrl(value: string) {
   const match = value.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,([A-Za-z0-9+/=\s]+)$/);
   if (!match) {
-    throw new Error("Gorsel verisi okunamadi.");
+    throw new Error("Görsel verisi okunamadı.");
   }
 
   return {
@@ -92,23 +92,23 @@ export async function persistImageAsset({
   }
 
   if (!trimmed.startsWith("data:image/")) {
-    throw new Error("Gorsel alani yalnizca yuklenen dosya, yerel yol veya gecerli URL kabul eder.");
+    throw new Error("Görsel alanı yalnızca yüklenen dosya, yerel yol veya geçerli URL kabul eder.");
   }
 
   const { mimeType, base64 } = parseDataUrl(trimmed);
 
   if (!allowedMimeTypes.includes(mimeType)) {
-    throw new Error("Bu dosya turu desteklenmiyor.");
+    throw new Error("Bu dosya türü desteklenmiyor.");
   }
 
   const buffer = Buffer.from(base64, "base64");
 
   if (!buffer.length) {
-    throw new Error("Bos dosya yuklenemiyor.");
+    throw new Error("Boş dosya yüklenemiyor.");
   }
 
   if (buffer.length > maxBytes) {
-    throw new Error("Dosya boyutu siniri asildi.");
+    throw new Error("Dosya boyutu sınırı aşıldı.");
   }
 
   const directory = path.join(UPLOADS_DIR, category);
@@ -126,7 +126,7 @@ export async function persistImageAsset({
   return `/uploads/${category}/${fileName}`;
 }
 
-export const IMAGE_INPUT_SCHEMA_MESSAGE = "Gecerli bir gorsel girin.";
+export const IMAGE_INPUT_SCHEMA_MESSAGE = "Geçerli bir görsel girin.";
 
 export function isValidAssetInput(value: string) {
   const trimmed = normalizeAssetValue(value);

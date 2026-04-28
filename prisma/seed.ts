@@ -38,10 +38,10 @@ async function main() {
     { key: "clinicName", value: "Adakan Dental Klinik" },
     { key: "clinicNameEn", value: "Adakan Dental Clinic" },
     { key: "phone", value: "+90 342 555 27 27" },
-    { key: "whatsapp", value: "+905325552727" },
+    { key: "whatsapp", value: "+90 532 555 27 27" },
     { key: "email", value: "info@adakandental.com" },
-    { key: "address", value: "Gaziantep, Şehitkamil" },
-    { key: "addressEn", value: "Sehitkamil, Gaziantep" },
+    { key: "address", value: "İncilipınar Mah., Şehitkamil / Gaziantep" },
+    { key: "addressEn", value: "Incilipinar Mah., Sehitkamil / Gaziantep" },
     { key: "mapEmbedUrl", value: "" },
     { key: "instagram", value: "https://instagram.com/adakansoftware" },
     { key: "facebook", value: "https://facebook.com/adakansoftware" },
@@ -194,7 +194,7 @@ async function main() {
   const specialists = [
     {
       slug: "dr-ayse-kaya",
-      nameTr: "Dr. Ayse Kaya",
+      nameTr: "Dr. Ayşe Kaya",
       nameEn: "Dr. Ayse Kaya",
       titleTr: "Diş Hekimi, İmplantoloji Uzmanı",
       titleEn: "Dentist, Implantology Specialist",
@@ -207,7 +207,7 @@ async function main() {
     },
     {
       slug: "dr-mehmet-yilmaz",
-      nameTr: "Dr. Mehmet Yilmaz",
+      nameTr: "Dr. Mehmet Yılmaz",
       nameEn: "Dr. Mehmet Yilmaz",
       titleTr: "Ortodonti Uzmanı",
       titleEn: "Orthodontics Specialist",

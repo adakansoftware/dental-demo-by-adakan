@@ -12,10 +12,10 @@ const BRANDING_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/x-
 const LOGO_MAX_BYTES = 2 * 1024 * 1024;
 const FAVICON_MAX_BYTES = 1024 * 1024;
 
-const optionalUrl = z.string().trim().url("Gecerli bir URL girin").or(z.literal(""));
+const optionalUrl = z.string().trim().url("Geçerli bir URL girin").or(z.literal(""));
 const optionalAsset = z.string().trim().refine(isValidAssetInput, IMAGE_INPUT_SCHEMA_MESSAGE);
-const optionalEmail = z.string().trim().email("Gecerli bir e-posta girin").or(z.literal(""));
-const phoneSchema = z.string().trim().min(6, "Gecerli telefon girin").max(30).regex(/^[\d\s+\-()]+$/);
+const optionalEmail = z.string().trim().email("Geçerli bir e-posta girin").or(z.literal(""));
+const phoneSchema = z.string().trim().min(6, "Geçerli telefon girin").max(30).regex(/^[\d\s+\-()]+$/);
 
 const settingsSchema = z.object({
   clinicName: z.string().trim().min(2).max(120),
@@ -65,7 +65,7 @@ export async function updateSettingsAction(_prev: ActionResult, formData: FormDa
 
   const parsed = settingsSchema.safeParse(raw);
   if (!parsed.success) {
-    return { success: false, error: parsed.error.errors[0]?.message ?? "Ayarlar dogrulanamadi" };
+    return { success: false, error: parsed.error.errors[0]?.message ?? "Ayarlar doğrulanamadı" };
   }
 
   const mapEmbedError = getGoogleMapsEmbedError(parsed.data.mapEmbedUrl);
@@ -97,7 +97,7 @@ export async function updateSettingsAction(_prev: ActionResult, formData: FormDa
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Marka gorselleri kaydedilemedi.",
+      error: error instanceof Error ? error.message : "Marka görselleri kaydedilemedi.",
     };
   }
 

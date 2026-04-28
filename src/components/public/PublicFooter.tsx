@@ -36,7 +36,7 @@ export default function PublicFooter({ settings }: Props) {
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--accent-main)]">
-                {lang === "tr" ? "Planli iletisim" : "Planned contact"}
+                {lang === "tr" ? "Planlı iletişim" : "Planned contact"}
               </div>
               <h2 className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-[color:var(--text-primary)] md:text-[2rem]">
                 {lang === "tr"
@@ -98,7 +98,7 @@ export default function PublicFooter({ settings }: Props) {
 
           <div>
             <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--accent-main)]">
-              {lang === "tr" ? "Iletisim" : "Contact"}
+              {lang === "tr" ? "İletişim" : "Contact"}
             </h3>
             <div className="space-y-3 text-sm text-[color:var(--text-secondary)]">
               <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="block transition-colors hover:text-[color:var(--text-primary)]">
@@ -129,7 +129,7 @@ export default function PublicFooter({ settings }: Props) {
                   </a>
                 ))
               ) : (
-                <div>{lang === "tr" ? "Yakinda" : "Coming soon"}</div>
+                <div>{lang === "tr" ? "Yakında" : "Coming soon"}</div>
               )}
             </div>
           </div>

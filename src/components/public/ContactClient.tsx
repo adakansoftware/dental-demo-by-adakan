@@ -30,33 +30,33 @@ export default function ContactClient({ settings, workingHours }: Props) {
   const days: Record<number, { tr: string; en: string }> = {
     0: { tr: "Pazar", en: "Sunday" },
     1: { tr: "Pazartesi", en: "Monday" },
-    2: { tr: "Sali", en: "Tuesday" },
-    3: { tr: "Carsamba", en: "Wednesday" },
-    4: { tr: "Persembe", en: "Thursday" },
+    2: { tr: "Salı", en: "Tuesday" },
+    3: { tr: "Çarşamba", en: "Wednesday" },
+    4: { tr: "Perşembe", en: "Thursday" },
     5: { tr: "Cuma", en: "Friday" },
     6: { tr: "Cumartesi", en: "Saturday" },
   };
 
   const trustPoints = [
     {
-      title: lang === "tr" ? "Hizli geri donus" : "Prompt response",
+      title: lang === "tr" ? "Hızlı geri dönüş" : "Prompt response",
       text:
         lang === "tr"
-          ? "Mesajlariniz ilgili birime duzenli sekilde ulasir ve en kisa surede geri donus planlanir."
+          ? "Mesajlarınız ilgili birime düzenli şekilde ulaşır ve en kısa sürede geri dönüş planlanır."
           : "Your message is routed to the relevant team and a timely response is planned.",
     },
     {
-      title: lang === "tr" ? "Dogru yonlendirme" : "Correct routing",
+      title: lang === "tr" ? "Doğru yönlendirme" : "Correct routing",
       text:
         lang === "tr"
-          ? "Randevu talebi, tedavi sorusu veya genel bilgi ihtiyaci daha dogru sekilde ayrilir."
+          ? "Randevu talebi, tedavi sorusu veya genel bilgi ihtiyacı daha doğru şekilde ayrılır."
           : "Appointment requests, treatment questions, and general information needs are separated correctly.",
     },
     {
-      title: lang === "tr" ? "Kolay ulasim" : "Easy access",
+      title: lang === "tr" ? "Kolay ulaşım" : "Easy access",
       text:
         lang === "tr"
-          ? "Telefon, e-posta ve WhatsApp uzerinden klinigimize size en uygun kanaldan ulasabilirsiniz."
+          ? "Telefon, e-posta ve WhatsApp üzerinden kliniğimize size en uygun kanaldan ulaşabilirsiniz."
           : "You can reach the clinic through phone, email, or WhatsApp using the channel that suits you best.",
     },
   ];
@@ -64,7 +64,7 @@ export default function ContactClient({ settings, workingHours }: Props) {
   return (
     <>
       <PageHero
-        kicker={lang === "tr" ? "Iletisim" : "Contact"}
+        kicker={lang === "tr" ? "İletişim" : "Contact"}
         title={t("contact", "title", lang)}
         subtitle={t("contact", "subtitle", lang)}
         minimal
@@ -82,10 +82,10 @@ export default function ContactClient({ settings, workingHours }: Props) {
           <div className="grid gap-10 lg:grid-cols-[1.02fr_0.98fr]">
             <div className="editorial-panel p-8 md:p-10">
               <SectionIntro
-                title={lang === "tr" ? "Ekibimizle dogrudan iletisime gecin" : "Contact our team directly"}
+                title={lang === "tr" ? "Ekibimizle doğrudan iletişime geçin" : "Contact our team directly"}
                 subtitle={
                   lang === "tr"
-                    ? "Tedavi oncesi bilgi almak, muayene randevusu planlamak veya surec hakkinda soru sormak icin formu doldurabilirsiniz."
+                    ? "Tedavi öncesi bilgi almak, muayene randevusu planlamak veya süreç hakkında soru sormak için formu doldurabilirsiniz."
                     : "Use the form to request treatment information, plan an examination, or ask questions about your care process."
                 }
               />
@@ -152,7 +152,7 @@ export default function ContactClient({ settings, workingHours }: Props) {
             <div className="space-y-6 lg:sticky lg:top-28">
               <div className="surface-panel p-6">
                 <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
-                  {lang === "tr" ? "Iletisim kanallari" : "Contact channels"}
+                  {lang === "tr" ? "İletişim kanalları" : "Contact channels"}
                 </h3>
 
                 <div className="mt-5 space-y-3">
@@ -237,14 +237,14 @@ export default function ContactClient({ settings, workingHours }: Props) {
                       <div className="mt-3 max-w-sm text-base leading-relaxed text-[color:var(--text-secondary)]">
                         {settings.mapEmbedUrl && !hasValidMapEmbed
                           ? lang === "tr"
-                            ? "Musteri konumu icin gecerli Google Maps embed baglantisi girildiginde bu alanda harita gosterilecektir."
+                            ? "Müşteri konumu için geçerli Google Maps embed bağlantısı girildiğinde bu alanda harita gösterilecektir."
                             : "A live map will be shown here once a valid Google Maps embed link is added for the client location."
                           : address}
                       </div>
                       {settings.mapEmbedUrl && !hasValidMapEmbed ? (
                         <div className="mt-4 max-w-sm rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-700">
                           {lang === "tr"
-                            ? "Harita alani korunmustur. Gecerli musteri konumu girildiginde dogrudan aktif harita olarak gorunecektir."
+                            ? "Harita alanı korunmuştur. Geçerli müşteri konumu girildiğinde doğrudan aktif harita olarak görünecektir."
                             : "The map area is preserved. It will automatically render as a live map once a valid client location is entered."}
                         </div>
                       ) : null}

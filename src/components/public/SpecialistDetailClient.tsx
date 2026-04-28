@@ -37,9 +37,9 @@ export default function SpecialistDetailClient({ specialist: sp }: Props) {
   const title = lang === "tr" ? sp.titleTr : sp.titleEn;
   const bio = lang === "tr" ? sp.biographyTr : sp.biographyEn;
   const notes = [
-    lang === "tr" ? "Tedavi yaklasimi bireysel muayene ile sekillenir." : "Treatment approach is shaped through individual consultation.",
-    lang === "tr" ? "Uzmanlik alanlari ilgili hizmetlerle birlikte sunulur." : "Areas of expertise are presented together with related services.",
-    lang === "tr" ? "Randevu ve on bilgi talepleri icin klinik iletisimi aciktir." : "Clinic communication remains open for booking and preliminary questions.",
+    lang === "tr" ? "Tedavi yaklaşımı bireysel muayene ile şekillenir." : "Treatment approach is shaped through individual consultation.",
+    lang === "tr" ? "Uzmanlık alanları ilgili hizmetlerle birlikte sunulur." : "Areas of expertise are presented together with related services.",
+    lang === "tr" ? "Randevu ve ön bilgi talepleri için klinik iletişimi açıktır." : "Clinic communication remains open for booking and preliminary questions.",
   ];
 
   return (
@@ -71,7 +71,7 @@ export default function SpecialistDetailClient({ specialist: sp }: Props) {
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.06fr)_minmax(19rem,0.94fr)]">
             <div className="space-y-8">
               <div className="editorial-panel p-8 md:p-10">
-                <SectionIntro title={lang === "tr" ? `${name} hakkinda genel bilgi` : `General information about ${name}`} />
+                <SectionIntro title={lang === "tr" ? `${name} hakkında genel bilgi` : `General information about ${name}`} />
                 <p className="whitespace-pre-line text-base leading-relaxed text-[color:var(--text-secondary)] md:text-lg">{bio}</p>
               </div>
 
@@ -91,7 +91,7 @@ export default function SpecialistDetailClient({ specialist: sp }: Props) {
               {sp.specialistServices.length > 0 ? (
                 <div className="surface-panel p-6">
                   <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--accent-main)]">
-                    {lang === "tr" ? "Ilgili Hizmetler" : "Related Services"}
+                    {lang === "tr" ? "İlgili Hizmetler" : "Related Services"}
                   </div>
                   <div className="space-y-3">
                     {sp.specialistServices.map(({ service }) => (
@@ -106,7 +106,7 @@ export default function SpecialistDetailClient({ specialist: sp }: Props) {
               <div className="editorial-panel p-6">
                 <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[color:var(--text-primary)]">
                   {lang === "tr"
-                    ? "Randevu ya da on bilgi icin klinigimizle iletisime gecebilirsiniz"
+                    ? "Randevu ya da ön bilgi için kliniğimizle iletişime geçebilirsiniz"
                     : "Contact the clinic for an appointment or preliminary information"}
                 </h3>
                 <div className="mt-6 flex flex-wrap gap-3">
@@ -114,7 +114,7 @@ export default function SpecialistDetailClient({ specialist: sp }: Props) {
                     {lang === "tr" ? "Online Randevu" : "Book Appointment"}
                   </Link>
                   <Link href="/contact" className="btn-ghost">
-                    {lang === "tr" ? "Iletisim" : "Contact"}
+                    {lang === "tr" ? "İletişim" : "Contact"}
                   </Link>
                 </div>
               </div>

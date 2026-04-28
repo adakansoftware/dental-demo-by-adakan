@@ -28,8 +28,8 @@ function ServiceForm({ service, onClose }: { service?: ServiceData; onClose: () 
       <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-[28px] border border-[rgba(217,210,200,0.84)] bg-[rgba(251,250,247,0.98)] shadow-2xl" onMouseDown={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[rgba(217,210,200,0.84)] p-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--accent-main)]">Yonetim</p>
-            <h2 className="text-xl font-bold text-[color:var(--text-primary)]">{service ? "Hizmet Duzenle" : "Yeni Hizmet"}</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--accent-main)]">Yönetim</p>
+            <h2 className="text-xl font-bold text-[color:var(--text-primary)]">{service ? "Hizmet Düzenle" : "Yeni Hizmet"}</h2>
           </div>
           <button onClick={onClose} className="text-2xl text-gray-400 hover:text-gray-600">
             &times;
@@ -54,31 +54,31 @@ function ServiceForm({ service, onClose }: { service?: ServiceData; onClose: () 
               <input name="slug" defaultValue={service?.slug} className="form-input" required placeholder="implant-tedavisi" />
             </div>
             <div>
-              <label className="form-label">Adi (TR)</label>
+              <label className="form-label">Adı (TR)</label>
               <input name="nameTr" defaultValue={service?.nameTr} className="form-input" required />
             </div>
             <div>
-              <label className="form-label">Adi (EN)</label>
+              <label className="form-label">Adı (EN)</label>
               <input name="nameEn" defaultValue={service?.nameEn} className="form-input" required />
             </div>
             <div>
-              <label className="form-label">Kisa Aciklama (TR)</label>
+              <label className="form-label">Kısa Açıklama (TR)</label>
               <input name="shortDescTr" defaultValue={service?.shortDescTr} className="form-input" required />
             </div>
             <div>
-              <label className="form-label">Kisa Aciklama (EN)</label>
+              <label className="form-label">Kısa Açıklama (EN)</label>
               <input name="shortDescEn" defaultValue={service?.shortDescEn} className="form-input" required />
             </div>
             <div className="md:col-span-2">
-              <label className="form-label">Aciklama (TR)</label>
+              <label className="form-label">Açıklama (TR)</label>
               <textarea name="descriptionTr" defaultValue={service?.descriptionTr} className="form-input min-h-[96px]" required />
             </div>
             <div className="md:col-span-2">
-              <label className="form-label">Aciklama (EN)</label>
+              <label className="form-label">Açıklama (EN)</label>
               <textarea name="descriptionEn" defaultValue={service?.descriptionEn} className="form-input min-h-[96px]" required />
             </div>
             <div className="md:col-span-2">
-              <label className="form-label">Gorsel Yukle</label>
+              <label className="form-label">Görsel Yükle</label>
               <input
                 type="file"
                 accept="image/*"
@@ -87,7 +87,7 @@ function ServiceForm({ service, onClose }: { service?: ServiceData; onClose: () 
                   const file = event.target.files?.[0];
                   if (!file) return;
                   if (file.size > 4 * 1024 * 1024) {
-                    setFileError("Gorsel en fazla 4 MB olabilir.");
+                    setFileError("Görsel en fazla 4 MB olabilir.");
                     event.target.value = "";
                     return;
                   }
@@ -99,25 +99,25 @@ function ServiceForm({ service, onClose }: { service?: ServiceData; onClose: () 
                   reader.readAsDataURL(file);
                 }}
               />
-              <p className="mt-2 text-xs text-[color:var(--text-secondary)]">Yerelden gorsel secebilir veya asagiya baglanti yapistirabilirsiniz.</p>
+              <p className="mt-2 text-xs text-[color:var(--text-secondary)]">Yerelden görsel seçebilir veya aşağıya bağlantı yapıştırabilirsiniz.</p>
             </div>
             <div className="md:col-span-2">
-              <label className="form-label">Gorsel URL</label>
+              <label className="form-label">Görsel URL</label>
               <input value={imageValue} onChange={(event) => setImageValue(event.target.value)} className="form-input" placeholder="https://... veya /images/services/service.jpg" />
             </div>
             {imageValue ? (
               <div className="md:col-span-2">
                 <div className="relative h-40 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
-                  <Image src={imageValue} alt="Hizmet onizleme" fill sizes="224px" className="object-cover" unoptimized />
+                  <Image src={imageValue} alt="Hizmet önizleme" fill sizes="224px" className="object-cover" unoptimized />
                 </div>
               </div>
             ) : null}
             <div>
-              <label className="form-label">Sure (dakika)</label>
+              <label className="form-label">Süre (dakika)</label>
               <input name="durationMinutes" type="number" defaultValue={service?.durationMinutes ?? 30} className="form-input" required />
             </div>
             <div>
-              <label className="form-label">Sira</label>
+              <label className="form-label">Sıra</label>
               <input name="order" type="number" defaultValue={service?.order ?? 0} className="form-input" />
             </div>
             <div>
@@ -131,7 +131,7 @@ function ServiceForm({ service, onClose }: { service?: ServiceData; onClose: () 
 
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={onClose} className="flex-1 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50">
-              Iptal
+              İptal
             </button>
             <button type="submit" disabled={isPending} className="btn-primary flex-1">
               {isPending ? "Kaydediliyor..." : "Kaydet"}
@@ -152,7 +152,7 @@ export default function AdminServicesClient({ services }: { services: ServiceDat
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--accent-main)]">Icerik Yonetimi</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--accent-main)]">İçerik Yönetimi</p>
           <h1 className="text-2xl font-bold text-[color:var(--text-primary)]">Hizmetler</h1>
         </div>
         <button onClick={() => { setEditing(undefined); setShowForm(true); }} className="btn-primary text-sm">
@@ -164,7 +164,7 @@ export default function AdminServicesClient({ services }: { services: ServiceDat
         <table className="w-full text-left">
           <thead className="border-b border-gray-100 bg-[rgba(248,246,241,0.92)]">
             <tr>
-              {["Gorsel", "Sira", "Ad (TR)", "Sure", "Durum", "Islemler"].map((h) => (
+              {["Görsel", "Sıra", "Ad (TR)", "Süre", "Durum", "İşlemler"].map((h) => (
                 <th key={h} className="px-4 py-3 text-xs font-semibold uppercase text-gray-500">{h}</th>
               ))}
             </tr>
@@ -196,9 +196,9 @@ export default function AdminServicesClient({ services }: { services: ServiceDat
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
                     <button onClick={() => { setEditing(svc); setShowForm(true); }} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">
-                      Duzenle
+                      Düzenle
                     </button>
-                    <form action={(fd) => { if (!confirm("Silmek istediginize emin misiniz?")) return; startTransition(() => void deleteAction(fd)); }}>
+                    <form action={(fd) => { if (!confirm("Silmek istediğinize emin misiniz?")) return; startTransition(() => void deleteAction(fd)); }}>
                       <input type="hidden" name="id" value={svc.id} />
                       <button type="submit" disabled={isDeleting} className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50">
                         Sil

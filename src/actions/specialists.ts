@@ -67,7 +67,7 @@ export async function createSpecialistAction(_prev: ActionResult, formData: Form
   }
 
   const exists = await prisma.specialist.findUnique({ where: { slug: parsed.data.slug } });
-  if (exists) return { success: false, error: "Bu slug zaten kullanimda" };
+  if (exists) return { success: false, error: "Bu slug zaten kullanımda" };
 
   let photoUrl = "";
   try {
@@ -75,7 +75,7 @@ export async function createSpecialistAction(_prev: ActionResult, formData: Form
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Fotograf kaydedilemedi.",
+      error: error instanceof Error ? error.message : "Fotoğraf kaydedilemedi.",
     };
   }
 
@@ -116,7 +116,7 @@ export async function updateSpecialistAction(_prev: ActionResult, formData: Form
   }
 
   const conflict = await prisma.specialist.findFirst({ where: { slug: parsed.data.slug, NOT: { id } } });
-  if (conflict) return { success: false, error: "Bu slug zaten kullanimda" };
+  if (conflict) return { success: false, error: "Bu slug zaten kullanımda" };
 
   const existing = await prisma.specialist.findUnique({
     where: { id },
@@ -129,7 +129,7 @@ export async function updateSpecialistAction(_prev: ActionResult, formData: Form
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Fotograf kaydedilemedi.",
+      error: error instanceof Error ? error.message : "Fotoğraf kaydedilemedi.",
     };
   }
 
@@ -182,7 +182,7 @@ export async function assignServiceAction(_prev: ActionResult, formData: FormDat
   const serviceId = formData.get("serviceId") as string;
 
   if (!specialistId || !serviceId) {
-    return { success: false, error: "Uzman ve hizmet secimi gerekli" };
+    return { success: false, error: "Uzman ve hizmet seçimi gerekli" };
   }
 
   await prisma.specialistService.upsert({
